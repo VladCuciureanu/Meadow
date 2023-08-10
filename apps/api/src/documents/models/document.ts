@@ -41,10 +41,10 @@ export class Document implements DocumentInterface {
   spaceId: string;
 
   @ManyToOne(() => Folder, (folder) => folder.documents)
-  folder: Folder | null;
+  folder?: Folder;
 
   @RelationId((document: Document) => document.folder)
-  folderId: string | null;
+  folderId?: string;
 
   @OneToOne(() => Block, (block) => block.document)
   rootBlock: Block;

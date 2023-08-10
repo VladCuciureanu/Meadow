@@ -24,7 +24,7 @@ export class User implements UserInterface {
   lastName: string;
 
   @Column("text", { nullable: true })
-  imgUrl: string | null;
+  imgUrl?: string;
 
   @ManyToMany(() => Team, (team) => team.members)
   teams: Team[];

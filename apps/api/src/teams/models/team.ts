@@ -18,7 +18,7 @@ export class Team implements TeamInterface {
   name: string;
 
   @Column("text", { nullable: true })
-  imgUrl: string | null;
+  imgUrl?: string;
 
   @ManyToMany(() => User, (user) => user.teams)
   members: User[];

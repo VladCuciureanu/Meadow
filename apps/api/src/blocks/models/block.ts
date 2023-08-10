@@ -51,10 +51,10 @@ export class Block implements BaseBlock {
   spaceId: string;
 
   @OneToOne(() => Document, (document) => document.rootBlock)
-  document: Document | null;
+  document?: Document;
 
   @RelationId((block: Block) => block.document)
-  documentId: string | null;
+  documentId?: string;
 }
 
 @ChildEntity()

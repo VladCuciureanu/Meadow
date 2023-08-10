@@ -5,14 +5,14 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  imgUrl: string | null;
+  imgUrl?: string;
   teams: Team[];
 }
 
 export interface Team {
   id: string;
   name: string;
-  imgUrl: string | null;
+  imgUrl?: string;
   members: User[];
   spaces: Space[];
 }
@@ -20,7 +20,7 @@ export interface Team {
 export type Space = {
   id: string;
   name: string;
-  imgUrl: string | null;
+  imgUrl?: string;
   blocks: BaseBlock[];
   documents: Document[];
   folders: Folder[];
@@ -37,8 +37,8 @@ export type Document = {
   authorId: string;
   space: Space;
   spaceId: string;
-  folder: Folder | null;
-  folderId: string | null;
+  folder?: Folder;
+  folderId?: string;
   rootBlock: BaseBlock;
   rootBlockId: string;
   created: Date;
@@ -48,15 +48,15 @@ export type Document = {
 export type Folder = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string;
   icon: FolderIconConfig;
   itemOrder: string[];
   documents: Document[];
-  parentFolder: Folder | null;
-  parentFolderId: string | null;
+  parentFolder?: Folder;
+  parentFolderId?: string;
   childrenFolders: Folder[];
-  space: Space | null;
-  spaceId: string | null;
+  space?: Space;
+  spaceId?: string;
   created: Date;
   updated: Date;
 };
@@ -72,8 +72,8 @@ export type Block =
 
 export type BaseBlock = {
   id: string;
-  spaceId: string | null;
-  documentId: string | null;
+  spaceId?: string;
+  documentId?: string;
   indentationLevel: number;
   listStyle: ListStyle;
   hasBlockDecoration: boolean;
@@ -247,12 +247,12 @@ export enum BlockType {
 
 export interface TextRun {
   text: string;
-  isBold: boolean | null;
-  isItalic: boolean | null;
-  isStrikethrough: boolean | null;
-  isCode: boolean | null;
-  highlightColor: TextHighlightColor | null;
-  link: TextRunLink | null;
+  isBold?: boolean;
+  isItalic?: boolean;
+  isStrikethrough?: boolean;
+  isCode?: boolean;
+  highlightColor?: TextHighlightColor;
+  link?: TextRunLink;
 }
 
 export type TextRunLink = BlockLink | UrlLink | FormulaLink | DateLink;
@@ -309,7 +309,7 @@ export interface BulletListStyle {
 
 export interface NumberedListStyle {
   type: ListStyleType.Numbered;
-  ordinal: number | null;
+  ordinal?: number;
 }
 
 export enum TodoState {

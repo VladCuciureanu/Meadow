@@ -21,7 +21,7 @@ export class Folder implements FolderInterface {
   name: string;
 
   @Column("text", { nullable: true })
-  description: string | null;
+  description?: string;
 
   @Column("jsonb")
   icon: FolderIconConfig;
@@ -33,10 +33,10 @@ export class Folder implements FolderInterface {
   documents: Document[];
 
   @ManyToOne(() => Folder, (folder) => folder.childrenFolders)
-  parentFolder: Folder | null;
+  parentFolder?: Folder;
 
   @RelationId((folder: Folder) => folder.parentFolder)
-  parentFolderId: string | null;
+  parentFolderId?: string;
 
   @OneToMany(() => Folder, (folder) => folder.parentFolder)
   childrenFolders: Folder[];

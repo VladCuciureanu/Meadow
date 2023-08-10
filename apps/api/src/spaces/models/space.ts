@@ -21,7 +21,7 @@ export class Space implements SpaceInterface {
   name: string;
 
   @Column("text", { nullable: true })
-  imgUrl: string | null;
+  imgUrl?: string;
 
   @OneToMany(() => Block, (block) => block.space)
   blocks: Block[];

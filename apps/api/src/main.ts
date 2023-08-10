@@ -14,6 +14,10 @@ import { MeadowDataSource } from "./data-source";
 import { CommonRoutesConfig } from "./common/common.routes";
 import { TeamsRoutes } from "./teams/teams.routes";
 import { SpacesRoutes } from "./spaces/spaces.routes";
+import { FoldersRoutes } from "./folders/folders.routes";
+import { DocumentsRoutes } from "./documents/documents.routes";
+import { BlocksRoutes } from "./blocks/blocks.routes";
+import { UsersRoutes } from "./users/users.routes";
 
 const app: Application = express();
 const server: http.Server = http.createServer(app);
@@ -48,11 +52,10 @@ app.use(
 // Hook up routes
 routes.push(new TeamsRoutes(app));
 routes.push(new SpacesRoutes(app));
-// app.use('/api/teams', TeamsRoutes);
-// app.use('/api/spaces', SpacesRoutes);
-// app.use('/api/documents', DocumentsRoutes);
-// app.use('/api/folders', FoldersRoutes);
-// app.use('/api/blocks', BlocksRoutes);
+routes.push(new FoldersRoutes(app));
+routes.push(new DocumentsRoutes(app));
+routes.push(new BlocksRoutes(app));
+routes.push(new UsersRoutes(app));
 
 app.use(
   expressWinston.errorLogger({

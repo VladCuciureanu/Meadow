@@ -9,8 +9,8 @@ import {
   RelationId,
   TableInheritance,
 } from "typeorm";
-import { Document } from "./document";
-import { Space } from "../spaces/models/space";
+import { Document } from "../../documents/models/document";
+import { Space } from "../../spaces/models/space";
 import {
   CodeLanguage,
   BlockColor,

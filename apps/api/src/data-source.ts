@@ -8,12 +8,12 @@ import {
   VideoBlock,
   FileBlock,
   UrlBlock,
-} from "./models/block";
-import { User } from "./models/user";
+} from "./blocks/models/block";
+import { User } from "./users/models/user";
 import { Team } from "./teams/models/team";
 import { Space } from "./spaces/models/space";
-import { Folder } from "./models/folder";
-import { Document } from "./models/document";
+import { Folder } from "./folders/models/folder";
+import { Document } from "./documents/models/document";
 import { DataSource } from "typeorm";
 
 export const MeadowDataSource = new DataSource({

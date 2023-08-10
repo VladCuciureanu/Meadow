@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import { Document } from "../../models/document";
-import { Folder } from "../../models/folder";
-import { Block } from "../../models/block";
+import { Document } from "../../documents/models/document";
+import { Folder } from "../../folders/models/folder";
+import { Block } from "../../blocks/models/block";
 import { Team } from "../../teams/models/team";
 import { Space as SpaceInterface } from "@meadow/shared";
 

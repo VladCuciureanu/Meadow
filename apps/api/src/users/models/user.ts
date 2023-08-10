@@ -5,8 +5,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Team } from "../teams/models/team";
-import { Document } from "./document";
+import { Team } from "../../teams/models/team";
+import { Document } from "../../documents/models/document";
 import { User as UserInterface } from "@meadow/shared";
 
 @Entity()

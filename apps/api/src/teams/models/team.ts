@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 import { Space } from "../../spaces/models/space";
 import { Team as TeamInterface } from "@meadow/shared";
-import { User } from "../../models/user";
+import { User } from "../../users/models/user";
 
 @Entity()
 export class Team implements TeamInterface {

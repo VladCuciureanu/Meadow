@@ -9,8 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false,
-    "baseUrl": "./src"
+    "strictPropertyInitialization": false
   },
   "$schema": "https://json.schemastore.org/tsconfig"
 }

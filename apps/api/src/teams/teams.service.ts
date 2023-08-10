@@ -1,0 +1,39 @@
+import { Repository } from "typeorm";
+import { MeadowDataSource } from "../data-source";
+import { Team } from "./models/team";
+
+class TeamsService {
+  teamsRepository: Repository<Team>;
+  constructor() {
+    this.teamsRepository = MeadowDataSource.getRepository(Team);
+  }
+  // async create(resource: TeamDto) {
+  //   return TeamsDao.addTeam(resource);
+  // }
+
+  // async deleteById(resourceId: string) {
+  //   return TeamsDao.removeTeamById(resourceId);
+  // }
+
+  // async list(limit: number, page: number) {
+  //   return TeamsDao.getTeams();
+  // }
+
+  // async patchById(resource: TeamDto) {
+  //   return TeamsDao.patchTeamById(resource);
+  // }
+
+  async readById(resourceId: string) {
+    return this.teamsRepository.findOne({ where: { id: resourceId } });
+  }
+
+  // async updateById(resource: TeamDto) {
+  //   return TeamsDao.putTeamById(resource);
+  // }
+
+  // async getTeamByEmail(email: string) {
+  //   return TeamsDao.getTeamByEmail(email);
+  // }
+}
+
+export default new TeamsService();

@@ -23,6 +23,9 @@ export class User implements UserInterface {
   @Column("text")
   lastName: string;
 
+  @Column("text")
+  passwordHash: string;
+
   @Column("text", { nullable: true })
   imgUrl?: string;
 

@@ -10,8 +10,7 @@ export class TeamsRoutes extends CommonRoutesConfig {
   }
 
   configureRoutes() {
-    this.app.route(`/teams`);
-    // .get(TeamsController.listTeams)
+    this.app.route(`/teams`).get(teamsController.listTeams);
     // .post(TeamsController.createTeam);
 
     this.app.param(`teamId`, teamsMiddleware.extractTeamId);

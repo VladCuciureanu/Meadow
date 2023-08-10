@@ -1,8 +1,6 @@
 import express from "express";
-import debug from "debug";
 import UsersService from "./users.service";
-
-const log: debug.IDebugger = debug("api:users:middlewares");
+import { MeadowError } from "../common/common.middleware";
 
 class UsersMiddleware {
   async validateUserExists(
@@ -10,7 +8,7 @@ class UsersMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const user = await UsersService.readById(req.params.userId);
+    const user = await UsersService.getById(req.params.userId);
     if (user) {
       next();
     } else {
@@ -18,9 +16,25 @@ class UsersMiddleware {
     }
   }
 
-  async extractUserId(
+  async validateEmailIsUnique(
     req: express.Request,
     res: express.Response,
+    next: express.NextFunction
+  ) {
+    const user = await UsersService.getByEmail(req.body.email);
+    if (!user) {
+      next();
+    } else {
+      res.status(500).send({
+        status: "Failed payload validations.",
+        errors: ["Email must be unique."],
+      } as MeadowError);
+    }
+  }
+
+  async extractUserId(
+    req: express.Request,
+    _res: express.Response,
     next: express.NextFunction
   ) {
     req.body.id = req.params.userId;

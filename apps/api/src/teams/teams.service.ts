@@ -15,9 +15,10 @@ class TeamsService {
   //   return TeamsDao.removeTeamById(resourceId);
   // }
 
-  // async list(limit: number, page: number) {
-  //   return TeamsDao.getTeams();
-  // }
+  async list(limit: number, page: number) {
+    const skipCount = Math.max(0, limit * (page - 1));
+    return this.teamsRepository.find({ take: limit, skip: skipCount });
+  }
 
   // async patchById(resource: TeamDto) {
   //   return TeamsDao.patchTeamById(resource);

@@ -4,8 +4,6 @@
  */
 
 import express, { Application, json } from "express";
-import * as expressWinston from "express-winston";
-import * as winston from "winston";
 import * as http from "http";
 import compression from "compression";
 import debug from "debug";
@@ -18,6 +16,7 @@ import { FoldersRoutes } from "./folders/folders.routes";
 import { DocumentsRoutes } from "./documents/documents.routes";
 import { BlocksRoutes } from "./blocks/blocks.routes";
 import { UsersRoutes } from "./users/users.routes";
+import morgan from "morgan";
 
 const app: Application = express();
 const server: http.Server = http.createServer(app);
@@ -39,15 +38,8 @@ app.use(json());
 app.use(cors());
 app.use(compression());
 
-app.use(
-  expressWinston.logger({
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.json()
-    ),
-  })
-);
+// Set up logging
+app.use(morgan("dev"));
 
 // Hook up routes
 routes.push(new TeamsRoutes(app));
@@ -56,16 +48,6 @@ routes.push(new FoldersRoutes(app));
 routes.push(new DocumentsRoutes(app));
 routes.push(new BlocksRoutes(app));
 routes.push(new UsersRoutes(app));
-
-app.use(
-  expressWinston.errorLogger({
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.json()
-    ),
-  })
-);
 
 server.listen(port, () => {
   debugLog(`Server running at http://localhost:${port}`);

@@ -1,3 +1,5 @@
+export * from "./zod";
+
 // Models
 
 export interface User {
@@ -5,6 +7,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  passwordHash: string;
   imgUrl?: string;
   teams: Team[];
 }

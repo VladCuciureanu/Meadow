@@ -1,44 +1,49 @@
 import express from "express";
-import UsersService from "./users.service";
+import usersService from "./users.service";
 import debug from "debug";
+import { TypeOf } from "zod";
+import {
+  CreateUserSchema,
+  PatchUserSchema,
+  UpdateUserSchema,
+} from "@meadow/shared";
 
 const log: debug.IDebugger = debug("api:users:controller");
 
 class UsersController {
-  // async listUsers(req: express.Request, res: express.Response) {
-  //   const users = await usersService.list(100, 0);
-  //   res.status(200).send(users);
-  // }
+  async get(req: express.Request, res: express.Response) {
+    const users = await usersService.getAll(100, 0);
+    res.status(200).send(users);
+  }
 
-  async getUserById(req: express.Request, res: express.Response) {
-    const user = await UsersService.readById(req.params.userId);
+  async getById(req: express.Request, res: express.Response) {
+    const user = await usersService.getById(req.params.userId);
     res.status(200).send(user);
   }
 
-  // async createUser(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   const userId = await usersService.create(req.body);
-  //   res.status(201).send({ id: userId });
-  // }
+  async createUser(req: express.Request, res: express.Response) {
+    const user = await usersService.create(
+      req as any as TypeOf<typeof CreateUserSchema>
+    );
+    res.status(201).send(user);
+  }
 
-  // async patch(req: express.Request, res: express.Response) {
-  //   if (req.body.password) {
-  //     req.body.password = await argon2.hash(req.body.password);
-  //   }
-  //   log(await usersService.patchById(req.body));
-  //   res.status(204).send(``);
-  // }
+  async patch(req: express.Request, res: express.Response) {
+    await usersService.patchById(req as any as TypeOf<typeof PatchUserSchema>);
+    res.status(204).send(``);
+  }
 
-  // async put(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   log(await usersService.updateById({ id: req.params.userId, ...req.body }));
-  //   res.status(204).send(``);
-  // }
+  async put(req: express.Request, res: express.Response) {
+    await usersService.updateById(
+      req as any as TypeOf<typeof UpdateUserSchema>
+    );
+    res.status(204).send(``);
+  }
 
-  // async removeUser(req: express.Request, res: express.Response) {
-  //   log(await usersService.deleteById(req.params.userId));
-  //   res.status(204).send(``);
-  // }
+  async delete(req: express.Request, res: express.Response) {
+    // log(await usersService.deleteById(req.params.userId));
+    res.status(204).send(``);
+  }
 }
 
 export default new UsersController();

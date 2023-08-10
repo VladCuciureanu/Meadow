@@ -5,10 +5,10 @@ import debug from "debug";
 const log: debug.IDebugger = debug("api:teams:controller");
 
 class TeamsController {
-  // async listTeams(req: express.Request, res: express.Response) {
-  //   const teams = await teamsService.list(100, 0);
-  //   res.status(200).send(teams);
-  // }
+  async listTeams(req: express.Request, res: express.Response) {
+    const teams = await teamsService.list(100, 0);
+    res.status(200).send(teams);
+  }
 
   async getTeamById(req: express.Request, res: express.Response) {
     const team = await teamsService.readById(req.params.teamId);

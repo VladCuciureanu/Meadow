@@ -5,9 +5,10 @@
 
 import express, { Application, json } from "express";
 import * as http from "http";
-import compression from "compression";
-import debug from "debug";
 import cors from "cors";
+import debug from "debug";
+import compression from "compression";
+import cookieparser from "cookie-parser";
 import { MeadowDataSource } from "./data-source";
 import { CommonRoutesConfig } from "./common/common.routes";
 import { TeamsRoutes } from "./teams/teams.routes";
@@ -16,6 +17,7 @@ import { FoldersRoutes } from "./folders/folders.routes";
 import { DocumentsRoutes } from "./documents/documents.routes";
 import { BlocksRoutes } from "./blocks/blocks.routes";
 import { UsersRoutes } from "./users/users.routes";
+import { AuthRoutes } from "./auth/auth.routes";
 import morgan from "morgan";
 
 const app: Application = express();
@@ -33,10 +35,11 @@ MeadowDataSource.initialize()
     debugLog("🚨 Error during database initialization: ", err);
   });
 
-// Compress responses
-app.use(json());
+// Hook up extensions
 app.use(cors());
+app.use(json());
 app.use(compression());
+app.use(cookieparser());
 
 // Set up logging
 app.use(morgan("dev"));
@@ -48,9 +51,10 @@ routes.push(new FoldersRoutes(app));
 routes.push(new DocumentsRoutes(app));
 routes.push(new BlocksRoutes(app));
 routes.push(new UsersRoutes(app));
+routes.push(new AuthRoutes(app));
 
 server.listen(port, () => {
-  debugLog(`Server running at http://localhost:${port}`);
+  debugLog(`🌿 Server running at http://localhost:${port}`);
   routes.forEach((route: CommonRoutesConfig) => {
     debugLog(`🔧 Routes configured for ${route.getName()}`);
   });

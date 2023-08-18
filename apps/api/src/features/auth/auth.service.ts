@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
+import { MeadowDataSource } from "../../config/typeorm";
 import * as argon2 from "argon2";
 import { TypeOf } from "zod";
 import { LogInUserSchema } from "@meadow/shared";

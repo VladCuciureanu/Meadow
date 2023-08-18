@@ -1,6 +1,5 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { User } from "./models/user";
+import { User } from "./user.model";
 import * as argon2 from "argon2";
 import { TypeOf } from "zod";
 import {
@@ -8,6 +7,7 @@ import {
   PatchUserSchema,
   UpdateUserSchema,
 } from "@meadow/shared";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class UsersService {
   usersRepository: Repository<User>;

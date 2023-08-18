@@ -1,9 +1,5 @@
 import express from "express";
 import teamsService from "./teams.service";
-import debug from "debug";
-
-const log: debug.IDebugger = debug("api:teams:controller");
-
 class TeamsController {
   async listTeams(req: express.Request, res: express.Response) {
     const teams = await teamsService.list(100, 0);

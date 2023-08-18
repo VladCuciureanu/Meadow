@@ -5,9 +5,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Space } from "../../spaces/models/space";
+import { Space } from "../spaces/space.model";
 import { Team as TeamInterface } from "@meadow/shared";
-import { User } from "../../users/models/user";
+import { User } from "../users/user.model";
 
 @Entity()
 export class Team implements TeamInterface {

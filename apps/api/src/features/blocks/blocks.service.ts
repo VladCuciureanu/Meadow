@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { Block } from "./models/block";
+import { Block } from "./block.model";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class BlocksService {
   blocksRepository: Repository<Block>;

@@ -3,7 +3,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import * as argon2 from "argon2";
 import { TypeOf } from "zod";
 import { LogInUserSchema } from "@meadow/shared";
-import { User } from "../users/models/user";
+import { User } from "../users/user.model";
 import jwt from "jsonwebtoken";
 
 class AuthService {

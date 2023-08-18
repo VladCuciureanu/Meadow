@@ -1,8 +1,5 @@
 import express from "express";
-import debug from "debug";
 import DocumentsService from "./documents.service";
-
-const log: debug.IDebugger = debug("api:documents:middlewares");
 
 class DocumentsMiddleware {
   async validateDocumentExists(

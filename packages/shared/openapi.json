@@ -1,0 +1,1082 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "http://localhost:3333/api/v1",
+      "description": "Local development server",
+      "variables": {}
+    }
+  ],
+  "info": {
+    "description": "This is the specification of Meadow's REST API. Feel free to explore or use it.",
+    "version": "0.1.0",
+    "title": "Meadow",
+    "contact": {
+      "email": "vlad.cuciureanu@pm.me",
+      "name": "Vlad Cuciureanu",
+      "url": "https://vladcuciureanu.com/"
+    },
+    "license": {
+      "name": "GNU GPL v3",
+      "url": "gnu.org/licenses/gpl-3.0.en.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Auth-related operations."
+    },
+    {
+      "name": "block",
+      "description": "Blocks-related operations."
+    },
+    {
+      "name": "document",
+      "description": "Documents-related operations."
+    },
+    {
+      "name": "folder",
+      "description": "Folders-related operations."
+    },
+    {
+      "name": "space",
+      "description": "Spaces-related operations."
+    },
+    {
+      "name": "team",
+      "description": "Teams-related operations."
+    },
+    {
+      "name": "user",
+      "description": "Users-related operations."
+    }
+  ],
+  "paths": {
+    "/auth/token": {
+      "get": {
+        "summary": "Gets a bearer token for given credentials.",
+        "description": "Gets a bearer token for given credentials.",
+        "operationId": "getAuthToken",
+        "tags": ["auth"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Gets all users.",
+        "description": "Gets all users.",
+        "operationId": "getAllUsers",
+        "tags": ["user"],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new user.",
+        "description": "Creates a new user.",
+        "operationId": "createUser",
+        "tags": ["user"],
+        "responses": {
+          "200": {
+            "description": "Successfully created new user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "The requested user's ID."
+        }
+      ],
+      "get": {
+        "summary": "Gets a user by it's ID.",
+        "description": "Test",
+        "operationId": "test",
+        "tags": ["user"],
+        "responses": {
+          "200": {
+            "description": "Successfully returned user info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "passwordHash": {
+            "type": "string"
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "teams": {
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "passwordHash",
+          "teams"
+        ],
+        "additionalProperties": false
+      },
+      "Team": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "type": "array"
+          },
+          "spaces": {
+            "items": {
+              "$ref": "#/components/schemas/Space"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["id", "name", "members", "spaces"],
+        "additionalProperties": false
+      },
+      "Space": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "blocks": {
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            },
+            "type": "array"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            },
+            "type": "array"
+          },
+          "folders": {
+            "items": {
+              "$ref": "#/components/schemas/Folder"
+            },
+            "type": "array"
+          },
+          "rootFolderOrder": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array"
+          },
+          "team": {
+            "$ref": "#/components/schemas/Team"
+          },
+          "teamId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "blocks",
+          "documents",
+          "folders",
+          "rootFolderOrder",
+          "team"
+        ],
+        "additionalProperties": false
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "isEmpty": {
+            "type": "boolean"
+          },
+          "author": {
+            "$ref": "#/components/schemas/User"
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "space": {
+            "$ref": "#/components/schemas/Space"
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "folder": {
+            "$ref": "#/components/schemas/Folder"
+          },
+          "folderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rootBlock": {
+            "$ref": "#/components/schemas/Block"
+          },
+          "rootBlockId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "previewUrl",
+          "isEmpty",
+          "author",
+          "authorId",
+          "space",
+          "spaceId",
+          "rootBlock",
+          "rootBlockId",
+          "created",
+          "updated"
+        ],
+        "additionalProperties": false
+      },
+      "Folder": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/FolderIconConfig"
+          },
+          "itemOrder": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            },
+            "type": "array"
+          },
+          "parentFolder": {
+            "$ref": "#/components/schemas/Folder"
+          },
+          "parentFolderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "childrenFolders": {
+            "items": {
+              "$ref": "#/components/schemas/Folder"
+            },
+            "type": "array"
+          },
+          "space": {
+            "$ref": "#/components/schemas/Space"
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon",
+          "itemOrder",
+          "documents",
+          "childrenFolders",
+          "created",
+          "updated"
+        ],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "Block": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/TextBlock"
+          },
+          {
+            "$ref": "#/components/schemas/DividerBlock"
+          },
+          {
+            "$ref": "#/components/schemas/CodeBlock"
+          },
+          {
+            "$ref": "#/components/schemas/ImageBlock"
+          },
+          {
+            "$ref": "#/components/schemas/VideoBlock"
+          },
+          {
+            "$ref": "#/components/schemas/FileBlock"
+          },
+          {
+            "$ref": "#/components/schemas/UrlBlock"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "blockType",
+          "mapping": {
+            "text": "#/components/schemas/TextBlock",
+            "divider": "#/components/schemas/DividerBlock",
+            "code": "#/components/schemas/CodeBlock",
+            "image": "#/components/schemas/ImageBlock",
+            "video": "#/components/schemas/VideoBlock",
+            "file": "#/components/schemas/FileBlock",
+            "url": "#/components/schemas/UrlBlock"
+          }
+        }
+      },
+      "BaseBlock": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "indentationLevel": {
+            "type": "number"
+          },
+          "listStyle": {
+            "$ref": "#/components/schemas/ListStyle"
+          },
+          "hasBlockDecoration": {
+            "type": "boolean"
+          },
+          "hasFocusDecoration": {
+            "type": "boolean"
+          },
+          "color": {
+            "type": "string"
+          },
+          "blockType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "indentationLevel",
+          "listStyle",
+          "hasBlockDecoration",
+          "hasFocusDecoration",
+          "color",
+          "blockType"
+        ],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "TextBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "content": {
+                "items": {
+                  "$ref": "#/components/schemas/TextRun"
+                },
+                "type": "array"
+              },
+              "style": {
+                "$ref": "#/components/schemas/TextBlockStyle"
+              },
+              "subblocks": {
+                "items": {
+                  "$ref": "#/components/schemas/Block"
+                },
+                "type": "array"
+              }
+            },
+            "required": ["content", "style", "subblocks"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DividerBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lineStyle": {
+                "type": "string"
+              }
+            },
+            "required": ["blockType", "lineStyle"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "CodeBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "Bash",
+                  "ada",
+                  "cpp",
+                  "cs",
+                  "css",
+                  "dart",
+                  "go",
+                  "groovy",
+                  "haskell",
+                  "html",
+                  "java",
+                  "javascript",
+                  "json",
+                  "julia",
+                  "kotlin",
+                  "lua",
+                  "markdown",
+                  "math_formula",
+                  "matlab",
+                  "objectivec",
+                  "perl",
+                  "php",
+                  "prolog",
+                  "python",
+                  "r",
+                  "ruby",
+                  "rust",
+                  "scala",
+                  "shell",
+                  "sql",
+                  "swift",
+                  "typescript",
+                  "vbnet",
+                  "xml",
+                  "yaml",
+                  "other"
+                ]
+              }
+            },
+            "required": ["code", "language"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ResourceBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "previewUrl": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ImageBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "previewImageStyle": {
+                "$ref": "#/components/schemas/ImageStyle"
+              },
+              "filename": {
+                "type": "string"
+              }
+            },
+            "required": ["previewImageStyle"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "VideoBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "previewImageStyle": {
+                "$ref": "#/components/schemas/ImageStyle"
+              },
+              "filename": {
+                "type": "string"
+              }
+            },
+            "required": ["previewImageStyle"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "FileBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "layoutStyle": {
+                "type": "string",
+                "enum": ["regular", "small", "card"]
+              },
+              "filename": {
+                "type": "string"
+              }
+            },
+            "required": ["layoutStyle"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "UrlBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceBlock"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "layoutStyle": {
+                "type": "string",
+                "enum": ["regular", "small", "card"]
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "originalUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "imageUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "title": {
+                "type": "string"
+              },
+              "pageDescription": {
+                "type": "string"
+              }
+            },
+            "required": ["layoutStyle"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "FolderIconConfig": {
+        "properties": {
+          "tintColor": {
+            "type": "string"
+          },
+          "iconType": {
+            "type": "string",
+            "enum": ["emoji", "localImage"]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["iconType", "value"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "DocumentUserAttributes": {
+        "properties": {
+          "isStarred": {
+            "type": "boolean"
+          }
+        },
+        "required": ["isStarred"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "TextBlockStyle": {
+        "properties": {
+          "textStyle": {
+            "type": "string",
+            "enum": [
+              "title",
+              "subtitle",
+              "heading",
+              "strong",
+              "body",
+              "caption",
+              "card",
+              "page"
+            ]
+          },
+          "fontStyle": {
+            "type": "string",
+            "enum": ["system-rounded", "system-serif", "system", "system-mono"]
+          },
+          "alignmentStyle": {
+            "type": "string",
+            "enum": ["left", "right", "center"]
+          },
+          "cardStyle": {
+            "$ref": "#/components/schemas/CardStyle"
+          },
+          "coverImage": {
+            "$ref": "#/components/schemas/CoverImage"
+          }
+        },
+        "required": ["textStyle", "fontStyle", "alignmentStyle"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "CardStyle": {
+        "properties": {
+          "cardType": {
+            "type": "string",
+            "enum": ["subtle", "small", "square", "wide", "large"]
+          },
+          "fontStyle": {
+            "type": "string",
+            "enum": ["regular", "serif", "rounded"]
+          },
+          "backgroundColorKey": {
+            "type": "string"
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "backgroundUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "isLightColor": {
+            "type": "boolean"
+          }
+        },
+        "required": ["cardType", "isLightColor"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "CoverImage": {
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "aspectRatio": {
+            "type": "number"
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "primaryColor": {
+            "type": "string"
+          },
+          "imageWidth": {
+            "type": "number"
+          },
+          "hasTransparency": {
+            "type": "boolean"
+          }
+        },
+        "required": ["enabled"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "TextRun": {
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "isBold": {
+            "type": "boolean"
+          },
+          "isItalic": {
+            "type": "boolean"
+          },
+          "isStrikethrough": {
+            "type": "boolean"
+          },
+          "isCode": {
+            "type": "boolean"
+          },
+          "highlightColor": {
+            "type": "string"
+          },
+          "link": {
+            "$ref": "#/components/schemas/TextRunLink"
+          }
+        },
+        "required": ["text"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "TextRunLink": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/BlockLink"
+          },
+          {
+            "$ref": "#/components/schemas/UrlLink"
+          },
+          {
+            "$ref": "#/components/schemas/FormulaLink"
+          },
+          {
+            "$ref": "#/components/schemas/DateLink"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "blockType",
+          "mapping": {
+            "block": "#/components/schemas/BlockLink",
+            "url": "#/components/schemas/UrlLink",
+            "formula": "#/components/schemas/FormulaLink",
+            "date": "#/components/schemas/DateLink"
+          }
+        }
+      },
+      "BlockLink": {
+        "properties": {
+          "linkType": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string"
+          },
+          "blockId": {
+            "type": "string"
+          }
+        },
+        "required": ["linkType", "spaceId", "blockId"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "UrlLink": {
+        "properties": {
+          "linkType": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": ["linkType", "url"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "FormulaLink": {
+        "properties": {
+          "linkType": {
+            "type": "string"
+          },
+          "formula": {
+            "type": "string"
+          }
+        },
+        "required": ["linkType", "formula"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "DateLink": {
+        "properties": {
+          "linkType": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "required": ["linkType", "date"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "ListStyle": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/NoneListStyle"
+          },
+          {
+            "$ref": "#/components/schemas/BulletListStyle"
+          },
+          {
+            "$ref": "#/components/schemas/NumberedListStyle"
+          },
+          {
+            "$ref": "#/components/schemas/TodoListStyle"
+          },
+          {
+            "$ref": "#/components/schemas/ToggleListStyle"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "listType",
+          "mapping": {
+            "none": "#/components/schemas/NoneListStyle",
+            "bullet": "#/components/schemas/BulletListStyle",
+            "numbered": "#/components/schemas/NumberedListStyle",
+            "todo": "#/components/schemas/TodoListStyle",
+            "toggle": "#/components/schemas/ToggleListStyle"
+          }
+        }
+      },
+      "NoneListStyle": {
+        "properties": {
+          "listType": {
+            "type": "string"
+          }
+        },
+        "required": ["listType"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "BulletListStyle": {
+        "properties": {
+          "listType": {
+            "type": "string"
+          }
+        },
+        "required": ["listType"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "NumberedListStyle": {
+        "properties": {
+          "listType": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "number"
+          }
+        },
+        "required": ["listType"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "TodoListStyle": {
+        "properties": {
+          "listType": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["unchecked", "canceled", "checked"]
+          }
+        },
+        "required": ["listType", "state"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "ToggleListStyle": {
+        "properties": {
+          "listType": {
+            "type": "string"
+          }
+        },
+        "required": ["listType"],
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "ImageStyle": {
+        "properties": {
+          "sizeStyle": {
+            "type": "string",
+            "enum": ["auto", "large"]
+          },
+          "fillStyle": {
+            "type": "string",
+            "enum": ["auto", "fit", "fill"]
+          }
+        },
+        "required": ["sizeStyle", "fillStyle"],
+        "additionalProperties": false,
+        "type": "object"
+      }
+    },
+    "requestBodies": {
+      "Test": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": "List of user object",
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "meadow_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  },
+  "security": []
+}

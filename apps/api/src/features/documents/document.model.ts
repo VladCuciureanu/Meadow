@@ -8,10 +8,10 @@ import {
   RelationId,
   UpdateDateColumn,
 } from "typeorm";
-import { Space } from "../../spaces/models/space";
-import { User } from "../../users/models/user";
-import { Folder } from "../../folders/models/folder";
-import { Block } from "../../blocks/models/block";
+import { Space } from "../spaces/space.model";
+import { User } from "../users/user.model";
+import { Folder } from "../folders/folder.model";
+import { Block } from "../blocks/block.model";
 import { Document as DocumentInterface } from "@meadow/shared";
 
 @Entity()

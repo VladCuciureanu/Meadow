@@ -1,8 +1,5 @@
 import express from "express";
 import SpacesService from "./spaces.service";
-import debug from "debug";
-
-const log: debug.IDebugger = debug("api:spaces:controller");
 
 class SpacesController {
   // async listSpaces(req: express.Request, res: express.Response) {

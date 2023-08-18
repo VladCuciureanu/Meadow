@@ -13,6 +13,8 @@ import cors from "cors";
 import { ZodError } from "zod";
 import createHttpError from "http-errors";
 import routes from "./routes";
+import swaggerRoutes from "./swagger";
+import passport from "passport";
 
 // Create express server
 const app: Application = express();
@@ -20,6 +22,7 @@ const app: Application = express();
 // Enable morgan logger for development
 if (config.environment === Environments.Development) {
   app.use(morgan("dev"));
+  app.use("/api-docs", swaggerRoutes);
 }
 
 // Payload handling
@@ -31,6 +34,9 @@ app.use(cookieParser());
 
 // Enable CORS
 app.use(cors());
+
+// Enable auth
+app.use(passport.initialize());
 
 // Base router
 app.use("/api/", routes);

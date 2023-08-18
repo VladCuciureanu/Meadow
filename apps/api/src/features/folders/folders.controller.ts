@@ -1,9 +1,5 @@
 import express from "express";
 import FoldersService from "./folders.service";
-import debug from "debug";
-
-const log: debug.IDebugger = debug("api:folders:controller");
-
 class FoldersController {
   // async listFolders(req: express.Request, res: express.Response) {
   //   const folders = await foldersService.list(100, 0);

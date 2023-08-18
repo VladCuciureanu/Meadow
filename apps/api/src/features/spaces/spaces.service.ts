@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { Space } from "./models/space";
+import { Space } from "./space.model";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class SpacesService {
   spacesRepository: Repository<Space>;

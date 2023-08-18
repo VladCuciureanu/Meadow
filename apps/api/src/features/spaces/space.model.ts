@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import { Document } from "../../documents/models/document";
-import { Folder } from "../../folders/models/folder";
-import { Block } from "../../blocks/models/block";
-import { Team } from "../../teams/models/team";
+import { Document } from "../documents/document.model";
+import { Folder } from "../folders/folder.model";
+import { Block } from "../blocks/block.model";
+import { Team } from "../teams/team.model";
 import { Space as SpaceInterface } from "@meadow/shared";
 
 @Entity()

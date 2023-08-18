@@ -1,8 +1,5 @@
 import express from "express";
-import debug from "debug";
 import FoldersService from "./folders.service";
-
-const log: debug.IDebugger = debug("api:folders:middlewares");
 
 class FoldersMiddleware {
   async validateFolderExists(

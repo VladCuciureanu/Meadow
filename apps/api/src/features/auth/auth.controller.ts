@@ -1,10 +1,7 @@
 import express from "express";
 import authService from "./auth.service";
-import debug from "debug";
 import { LogInUserSchema } from "@meadow/shared";
 import { TypeOf } from "zod";
-
-const log: debug.IDebugger = debug("api:auth:controller");
 
 class AuthController {
   async getToken(req: express.Request, res: express.Response) {

@@ -1,9 +1,5 @@
 import express from "express";
 import BlocksService from "./blocks.service";
-import debug from "debug";
-
-const log: debug.IDebugger = debug("api:blocks:controller");
-
 class BlocksController {
   // async listBlocks(req: express.Request, res: express.Response) {
   //   const blocks = await blocksService.list(100, 0);

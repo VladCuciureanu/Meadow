@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { Folder } from "./models/folder";
+import { Folder } from "./folder.model";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class FoldersService {
   foldersRepository: Repository<Folder>;

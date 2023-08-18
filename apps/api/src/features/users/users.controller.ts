@@ -1,14 +1,11 @@
 import express from "express";
 import usersService from "./users.service";
-import debug from "debug";
 import { TypeOf } from "zod";
 import {
   CreateUserSchema,
   PatchUserSchema,
   UpdateUserSchema,
 } from "@meadow/shared";
-
-const log: debug.IDebugger = debug("api:users:controller");
 
 class UsersController {
   async get(req: express.Request, res: express.Response) {

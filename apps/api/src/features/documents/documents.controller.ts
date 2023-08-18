@@ -1,9 +1,5 @@
 import express from "express";
 import DocumentsService from "./documents.service";
-import debug from "debug";
-
-const log: debug.IDebugger = debug("api:documents:controller");
-
 class DocumentsController {
   // async listDocuments(req: express.Request, res: express.Response) {
   //   const documents = await documentsService.list(100, 0);

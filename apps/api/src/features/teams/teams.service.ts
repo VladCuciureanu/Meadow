@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { Team } from "./models/team";
+import { Team } from "./team.model";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class TeamsService {
   teamsRepository: Repository<Team>;

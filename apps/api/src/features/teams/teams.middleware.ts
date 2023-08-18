@@ -1,8 +1,5 @@
 import express from "express";
-import debug from "debug";
 import teamsService from "./teams.service";
-
-const log: debug.IDebugger = debug("api:teams:middlewares");
 
 class TeamsMiddleware {
   // async validateRequiredTeamBodyFields(

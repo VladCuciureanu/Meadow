@@ -1,8 +1,5 @@
 import express from "express";
-import debug from "debug";
 import BlocksService from "./blocks.service";
-
-const log: debug.IDebugger = debug("api:blocks:middlewares");
 
 class BlocksMiddleware {
   async validateBlockExists(

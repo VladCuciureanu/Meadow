@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import { MeadowDataSource } from "../data-source";
-import { Document } from "./models/document";
+import { Document } from "./document.model";
+import { MeadowDataSource } from "../../config/typeorm";
 
 class DocumentsService {
   documentsRepository: Repository<Document>;

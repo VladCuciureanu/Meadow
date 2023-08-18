@@ -4,6 +4,6 @@ import "./config/typeorm";
 
 app.listen(env.port, () => {
   console.info(
-    "🌿 Server running at http://localhost:${env.port} (${env.configuration})"
+    `🌿 Server running at http://localhost:${env.port} (${env.environment})`
   );
 });

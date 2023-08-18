@@ -9,12 +9,12 @@ import {
   VideoBlock,
   FileBlock,
   UrlBlock,
-} from "../features/blocks/models/block";
-import { User } from "../features/users/models/user";
-import { Team } from "../features/teams/models/team";
-import { Space } from "../features/spaces/models/space";
-import { Folder } from "../features/folders/models/folder";
-import { Document } from "../features/documents/models/document";
+} from "../features/blocks/block.model";
+import { User } from "../features/users/user.model";
+import { Team } from "../features/teams/team.model";
+import { Space } from "../features/spaces/space.model";
+import { Folder } from "../features/folders/folder.model";
+import { Document } from "../features/documents/document.model";
 import config from "./env";
 
 export const MeadowDataSource = new DataSource({

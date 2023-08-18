@@ -9,8 +9,8 @@ import {
   RelationId,
   TableInheritance,
 } from "typeorm";
-import { Document } from "../../documents/models/document";
-import { Space } from "../../spaces/models/space";
+import { Document } from "../documents/document.model";
+import { Space } from "../spaces/space.model";
 import {
   CodeLanguage,
   BlockColor,
@@ -18,14 +18,23 @@ import {
   LayoutStyle,
   LineStyle,
   ListStyle,
-  BaseBlock,
+  BaseBlock as BaseBlockInterface,
+  TextBlock as TextBlockInterface,
+  DividerBlock as DividerBlockInterface,
+  CodeBlock as CodeBlockInterface,
+  ImageBlock as ImageBlockInterface,
+  VideoBlock as VideoBlockInterface,
+  FileBlock as FileBlockInterface,
+  UrlBlock as UrlBlockInterface,
   TextBlockStyle,
   TextRun,
+  BlockTypeEnum,
+  BlockType,
 } from "@meadow/shared";
 
 @Entity()
-@TableInheritance({ column: { type: "varchar", name: "type" } })
-export class Block implements BaseBlock {
+@TableInheritance({ column: "type" })
+export class Block implements BaseBlockInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -55,16 +64,19 @@ export class Block implements BaseBlock {
 
   @RelationId((block: Block) => block.document)
   documentId?: string;
+
+  @Column({ name: "block_type", type: "enum", enum: BlockTypeEnum })
+  type: BlockType;
 }
 
 @ChildEntity()
-export class DividerBlock extends Block {
+export class DividerBlock extends Block implements DividerBlockInterface {
   @Column("text")
   lineStyle: LineStyle;
 }
 
 @ChildEntity()
-export class CodeBlock extends Block {
+export class CodeBlock extends Block implements CodeBlockInterface {
   @Column("text")
   code: string;
 
@@ -73,7 +85,7 @@ export class CodeBlock extends Block {
 }
 
 @ChildEntity()
-export class ImageBlock extends Block {
+export class ImageBlock extends Block implements ImageBlockInterface {
   @Column("text", { nullable: true })
   filename?: string;
 
@@ -82,7 +94,7 @@ export class ImageBlock extends Block {
 }
 
 @ChildEntity()
-export class VideoBlock extends Block {
+export class VideoBlock extends Block implements VideoBlockInterface {
   @Column("text", { nullable: true })
   filename?: string;
 
@@ -91,7 +103,7 @@ export class VideoBlock extends Block {
 }
 
 @ChildEntity()
-export class FileBlock extends Block {
+export class FileBlock extends Block implements FileBlockInterface {
   @Column("text", { nullable: true })
   filename?: string;
 
@@ -100,7 +112,7 @@ export class FileBlock extends Block {
 }
 
 @ChildEntity()
-export class UrlBlock extends Block {
+export class UrlBlock extends Block implements UrlBlockInterface {
   @Column("jsonb")
   layoutStyle: LayoutStyle;
 
@@ -121,7 +133,7 @@ export class UrlBlock extends Block {
 }
 
 @ChildEntity()
-export class TextBlock extends Block {
+export class TextBlock extends Block implements TextBlockInterface {
   @Column("jsonb")
   content: TextRun[];
 

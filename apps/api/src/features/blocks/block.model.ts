@@ -1,5 +1,4 @@
 import {
-  ChildEntity,
   Column,
   Entity,
   ManyToOne,
@@ -7,7 +6,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   RelationId,
-  TableInheritance,
 } from "typeorm";
 import { Document } from "../documents/document.model";
 import { Space } from "../spaces/space.model";
@@ -28,13 +26,21 @@ import {
   UrlBlock as UrlBlockInterface,
   TextBlockStyle,
   TextRun,
-  BlockTypeEnum,
   BlockType,
 } from "@meadow/shared";
 
 @Entity()
-@TableInheritance({ column: "type" })
-export class Block implements BaseBlockInterface {
+export class Block
+  implements
+    BaseBlockInterface,
+    Omit<TextBlockInterface, "type">,
+    Omit<DividerBlockInterface, "type">,
+    Omit<CodeBlockInterface, "type">,
+    Omit<ImageBlockInterface, "type">,
+    Omit<VideoBlockInterface, "type">,
+    Omit<FileBlockInterface, "type">,
+    Omit<UrlBlockInterface, "type">
+{
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -65,54 +71,36 @@ export class Block implements BaseBlockInterface {
   @RelationId((block: Block) => block.document)
   documentId?: string;
 
-  @Column({ name: "block_type", type: "enum", enum: BlockTypeEnum })
+  @Column({ type: "enum", enum: BlockType })
   type: BlockType;
-}
 
-@ChildEntity()
-export class DividerBlock extends Block implements DividerBlockInterface {
+  @Column("jsonb")
+  content: TextRun[];
+
+  @Column("jsonb")
+  style: TextBlockStyle;
+
+  @ManyToOne(() => Block, (block) => block.subblocks)
+  parentBlock?: Block;
+
+  @OneToMany(() => Block, (block) => block.parentBlock)
+  subblocks: Block[];
+
   @Column("text")
   lineStyle: LineStyle;
-}
 
-@ChildEntity()
-export class CodeBlock extends Block implements CodeBlockInterface {
   @Column("text")
   code: string;
 
   @Column("text")
   language: CodeLanguage;
-}
 
-@ChildEntity()
-export class ImageBlock extends Block implements ImageBlockInterface {
   @Column("text", { nullable: true })
   filename?: string;
 
   @Column("jsonb")
   previewImageStyle: ImageStyle;
-}
 
-@ChildEntity()
-export class VideoBlock extends Block implements VideoBlockInterface {
-  @Column("text", { nullable: true })
-  filename?: string;
-
-  @Column("jsonb")
-  previewImageStyle: ImageStyle;
-}
-
-@ChildEntity()
-export class FileBlock extends Block implements FileBlockInterface {
-  @Column("text", { nullable: true })
-  filename?: string;
-
-  @Column("jsonb")
-  layoutStyle: LayoutStyle;
-}
-
-@ChildEntity()
-export class UrlBlock extends Block implements UrlBlockInterface {
   @Column("jsonb")
   layoutStyle: LayoutStyle;
 
@@ -130,19 +118,4 @@ export class UrlBlock extends Block implements UrlBlockInterface {
 
   @Column("text", { nullable: true })
   pageDescription?: string;
-}
-
-@ChildEntity()
-export class TextBlock extends Block implements TextBlockInterface {
-  @Column("jsonb")
-  content: TextRun[];
-
-  @Column("jsonb")
-  style: TextBlockStyle;
-
-  @ManyToOne(() => TextBlock, (block) => block.subblocks)
-  parentBlock?: Block;
-
-  @OneToMany(() => TextBlock, (block) => block.parentBlock)
-  subblocks: Block[];
 }

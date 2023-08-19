@@ -1,14 +1,7 @@
 import { z } from "zod";
-import { User, UserSchema } from "./user";
-import { Space, SpaceSchema } from "./space";
-
-export type Team = {
-  id: string;
-  name: string;
-  imgUrl?: string;
-  members: User[];
-  spaces: Space[];
-};
+import { UserSchema } from "./user";
+import { SpaceSchema } from "./space";
+import { Team } from "../..";
 
 export const TeamSchema: z.ZodType<Team> = z.object({
   id: z.string().uuid(),

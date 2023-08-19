@@ -1,25 +1,9 @@
 import { z } from "zod";
-import { User, UserSchema } from "./user";
-import { Space, SpaceSchema } from "./space";
-import { Folder, FolderSchema } from "./folder";
-import { Block, BlockSchema } from "./block";
-
-export type Document = {
-  id: string;
-  title: string;
-  previewUrl: string;
-  isEmpty: boolean;
-  authorId: string;
-  author: User;
-  spaceId: string;
-  space: Space;
-  folderId?: string;
-  folder?: Folder;
-  rootBlockId: string;
-  rootBlock: Block;
-  created: Date;
-  updated: Date;
-};
+import { UserSchema } from "./user";
+import { SpaceSchema } from "./space";
+import { FolderSchema } from "./folder";
+import { BlockSchema } from "./block";
+import { Document } from "../..";
 
 export const DocumentSchema: z.ZodType<Document> = z.object({
   id: z.string().uuid(),

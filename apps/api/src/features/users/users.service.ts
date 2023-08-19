@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { User } from "./user.model";
 import * as argon2 from "argon2";
-import { TypeOf } from "zod";
+import { z } from "zod";
 import {
   CreateUserSchema,
   PatchUserSchema,
@@ -16,7 +16,7 @@ class UsersService {
     this.usersRepository = MeadowDataSource.getRepository(User);
   }
 
-  async getAll(limit: number, page: number) {
+  async getMany(limit: number, page: number) {
     const skipCount = Math.max(0, limit * page);
     return this.usersRepository.find({
       take: limit,
@@ -32,9 +32,9 @@ class UsersService {
     });
   }
 
-  async getById(resourceId: string) {
+  async getById(userId: string) {
     return this.usersRepository.findOne({
-      where: { id: resourceId },
+      where: { id: userId },
       select: {
         id: true,
         email: true,
@@ -60,54 +60,33 @@ class UsersService {
     });
   }
 
-  async create(dto: TypeOf<typeof CreateUserSchema>) {
+  async create(dto: z.infer<typeof CreateUserSchema>) {
     const passwordHash = await argon2.hash(dto.body.password);
 
-    const user = this.usersRepository.create({
-      email: dto.body.email,
-      passwordHash: passwordHash,
-      firstName: dto.body.firstName,
-      lastName: dto.body.lastName,
-      imgUrl: dto.body.imgUrl,
-    });
+    const user = await this.usersRepository.save(
+      this.usersRepository.create({
+        email: dto.body.email,
+        passwordHash: passwordHash,
+        firstName: dto.body.firstName,
+        lastName: dto.body.lastName,
+        imgUrl: dto.body.imgUrl,
+      })
+    );
 
-    const savedUser = await this.usersRepository.save(user);
+    delete (user as any).passwordHash;
 
-    delete (savedUser as any).passwordHash;
-
-    return savedUser;
+    return user;
   }
 
-  async patchById(dto: TypeOf<typeof PatchUserSchema>) {
+  async patch(dto: z.infer<typeof PatchUserSchema>) {
     if (dto.body.password) {
       dto.body.password = await argon2.hash(dto.body.password);
     }
 
-    const patchedValues = {} as any;
+    (dto.body as any).passwordHash = dto.body.password;
 
-    Object.entries(dto.body).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (key === "password") {
-          patchedValues["passwordHash"] = value;
-        } else {
-          patchedValues[key] = value;
-        }
-      }
-    });
+    delete (dto.body as any).password;
 
-    const updatedUser = await this.usersRepository.update(
-      {
-        id: dto.params.userId,
-      },
-      patchedValues
-    );
-
-    delete (updatedUser as any).passwordHash;
-
-    return updatedUser;
-  }
-
-  async updateById(dto: TypeOf<typeof UpdateUserSchema>) {
     const updatedUser = await this.usersRepository.update(
       {
         id: dto.params.userId,
@@ -120,15 +99,32 @@ class UsersService {
     return updatedUser;
   }
 
-  async deleteById(resourceId: string) {
-    return this.usersRepository.delete({
-      id: resourceId,
-    });
+  async put(dto: z.infer<typeof UpdateUserSchema>) {
+    if (dto.body.password) {
+      dto.body.password = await argon2.hash(dto.body.password);
+    }
+
+    (dto.body as any).passwordHash = dto.body.password;
+
+    delete (dto.body as any).password;
+
+    const updatedUser = await this.usersRepository.update(
+      {
+        id: dto.params.userId,
+      },
+      dto.body
+    );
+
+    delete (updatedUser as any).passwordHash;
+
+    return updatedUser;
   }
 
-  // async getUserByEmail(email: string) {
-  //   return UsersDao.getUserByEmail(email);
-  // }
+  async delete(userId: string) {
+    return this.usersRepository.delete({
+      id: userId,
+    });
+  }
 }
 
 export default new UsersService();

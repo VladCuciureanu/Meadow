@@ -1,17 +1,31 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { AuthenticatedRequest } from "./auth.interfaces";
+import usersService from "../users/users.service";
 
-const authorize = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.access_token;
-  if (!token) {
-    return res.sendStatus(403);
-  }
+export const authenticate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.cookies.access_token ?? req.headers.authorization;
   try {
-    const data = jwt.verify(token, process.env.JWT_SECRET!);
-    (req as AuthenticatedRequest).user = { id: (data as any).userId };
-    return next();
+    if (token) {
+      const data = jwt.verify(
+        token.replace("Bearer ", ""),
+        process.env.JWT_SECRET!
+      );
+      const userId = (data as any).userId as string;
+      usersService.getById(userId).then((user) => {
+        if (user !== null) {
+          (req as AuthenticatedRequest).user = user;
+          next();
+        } else {
+          res.sendStatus(403);
+        }
+      });
+    }
   } catch {
-    return res.sendStatus(403);
+    res.sendStatus(403);
   }
 };

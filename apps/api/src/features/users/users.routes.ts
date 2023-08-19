@@ -10,31 +10,39 @@ import {
 } from "@meadow/shared";
 
 import { validate } from "../common/common.middleware";
+import { authenticate } from "../auth/auth.middleware";
 
 const UserRoutes = Router();
 
-UserRoutes.route(`/users`)
-  .get(UsersController.get)
+UserRoutes.route(`/`)
+  .get(UsersController.getMany)
   .post(
     validate(CreateUserSchema),
     UsersMiddleware.validateEmailIsUnique,
-    UsersController.createUser
+    UsersController.create
   );
 
-UserRoutes.param(`userId`, UsersMiddleware.extractUserId);
-UserRoutes.route(`/users/:userId`)
+UserRoutes.route(`/:userId`)
   .all(UsersMiddleware.validateUserExists)
   .get(UsersController.getById)
-  // .delete(UsersController.removeUser)
   .put(
     validate(UpdateUserSchema),
+    authenticate,
+    UsersMiddleware.validateCurrentUser,
     UsersMiddleware.validateEmailIsUnique,
     UsersController.put
   )
   .patch(
     validate(PatchUserSchema),
+    authenticate,
+    UsersMiddleware.validateCurrentUser,
     UsersMiddleware.validateEmailIsUnique,
     UsersController.patch
+  )
+  .delete(
+    authenticate,
+    UsersMiddleware.validateCurrentUser,
+    UsersController.delete
   );
 
 export default UserRoutes;

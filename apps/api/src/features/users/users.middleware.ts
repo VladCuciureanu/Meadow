@@ -1,44 +1,56 @@
 import express from "express";
 import UsersService from "./users.service";
 import { MeadowError } from "../common/common.middleware";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
 
 class UsersMiddleware {
-  async validateUserExists(
+  validateUserExists(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const user = await UsersService.getById(req.params.userId);
-    if (user) {
-      next();
-    } else {
-      res.status(404).send({ error: `User ${req.params.userId} not found` });
-    }
+    UsersService.getById(req.params.userId).then((user) => {
+      if (user) {
+        next();
+      } else {
+        res.status(404).send({ error: `User ${req.params.userId} not found` });
+      }
+    });
   }
 
-  async validateEmailIsUnique(
+  validateCurrentUser(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const user = await UsersService.getByEmail(req.body.email);
-    if (!user) {
+    if ((req as AuthenticatedRequest)?.user?.id === req.params.userId) {
       next();
     } else {
-      res.status(500).send({
-        status: "Failed payload validations.",
-        errors: ["Email must be unique."],
-      } as MeadowError);
+      res
+        .status(403)
+        .send({ error: `You are not authorized to do requested action.` });
     }
   }
 
-  async extractUserId(
+  validateEmailIsUnique(
     req: express.Request,
-    _res: express.Response,
+    res: express.Response,
     next: express.NextFunction
   ) {
-    req.body.id = req.params.userId;
-    next();
+    if (req.body.email) {
+      UsersService.getByEmail(req.body.email).then((user) => {
+        if (!user) {
+          next();
+        } else {
+          res.status(500).send({
+            status: "Failed payload validations.",
+            errors: ["Email must be unique."],
+          } as MeadowError);
+        }
+      });
+    } else {
+      next();
+    }
   }
 }
 

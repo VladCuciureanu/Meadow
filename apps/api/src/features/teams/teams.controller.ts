@@ -1,40 +1,35 @@
 import express from "express";
 import teamsService from "./teams.service";
 class TeamsController {
-  async listTeams(req: express.Request, res: express.Response) {
-    const teams = await teamsService.list(100, 0);
+  async getMany(req: express.Request, res: express.Response) {
+    const teams = await teamsService.getMany(100, 0);
     res.status(200).send(teams);
   }
 
-  async getTeamById(req: express.Request, res: express.Response) {
-    const team = await teamsService.readById(req.params.teamId);
+  async getById(req: express.Request, res: express.Response) {
+    const team = await teamsService.getById(req.params.teamId);
     res.status(200).send(team);
   }
 
-  // async createTeam(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   const teamId = await teamsService.create(req.body);
-  //   res.status(201).send({ id: teamId });
-  // }
+  async create(req: express.Request, res: express.Response) {
+    const team = await teamsService.create(req);
+    res.status(201).send(team);
+  }
 
-  // async patch(req: express.Request, res: express.Response) {
-  //   if (req.body.password) {
-  //     req.body.password = await argon2.hash(req.body.password);
-  //   }
-  //   log(await teamsService.patchById(req.body));
-  //   res.status(204).send(``);
-  // }
+  async patch(req: express.Request, res: express.Response) {
+    const patchedTeam = await teamsService.patch(req as any);
+    res.status(204).send(patchedTeam);
+  }
 
-  // async put(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   log(await teamsService.updateById({ id: req.params.teamId, ...req.body }));
-  //   res.status(204).send(``);
-  // }
+  async put(req: express.Request, res: express.Response) {
+    const updatedTeam = await teamsService.put(req as any);
+    res.status(204).send(updatedTeam);
+  }
 
-  // async removeTeam(req: express.Request, res: express.Response) {
-  //   log(await teamsService.deleteById(req.params.teamId));
-  //   res.status(204).send(``);
-  // }
+  async delete(req: express.Request, res: express.Response) {
+    const deletedTeam = await teamsService.delete(req as any);
+    res.status(204).send(deletedTeam);
+  }
 }
 
 export default new TeamsController();

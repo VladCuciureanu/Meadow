@@ -34,7 +34,7 @@ import {
   TodoListStyle,
   TodoState,
   ToggleListStyle,
-} from "../..";
+} from "../../";
 import { SpaceSchema } from "./space";
 import { DocumentSchema } from "./document";
 
@@ -178,22 +178,22 @@ const ResourceBlockSchema = BaseBlockSchema.extend({
   filename: z.string().optional(),
 });
 
-export const ImageBlock = ResourceBlockSchema.extend({
+export const ImageBlockSchema = ResourceBlockSchema.extend({
   type: z.literal(BlockType.Image),
   previewImageStyle: ImageStyleSchema,
 });
 
-export const VideoBlock = ResourceBlockSchema.extend({
+export const VideoBlockSchema = ResourceBlockSchema.extend({
   type: z.literal(BlockType.Video),
   previewImageStyle: ImageStyleSchema,
 });
 
-export const FileBlock = ResourceBlockSchema.extend({
+export const FileBlockSchema = ResourceBlockSchema.extend({
   type: z.literal(BlockType.File),
   layoutStyle: z.nativeEnum(LayoutStyle),
 });
 
-export const UrlBlock = BaseBlockSchema.extend({
+export const UrlBlockSchema = BaseBlockSchema.extend({
   type: z.literal(BlockType.Url),
   layoutStyle: z.nativeEnum(LayoutStyle),
   url: z.string().url().optional(),
@@ -207,10 +207,10 @@ export const BlockSchema = z.discriminatedUnion("type", [
   TextBlockSchema,
   DividerBlockSchema,
   CodeBlockSchema,
-  ImageBlock,
-  VideoBlock,
-  FileBlock,
-  UrlBlock,
+  ImageBlockSchema,
+  VideoBlockSchema,
+  FileBlockSchema,
+  UrlBlockSchema,
 ]);
 
 // Fixing some type inferrence issues

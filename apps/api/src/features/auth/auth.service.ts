@@ -1,10 +1,11 @@
 import { Repository } from "typeorm";
 import { MeadowDataSource } from "../../config/typeorm";
 import * as argon2 from "argon2";
-import { TypeOf } from "zod";
-import { LogInUserSchema } from "@meadow/shared";
+import { UserCredentialsSchema } from "@meadow/shared";
 import { User } from "../users/user.model";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
+import { JWTPayload } from "./auth.interfaces";
 
 class AuthService {
   userRepository: Repository<User>;
@@ -13,7 +14,7 @@ class AuthService {
     this.userRepository = MeadowDataSource.getRepository(User);
   }
 
-  async getToken(dto: TypeOf<typeof LogInUserSchema>) {
+  async getToken(dto: z.infer<typeof UserCredentialsSchema>) {
     const user = await this.userRepository.findOne({
       where: { email: dto.body.email },
     });
@@ -22,8 +23,11 @@ class AuthService {
       user !== null &&
       (await argon2.verify(user!.passwordHash, dto.body.password))
     ) {
-      const payload = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
-      return { token: payload };
+      const payload = jwt.sign(
+        { userId: user.id } satisfies JWTPayload,
+        process.env.JWT_SECRET!
+      );
+      return payload;
     } else {
       throw new Error();
     }

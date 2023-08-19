@@ -15,7 +15,7 @@ export const DocumentSchema: z.ZodType<Document> = z.object({
   spaceId: z.string().uuid(),
   space: SpaceSchema,
   folderId: z.string().uuid().optional(),
-  folder: FolderSchema.optional(),
+  folder: z.lazy(() => FolderSchema.optional()),
   rootBlockId: z.string().uuid(),
   rootBlock: BlockSchema,
   created: z.date(),

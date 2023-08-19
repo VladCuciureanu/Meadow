@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserSchema } from "../entities";
 
 const HasUserId = z.object({
   params: z.object({
@@ -8,39 +9,56 @@ const HasUserId = z.object({
   }),
 });
 
-const UserFields = z.object({
-  body: z
-    .object({
-      email: z
-        .string({ required_error: "Email is required." })
-        .email("Invalid email."),
-      password: z
-        .string({ required_error: "Password is required." })
-        .min(8)
-        .max(32),
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-      imgUrl: z.string().url("Invalid image URL.").optional(),
+export const UserCredentialsSchema = z.object({
+  body: UserSchema.omit({
+    id: true,
+    firstName: true,
+    lastName: true,
+    passwordHash: true,
+    imgUrl: true,
+    teams: true,
+  })
+    .extend({ password: z.string() })
+    .strict(),
+});
+
+export const CreateUserSchema = z.object({
+  body: UserSchema.omit({
+    id: true,
+    passwordHash: true,
+    teams: true,
+  })
+    .extend({
+      password: z.string(),
     })
     .strict(),
 });
 
-export const CreateUserSchema = UserFields;
-
-export const PatchUserSchema = HasUserId.merge(
+export const UpdateUserSchema = HasUserId.merge(
   z.object({
-    body: UserFields.shape.body.partial().nonstrict(),
+    body: UserSchema.omit({
+      id: true,
+      passwordHash: true,
+      teams: true,
+    })
+      .extend({
+        password: z.string(),
+      })
+      .strict(),
   })
 );
 
-export const UpdateUserSchema = HasUserId.merge(UserFields);
-
-export const LogInUserSchema = z.object({
-  body: UserFields.shape.body
-    .omit({
-      firstName: true,
-      lastName: true,
-      imgUrl: true,
+export const PatchUserSchema = HasUserId.merge(
+  z.object({
+    body: UserSchema.omit({
+      id: true,
+      passwordHash: true,
+      teams: true,
     })
-    .strict(),
-});
+      .extend({
+        password: z.string(),
+      })
+      .partial()
+      .strict(),
+  })
+);

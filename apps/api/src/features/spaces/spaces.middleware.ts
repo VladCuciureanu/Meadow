@@ -9,38 +9,34 @@ class SpacesMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    spacesService.getById(req.params.spaceId).then((space) => {
-      if (space) {
-        next();
-      } else {
-        res.status(404);
-      }
-    });
+    const space = await spacesService.getById(req.params.spaceId);
+
+    if (space) {
+      next();
+    } else {
+      res.status(404);
+    }
   }
 
-  validateSpaceAuthority(
+  // TODO: Cache
+  async validateSpaceAuthority(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    spacesService.getById(req.params.spaceId).then((space) => {
-      if (!space) {
-        res.sendStatus(403);
-        return;
-      }
+    const space = await spacesService.getById(req.params.spaceId);
+    const team = await teamsService.getById(space!.teamId);
 
-      teamsService.getById(space.teamId).then((team) => {
-        if (
-          team?.members.find(
-            (member) => member.id === (req as AuthenticatedRequest).user.id
-          )
-        ) {
-          next();
-        } else {
-          res.sendStatus(403);
-        }
-      });
-    });
+    const memberIsPartOfTeam =
+      team?.members.find(
+        (member) => member.id === (req as AuthenticatedRequest).user.id
+      ) !== undefined;
+
+    if (memberIsPartOfTeam) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
   }
 }
 

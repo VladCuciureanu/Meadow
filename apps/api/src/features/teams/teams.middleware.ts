@@ -9,6 +9,7 @@ class TeamsMiddleware {
     next: express.NextFunction
   ) {
     const team = await teamsService.getById(req.params.teamId);
+
     if (team) {
       next();
     } else {
@@ -22,11 +23,13 @@ class TeamsMiddleware {
     next: express.NextFunction
   ) {
     const team = await teamsService.getById(req.params.teamId);
-    if (
+
+    const memberIsPartOfTeam =
       team?.members.find(
         (member) => member.id === (req as AuthenticatedRequest).user.id
-      )
-    ) {
+      ) !== undefined;
+
+    if (memberIsPartOfTeam) {
       next();
     } else {
       res.sendStatus(403);

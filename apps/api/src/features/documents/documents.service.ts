@@ -4,6 +4,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
 import {
   CreateDocumentSchema,
+  DeleteDocumentSchema,
   PatchDocumentSchema,
   UpdateDocumentSchema,
   User,
@@ -59,8 +60,8 @@ class DocumentsService {
     );
   }
 
-  async delete(documentId: string) {
-    return this.documentsRepository.delete({ id: documentId });
+  async delete(dto: z.infer<typeof DeleteDocumentSchema>) {
+    return this.documentsRepository.delete({ id: dto.params.documentId });
   }
 }
 

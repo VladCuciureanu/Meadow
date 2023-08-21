@@ -51,3 +51,5 @@ export const PatchUserSchema = HasUserId.merge(
       .strict(),
   })
 );
+
+export const DeleteUserSchema = HasUserId;

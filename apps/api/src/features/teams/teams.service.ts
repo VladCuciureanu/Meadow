@@ -4,6 +4,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
 import {
   CreateTeamSchema,
+  DeleteTeamSchema,
   PatchTeamSchema,
   UpdateTeamSchema,
   User,
@@ -44,8 +45,8 @@ class TeamsService {
     return this.teamsRepository.update({ id: dto.params.teamId }, dto.body);
   }
 
-  async delete(teamId: string) {
-    return this.teamsRepository.delete({ id: teamId });
+  async delete(dto: z.infer<typeof DeleteTeamSchema>) {
+    return this.teamsRepository.delete({ id: dto.params.teamId });
   }
 }
 

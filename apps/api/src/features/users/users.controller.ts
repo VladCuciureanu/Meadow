@@ -28,7 +28,7 @@ class UsersController {
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const response = await usersService.delete(req.params.userId);
+    const response = await usersService.delete(req as any);
     res.status(204).send(response);
   }
 }

@@ -61,3 +61,5 @@ export const UpdateBlockSchema = HasBlockId.extend({
 export const PatchBlockSchema = HasBlockId.extend({
   body: z.any(),
 });
+
+export const DeleteBlockSchema = HasBlockId;

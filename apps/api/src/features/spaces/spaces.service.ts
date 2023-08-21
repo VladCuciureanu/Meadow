@@ -4,6 +4,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
 import {
   CreateSpaceSchema,
+  DeleteSpaceSchema,
   PatchSpaceSchema,
   UpdateSpaceSchema,
 } from "@meadow/shared";
@@ -36,8 +37,8 @@ class SpacesService {
     return this.spacesRepository.update({ id: dto.params.spaceId }, dto.body);
   }
 
-  async delete(spaceId: string) {
-    return this.spacesRepository.delete({ id: spaceId });
+  async delete(dto: z.infer<typeof DeleteSpaceSchema>) {
+    return this.spacesRepository.delete({ id: dto.params.spaceId });
   }
 }
 

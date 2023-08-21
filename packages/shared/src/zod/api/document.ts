@@ -32,3 +32,5 @@ export const UpdateDocumentSchema = HasDocumentId.extend({
 export const PatchDocumentSchema = HasDocumentId.extend({
   body: MutableFields.partial().strict(),
 });
+
+export const DeleteDocumentSchema = HasDocumentId;

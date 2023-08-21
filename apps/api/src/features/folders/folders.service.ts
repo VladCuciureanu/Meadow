@@ -4,6 +4,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
 import {
   CreateFolderSchema,
+  DeleteFolderSchema,
   PatchFolderSchema,
   UpdateFolderSchema,
   User,
@@ -53,8 +54,8 @@ class FoldersService {
     return this.foldersRepository.update({ id: dto.params.folderId }, dto.body);
   }
 
-  async delete(folderId: string) {
-    return this.foldersRepository.delete({ id: folderId });
+  async delete(dto: z.infer<typeof DeleteFolderSchema>) {
+    return this.foldersRepository.delete({ id: dto.params.folderId });
   }
 }
 

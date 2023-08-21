@@ -4,6 +4,7 @@ import * as argon2 from "argon2";
 import { z } from "zod";
 import {
   CreateUserSchema,
+  DeleteUserSchema,
   PatchUserSchema,
   UpdateUserSchema,
 } from "@meadow/shared";
@@ -114,9 +115,9 @@ class UsersService {
     return updatedUser;
   }
 
-  async delete(userId: string) {
+  async delete(dto: z.infer<typeof DeleteUserSchema>) {
     return this.usersRepository.delete({
-      id: userId,
+      id: dto.params.userId,
     });
   }
 }

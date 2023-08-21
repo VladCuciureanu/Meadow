@@ -4,6 +4,7 @@ import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
 import {
   CreateBlockSchema,
+  DeleteBlockSchema,
   PatchBlockSchema,
   UpdateBlockSchema,
   User,
@@ -53,8 +54,8 @@ class BlocksService {
     return this.blocksRepository.update({ id: dto.params.blockId }, dto.body);
   }
 
-  async delete(blockId: string) {
-    return this.blocksRepository.delete({ id: blockId });
+  async delete(dto: z.infer<typeof DeleteBlockSchema>) {
+    return this.blocksRepository.delete({ id: dto.params.blockId });
   }
 }
 

@@ -1,40 +1,37 @@
 import express from "express";
-import BlocksService from "./blocks.service";
+import blocksService from "./blocks.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class BlocksController {
-  // async listBlocks(req: express.Request, res: express.Response) {
-  //   const blocks = await blocksService.list(100, 0);
-  //   res.status(200).send(blocks);
-  // }
-
-  async getBlockById(req: express.Request, res: express.Response) {
-    const block = await BlocksService.readById(req.params.blockId);
-    res.status(200).send(block);
+  async getMany(req: express.Request, res: express.Response) {
+    const user = (req as AuthenticatedRequest).auth.user!;
+    const response = await blocksService.getMany(100, 0, user);
+    res.status(200).send(response);
   }
 
-  // async createBlock(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   const blockId = await blocksService.create(req.body);
-  //   res.status(201).send({ id: blockId });
-  // }
+  async getById(req: express.Request, res: express.Response) {
+    const response = await blocksService.getById(req.params.blockId);
+    res.status(200).send(response);
+  }
 
-  // async patch(req: express.Request, res: express.Response) {
-  //   if (req.body.password) {
-  //     req.body.password = await argon2.hash(req.body.password);
-  //   }
-  //   log(await blocksService.patchById(req.body));
-  //   res.status(204).send(``);
-  // }
+  async create(req: express.Request, res: express.Response) {
+    const response = await blocksService.create(req);
+    res.status(201).send(response);
+  }
 
-  // async put(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   log(await blocksService.updateById({ id: req.params.blockId, ...req.body }));
-  //   res.status(204).send(``);
-  // }
+  async patch(req: express.Request, res: express.Response) {
+    const response = await blocksService.patch(req as any);
+    res.status(204).send(response);
+  }
 
-  // async removeBlock(req: express.Request, res: express.Response) {
-  //   log(await blocksService.deleteById(req.params.blockId));
-  //   res.status(204).send(``);
-  // }
+  async put(req: express.Request, res: express.Response) {
+    const response = await blocksService.put(req as any);
+    res.status(204).send(response);
+  }
+
+  async delete(req: express.Request, res: express.Response) {
+    const response = await blocksService.delete(req as any);
+    res.status(204).send(response);
+  }
 }
 
 export default new BlocksController();

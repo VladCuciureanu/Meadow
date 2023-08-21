@@ -1,5 +1,8 @@
 import express from "express";
-import BlocksService from "./blocks.service";
+import blocksService from "./blocks.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import teamsService from "../teams/teams.service";
+import spacesService from "../spaces/spaces.service";
 
 class BlocksMiddleware {
   async validateBlockExists(
@@ -7,21 +10,35 @@ class BlocksMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const block = await BlocksService.readById(req.params.blockId);
+    const block = await blocksService.getById(req.params.blockId);
+
     if (block) {
       next();
     } else {
-      res.status(404).send({ error: `Block ${req.params.blockId} not found` });
+      res.status(404);
     }
   }
 
-  async extractBlockId(
+  // TODO: Cache
+  async validateBlockAuthority(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    req.body.id = req.params.blockId;
-    next();
+    const block = await blocksService.getById(req.params.blockId);
+    const space = await spacesService.getById(block!.spaceId);
+    const team = await teamsService.getById(space!.teamId);
+
+    const memberIsPartOfTeam =
+      team?.members.find(
+        (member) => member.id === (req as AuthenticatedRequest).auth.user.id
+      ) !== undefined;
+
+    if (memberIsPartOfTeam) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
   }
 }
 

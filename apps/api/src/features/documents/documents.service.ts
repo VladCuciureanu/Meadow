@@ -43,7 +43,8 @@ class DocumentsService {
   }
 
   async create(dto: z.infer<typeof CreateDocumentSchema>) {
-    return this.documentsRepository.create(dto.body);
+    const document = this.documentsRepository.create(dto.body);
+    return this.documentsRepository.save(document);
   }
 
   async patch(dto: z.infer<typeof PatchDocumentSchema>) {

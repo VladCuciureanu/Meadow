@@ -43,7 +43,8 @@ class FoldersService {
   }
 
   async create(dto: z.infer<typeof CreateFolderSchema>) {
-    return this.foldersRepository.create(dto.body);
+    const folder = this.foldersRepository.create(dto.body);
+    return this.foldersRepository.save(folder);
   }
 
   async patch(dto: z.infer<typeof PatchFolderSchema>) {

@@ -43,7 +43,8 @@ class BlocksService {
   }
 
   async create(dto: z.infer<typeof CreateBlockSchema>) {
-    return this.blocksRepository.create(dto.body);
+    const block = this.blocksRepository.create(dto.body);
+    return this.blocksRepository.save(block);
   }
 
   async patch(dto: z.infer<typeof PatchBlockSchema>) {

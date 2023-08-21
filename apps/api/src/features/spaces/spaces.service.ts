@@ -26,7 +26,8 @@ class SpacesService {
   }
 
   async create(dto: z.infer<typeof CreateSpaceSchema>) {
-    return this.spacesRepository.create(dto.body);
+    const space = this.spacesRepository.create(dto.body);
+    return this.spacesRepository.save(space);
   }
 
   async patch(dto: z.infer<typeof PatchSpaceSchema>) {

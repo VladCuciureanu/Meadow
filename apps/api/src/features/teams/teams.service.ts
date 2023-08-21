@@ -6,6 +6,7 @@ import {
   CreateTeamSchema,
   PatchTeamSchema,
   UpdateTeamSchema,
+  User,
 } from "@meadow/shared";
 
 class TeamsService {
@@ -21,11 +22,18 @@ class TeamsService {
   }
 
   async getById(teamId: string) {
-    return this.teamsRepository.findOne({ where: { id: teamId } });
+    return this.teamsRepository.findOne({
+      where: { id: teamId },
+      relations: ["members"],
+    });
   }
 
-  async create(dto: z.infer<typeof CreateTeamSchema>) {
-    return this.teamsRepository.create(dto.body);
+  async create(dto: z.infer<typeof CreateTeamSchema>, user: User) {
+    const team = this.teamsRepository.create({
+      ...dto.body,
+      members: [{ id: user.id }],
+    });
+    return this.teamsRepository.save(team);
   }
 
   async patch(dto: z.infer<typeof PatchTeamSchema>) {

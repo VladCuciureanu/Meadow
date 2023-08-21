@@ -14,7 +14,7 @@ export class User implements UserInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column("text", { unique: true })
+  @Column("text", { select: false, unique: true })
   email: string;
 
   @Column("text")
@@ -23,7 +23,7 @@ export class User implements UserInterface {
   @Column("text")
   lastName: string;
 
-  @Column("text")
+  @Column("text", { select: false })
   passwordHash: string;
 
   @Column("text", { nullable: true })

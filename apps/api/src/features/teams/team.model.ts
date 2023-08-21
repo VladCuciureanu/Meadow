@@ -4,6 +4,7 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  JoinTable,
 } from "typeorm";
 import { Space } from "../spaces/space.model";
 import { Team as TeamInterface } from "@meadow/shared";
@@ -21,6 +22,7 @@ export class Team implements TeamInterface {
   imgUrl?: string;
 
   @ManyToMany(() => User, (user) => user.teams)
+  @JoinTable()
   members: User[];
 
   @OneToMany(() => Space, (space) => space.team)

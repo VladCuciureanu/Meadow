@@ -31,7 +31,7 @@ class DocumentsMiddleware {
 
     const memberIsPartOfTeam =
       team?.members.find(
-        (member) => member.id === (req as AuthenticatedRequest).auth.user.id
+        (member) => member.id === (req as AuthenticatedRequest).user.id
       ) !== undefined;
 
     if (memberIsPartOfTeam) {

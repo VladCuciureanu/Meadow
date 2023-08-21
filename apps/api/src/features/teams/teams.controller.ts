@@ -1,5 +1,6 @@
 import express from "express";
 import teamsService from "./teams.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class TeamsController {
   async getMany(req: express.Request, res: express.Response) {
     const response = await teamsService.getMany(100, 0);
@@ -12,7 +13,8 @@ class TeamsController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const response = await teamsService.create(req);
+    const user = (req as AuthenticatedRequest).user;
+    const response = await teamsService.create(req, user);
     res.status(201).send(response);
   }
 

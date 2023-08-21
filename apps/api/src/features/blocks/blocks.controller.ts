@@ -3,7 +3,7 @@ import blocksService from "./blocks.service";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class BlocksController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).auth.user!;
+    const user = (req as AuthenticatedRequest).user!;
     const response = await blocksService.getMany(100, 0, user);
     res.status(200).send(response);
   }

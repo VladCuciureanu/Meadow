@@ -73,8 +73,6 @@ class UsersService {
       })
     );
 
-    delete (user as any).passwordHash;
-
     return user;
   }
 
@@ -94,8 +92,6 @@ class UsersService {
       dto.body
     );
 
-    delete (updatedUser as any).passwordHash;
-
     return updatedUser;
   }
 
@@ -114,8 +110,6 @@ class UsersService {
       },
       dto.body
     );
-
-    delete (updatedUser as any).passwordHash;
 
     return updatedUser;
   }

@@ -3,9 +3,7 @@ import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
 export type AuthenticatedRequest = Request & {
-  auth: {
-    user: User;
-  };
+  user: User;
 };
 
 export type JWTPayload = JwtPayload & {

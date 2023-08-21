@@ -30,8 +30,6 @@ const JWTLogin = new JWTStrategy(
       return done(null, false);
     }
 
-    delete (user as any).passwordHash;
-
     done(null, user);
   }
 );

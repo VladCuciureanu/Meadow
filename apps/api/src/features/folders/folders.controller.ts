@@ -3,7 +3,7 @@ import foldersService from "./folders.service";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class FoldersController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).auth.user!;
+    const user = (req as AuthenticatedRequest).user!;
     const response = await foldersService.getMany(100, 0, user);
     res.status(200).send(response);
   }

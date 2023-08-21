@@ -15,7 +15,7 @@ class FoldersMiddleware {
     if (folder) {
       next();
     } else {
-      res.status(404);
+      res.sendStatus(404);
     }
   }
 

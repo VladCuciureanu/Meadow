@@ -15,7 +15,7 @@ class BlocksMiddleware {
     if (block) {
       next();
     } else {
-      res.status(404);
+      res.sendStatus(404);
     }
   }
 

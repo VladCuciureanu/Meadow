@@ -15,7 +15,7 @@ class DocumentsMiddleware {
     if (document) {
       next();
     } else {
-      res.status(404);
+      res.sendStatus(404);
     }
   }
 

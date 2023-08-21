@@ -13,7 +13,7 @@ class TeamsMiddleware {
     if (team) {
       next();
     } else {
-      res.status(404);
+      res.sendStatus(404);
     }
   }
 

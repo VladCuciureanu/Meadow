@@ -14,7 +14,7 @@ class SpacesMiddleware {
     if (space) {
       next();
     } else {
-      res.status(404);
+      res.sendStatus(404);
     }
   }
 

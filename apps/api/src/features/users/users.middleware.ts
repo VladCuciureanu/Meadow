@@ -22,7 +22,7 @@ class UsersMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    if ((req as AuthenticatedRequest)?.user?.id === req.params.userId) {
+    if ((req as AuthenticatedRequest)?.auth.user.id === req.params.userId) {
       next();
     } else {
       res

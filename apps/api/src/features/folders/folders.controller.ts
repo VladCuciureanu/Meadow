@@ -1,40 +1,37 @@
 import express from "express";
-import FoldersService from "./folders.service";
+import foldersService from "./folders.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class FoldersController {
-  // async listFolders(req: express.Request, res: express.Response) {
-  //   const folders = await foldersService.list(100, 0);
-  //   res.status(200).send(folders);
-  // }
-
-  async getFolderById(req: express.Request, res: express.Response) {
-    const folder = await FoldersService.readById(req.params.folderId);
-    res.status(200).send(folder);
+  async getMany(req: express.Request, res: express.Response) {
+    const user = (req as AuthenticatedRequest).auth.user!;
+    const response = await foldersService.getMany(100, 0, user);
+    res.status(200).send(response);
   }
 
-  // async createFolder(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   const folderId = await foldersService.create(req.body);
-  //   res.status(201).send({ id: folderId });
-  // }
+  async getById(req: express.Request, res: express.Response) {
+    const response = await foldersService.getById(req.params.folderId);
+    res.status(200).send(response);
+  }
 
-  // async patch(req: express.Request, res: express.Response) {
-  //   if (req.body.password) {
-  //     req.body.password = await argon2.hash(req.body.password);
-  //   }
-  //   log(await foldersService.patchById(req.body));
-  //   res.status(204).send(``);
-  // }
+  async create(req: express.Request, res: express.Response) {
+    const response = await foldersService.create(req);
+    res.status(201).send(response);
+  }
 
-  // async put(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   log(await foldersService.updateById({ id: req.params.folderId, ...req.body }));
-  //   res.status(204).send(``);
-  // }
+  async patch(req: express.Request, res: express.Response) {
+    const response = await foldersService.patch(req as any);
+    res.status(204).send(response);
+  }
 
-  // async removeFolder(req: express.Request, res: express.Response) {
-  //   log(await foldersService.deleteById(req.params.folderId));
-  //   res.status(204).send(``);
-  // }
+  async put(req: express.Request, res: express.Response) {
+    const response = await foldersService.put(req as any);
+    res.status(204).send(response);
+  }
+
+  async delete(req: express.Request, res: express.Response) {
+    const response = await foldersService.delete(req as any);
+    res.status(204).send(response);
+  }
 }
 
 export default new FoldersController();

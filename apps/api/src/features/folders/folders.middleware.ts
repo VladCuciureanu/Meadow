@@ -1,5 +1,8 @@
 import express from "express";
-import FoldersService from "./folders.service";
+import foldersService from "./folders.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import teamsService from "../teams/teams.service";
+import spacesService from "../spaces/spaces.service";
 
 class FoldersMiddleware {
   async validateFolderExists(
@@ -7,23 +10,35 @@ class FoldersMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const folder = await FoldersService.readById(req.params.folderId);
+    const folder = await foldersService.getById(req.params.folderId);
+
     if (folder) {
       next();
     } else {
-      res
-        .status(404)
-        .send({ error: `Folder ${req.params.folderId} not found` });
+      res.status(404);
     }
   }
 
-  async extractFolderId(
+  // TODO: Cache
+  async validateFolderAuthority(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    req.body.id = req.params.folderId;
-    next();
+    const folder = await foldersService.getById(req.params.folderId);
+    const space = await spacesService.getById(folder!.spaceId);
+    const team = await teamsService.getById(space!.teamId);
+
+    const memberIsPartOfTeam =
+      team?.members.find(
+        (member) => member.id === (req as AuthenticatedRequest).auth.user.id
+      ) !== undefined;
+
+    if (memberIsPartOfTeam) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
   }
 }
 

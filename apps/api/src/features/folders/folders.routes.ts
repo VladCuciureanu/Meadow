@@ -1,20 +1,28 @@
 import { Router } from "express";
 
-import FoldersMiddleware from "./folders.middleware";
-import FoldersController from "./folders.controller";
+import foldersMiddleware from "./folders.middleware";
+import foldersController from "./folders.controller";
+import { validate } from "../common/common.middleware";
+import {
+  CreateFolderSchema,
+  PatchFolderSchema,
+  UpdateFolderSchema,
+} from "@meadow/shared";
 
 const FolderRoutes = Router();
 
-FolderRoutes.route(`/folders`);
-// .get(FoldersController.listFolders)
-// .post(FoldersController.createFolder);
+FolderRoutes.route(`/`)
+  .get(foldersController.getMany)
+  .post(validate(CreateFolderSchema), foldersController.create);
 
-FolderRoutes.param(`folderId`, FoldersMiddleware.extractFolderId);
-FolderRoutes.route(`/folders/:folderId`)
-  .all(FoldersMiddleware.validateFolderExists)
-  .get(FoldersController.getFolderById);
-// .delete(FoldersController.removeFolder)
-// .put(FoldersController.put)
-// .patch(FoldersController.patch);
+FolderRoutes.route(`/:folderId`)
+  .all(
+    foldersMiddleware.validateFolderExists,
+    foldersMiddleware.validateFolderAuthority
+  )
+  .get(foldersController.getById)
+  .put(validate(UpdateFolderSchema), foldersController.put)
+  .patch(validate(PatchFolderSchema), foldersController.patch)
+  .delete(foldersController.delete);
 
 export default FolderRoutes;

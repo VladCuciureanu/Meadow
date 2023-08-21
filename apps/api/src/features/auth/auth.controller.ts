@@ -1,7 +1,5 @@
 import express from "express";
 import authService from "./auth.service";
-import { UserCredentialsSchema } from "@meadow/shared";
-import { z } from "zod";
 
 class AuthController {
   async getToken(req: express.Request, res: express.Response) {

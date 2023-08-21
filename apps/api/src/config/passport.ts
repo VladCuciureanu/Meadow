@@ -1,43 +1,41 @@
 import passport from "passport";
 import { Strategy as JWTStrategy } from "passport-jwt";
 import { ExtractJwt } from "passport-jwt";
-import { Strategy as LocalStrategy } from "passport-local";
 import usersService from "../features/users/users.service";
 import config from "./env";
-import * as argon2 from "argon2";
+import express from "express";
 
-const LocalLogin = new LocalStrategy(
-  {
-    usernameField: "email",
-  },
-  async (email, password, done) => {
-    let user = await usersService.getByEmail(email);
-    if (!user || (await argon2.verify(user.passwordHash, password))) {
-      return done(null, false, {
-        message: "Your login details could not be verified. Please try again.",
-      });
-    }
-    delete (user as any).passwordHash;
-    done(null, user);
+export const JWTCookieName = "jwt";
+
+function cookieExtractor(req: express.Request) {
+  var token = null;
+  if (req && req.cookies) {
+    token = req.signedCookies[JWTCookieName];
   }
-);
+  return token;
+}
 
 const JWTLogin = new JWTStrategy(
   {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJwt.fromExtractors([
+      cookieExtractor,
+      ExtractJwt.fromAuthHeaderAsBearerToken(),
+    ]),
     secretOrKey: config.jwt.secret,
   },
   async (payload, done) => {
-    let user = await usersService.getById(payload._id);
+    let user = await usersService.getById(payload.userId);
+
     if (!user) {
       return done(null, false);
     }
+
     delete (user as any).passwordHash;
+
     done(null, user);
   }
 );
 
-passport.use(LocalLogin);
 passport.use(JWTLogin);
 
 export default passport;

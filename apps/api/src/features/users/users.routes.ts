@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import UsersMiddleware from "./users.middleware";
-import UsersController from "./users.controller";
+import usersMiddleware from "./users.middleware";
+import usersController from "./users.controller";
 
 import {
   CreateUserSchema,
@@ -15,34 +15,28 @@ import { authenticate } from "../auth/auth.middleware";
 const UserRoutes = Router();
 
 UserRoutes.route(`/`)
-  .get(UsersController.getMany)
+  .get(authenticate, usersController.getMany)
   .post(
     validate(CreateUserSchema),
-    UsersMiddleware.validateEmailIsUnique,
-    UsersController.create
+    usersMiddleware.validateEmailIsUnique,
+    usersController.create
   );
 
 UserRoutes.route(`/:userId`)
-  .all(UsersMiddleware.validateUserExists)
-  .get(UsersController.getById)
+  .all(authenticate, usersMiddleware.validateUserExists)
+  .get(usersController.getById)
   .put(
+    usersMiddleware.validateCurrentUser,
     validate(UpdateUserSchema),
-    authenticate,
-    UsersMiddleware.validateCurrentUser,
-    UsersMiddleware.validateEmailIsUnique,
-    UsersController.put
+    usersMiddleware.validateEmailIsUnique,
+    usersController.put
   )
   .patch(
+    usersMiddleware.validateCurrentUser,
     validate(PatchUserSchema),
-    authenticate,
-    UsersMiddleware.validateCurrentUser,
-    UsersMiddleware.validateEmailIsUnique,
-    UsersController.patch
+    usersMiddleware.validateEmailIsUnique,
+    usersController.patch
   )
-  .delete(
-    authenticate,
-    UsersMiddleware.validateCurrentUser,
-    UsersController.delete
-  );
+  .delete(usersMiddleware.validateCurrentUser, usersController.delete);
 
 export default UserRoutes;

@@ -1,6 +1,12 @@
 import { Repository } from "typeorm";
 import { Space } from "./space.model";
 import { MeadowDataSource } from "../../config/typeorm";
+import { z } from "zod";
+import {
+  CreateSpaceSchema,
+  PatchSpaceSchema,
+  UpdateSpaceSchema,
+} from "@meadow/shared";
 
 class SpacesService {
   spacesRepository: Repository<Space>;
@@ -8,33 +14,31 @@ class SpacesService {
   constructor() {
     this.spacesRepository = MeadowDataSource.getRepository(Space);
   }
-  // async create(resource: SpaceDto) {
-  //   return SpacesDao.addSpace(resource);
-  // }
 
-  // async deleteById(resourceId: string) {
-  //   return SpacesDao.removeSpaceById(resourceId);
-  // }
-
-  // async list(limit: number, page: number) {
-  //   return SpacesDao.getSpaces();
-  // }
-
-  // async patchById(resource: SpaceDto) {
-  //   return SpacesDao.patchSpaceById(resource);
-  // }
-
-  async readById(resourceId: string) {
-    return this.spacesRepository.findOne({ where: { id: resourceId } });
+  async getMany(limit: number, page: number) {
+    const skipCount = Math.max(0, limit * (page - 1));
+    return this.spacesRepository.find({ take: limit, skip: skipCount });
   }
 
-  // async updateById(resource: SpaceDto) {
-  //   return SpacesDao.putSpaceById(resource);
-  // }
+  async getById(spaceId: string) {
+    return this.spacesRepository.findOne({ where: { id: spaceId } });
+  }
 
-  // async getSpaceByEmail(email: string) {
-  //   return SpacesDao.getSpaceByEmail(email);
-  // }
+  async create(dto: z.infer<typeof CreateSpaceSchema>) {
+    return this.spacesRepository.create(dto.body);
+  }
+
+  async patch(dto: z.infer<typeof PatchSpaceSchema>) {
+    return this.spacesRepository.update({ id: dto.params.spaceId }, dto.body);
+  }
+
+  async put(dto: z.infer<typeof UpdateSpaceSchema>) {
+    return this.spacesRepository.update({ id: dto.params.spaceId }, dto.body);
+  }
+
+  async delete(spaceId: string) {
+    return this.spacesRepository.delete({ id: spaceId });
+  }
 }
 
 export default new SpacesService();

@@ -1,5 +1,7 @@
 import express from "express";
-import SpacesService from "./spaces.service";
+import spacesService from "./spaces.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import teamsService from "../teams/teams.service";
 
 class SpacesMiddleware {
   async validateSpaceExists(
@@ -7,21 +9,38 @@ class SpacesMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const space = await SpacesService.readById(req.params.spaceId);
-    if (space) {
-      next();
-    } else {
-      res.status(404).send({ error: `Space ${req.params.spaceId} not found` });
-    }
+    spacesService.getById(req.params.spaceId).then((space) => {
+      if (space) {
+        next();
+      } else {
+        res.status(404);
+      }
+    });
   }
 
-  async extractSpaceId(
+  validateSpaceAuthority(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    req.body.id = req.params.spaceId;
-    next();
+    spacesService.getById(req.params.spaceId).then((space) => {
+      if (!space) {
+        res.sendStatus(403);
+        return;
+      }
+
+      teamsService.getById(space.teamId).then((team) => {
+        if (
+          team?.members.find(
+            (member) => member.id === (req as AuthenticatedRequest).user.id
+          )
+        ) {
+          next();
+        } else {
+          res.sendStatus(403);
+        }
+      });
+    });
   }
 }
 

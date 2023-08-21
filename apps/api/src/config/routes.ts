@@ -6,16 +6,17 @@ import DocumentRoutes from "../features/documents/documents.routes";
 import FolderRoutes from "../features/folders/folders.routes";
 import TeamRoutes from "../features/teams/teams.routes";
 import SpaceRoutes from "../features/spaces/spaces.routes";
+import { authenticate } from "../features/auth/auth.middleware";
 
 const router = Router();
 
 router.get("/health-check", (req: Request, res: Response) => res.send("OK"));
 
-router.use("/teams", TeamRoutes);
-router.use("/spaces", SpaceRoutes);
-router.use("/folders", FolderRoutes);
-router.use("/documents", DocumentRoutes);
-router.use("/blocks", BlockRoutes);
+router.use("/teams", authenticate, TeamRoutes);
+router.use("/spaces", authenticate, SpaceRoutes);
+router.use("/folders", authenticate, FolderRoutes);
+router.use("/documents", authenticate, DocumentRoutes);
+router.use("/blocks", authenticate, BlockRoutes);
 router.use("/users", UserRoutes);
 router.use("/auth", AuthRoutes);
 

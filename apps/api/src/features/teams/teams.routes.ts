@@ -11,12 +11,15 @@ import {
 
 const TeamRoutes = Router();
 
-TeamRoutes.route(`/teams`)
+TeamRoutes.route(`/`)
   .get(teamsController.getMany)
   .post(validate(CreateTeamSchema), teamsController.create);
 
-TeamRoutes.route(`/teams/:teamId`)
-  .all(teamsMiddleware.validateTeamExists)
+TeamRoutes.route(`/:teamId`)
+  .all(
+    teamsMiddleware.validateTeamExists,
+    teamsMiddleware.validateTeamMembership
+  )
   .get(teamsController.getById)
   .put(validate(UpdateTeamSchema), teamsController.put)
   .patch(validate(PatchTeamSchema), teamsController.patch)

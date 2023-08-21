@@ -1,21 +1,20 @@
 import express from "express";
-import UsersService from "./users.service";
+import usersService from "./users.service";
 import { MeadowError } from "../common/common.middleware";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
 
 class UsersMiddleware {
-  validateUserExists(
+  async validateUserExists(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    UsersService.getById(req.params.userId).then((user) => {
-      if (user) {
-        next();
-      } else {
-        res.status(404).send({ error: `User ${req.params.userId} not found` });
-      }
-    });
+    const user = await usersService.getById(req.params.userId);
+    if (user) {
+      next();
+    } else {
+      res.status(404).send({ error: `User ${req.params.userId} not found` });
+    }
   }
 
   validateCurrentUser(
@@ -32,24 +31,26 @@ class UsersMiddleware {
     }
   }
 
-  validateEmailIsUnique(
+  async validateEmailIsUnique(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    if (req.body.email) {
-      UsersService.getByEmail(req.body.email).then((user) => {
-        if (!user) {
-          next();
-        } else {
-          res.status(500).send({
-            status: "Failed payload validations.",
-            errors: ["Email must be unique."],
-          } as MeadowError);
-        }
-      });
-    } else {
+    const bodyContainsEmail = Object.keys(req.body).includes("email");
+
+    if (!bodyContainsEmail) {
       next();
+    }
+
+    const user = await usersService.getByEmail(req.body.email);
+
+    if (!user) {
+      next();
+    } else {
+      res.status(500).send({
+        status: "Failed payload validations.",
+        errors: ["Email must be unique."],
+      } as MeadowError);
     }
   }
 }

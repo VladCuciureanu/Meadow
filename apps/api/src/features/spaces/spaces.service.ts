@@ -38,6 +38,7 @@ class SpacesService {
     };
 
     payload.team = { id: dto.body.teamId };
+    payload.rootFolderOrder = [];
 
     const space = this.spacesRepository.create(payload);
     return this.spacesRepository.save(space);

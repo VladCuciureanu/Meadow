@@ -47,7 +47,7 @@ export const PatchUserSchema = HasUserId.merge(
     body: MutableFields.extend({
       password: z.string(),
     })
-      .partial()
+      .deepPartial()
       .strict(),
   })
 );

@@ -21,7 +21,9 @@ export class Team implements TeamInterface {
   @Column("text", { nullable: true })
   imgUrl?: string;
 
-  @ManyToMany(() => User, (user) => user.teams)
+  @ManyToMany(() => User, (user) => user.teams, {
+    onDelete: "CASCADE",
+  })
   @JoinTable()
   members: User[];
 

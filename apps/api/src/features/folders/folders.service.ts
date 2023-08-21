@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, DeepPartial } from "typeorm";
 import { Folder } from "./folder.model";
 import { MeadowDataSource } from "../../config/typeorm";
 import { z } from "zod";
@@ -31,6 +31,7 @@ class FoldersService {
           },
         },
       },
+      relations: ["space", "parentFolder"],
     });
   }
 
@@ -39,20 +40,45 @@ class FoldersService {
       where: {
         id: folderId,
       },
+      relations: ["space", "parentFolder"],
     });
   }
 
   async create(dto: z.infer<typeof CreateFolderSchema>) {
-    const folder = this.foldersRepository.create(dto.body);
+    const payload: DeepPartial<Folder> = dto.body;
+
+    payload.space = { id: payload.spaceId };
+    payload.parentFolder = { id: payload.parentFolderId };
+    payload.itemOrder = [];
+
+    const folder = this.foldersRepository.create(payload);
     return this.foldersRepository.save(folder);
   }
 
   async patch(dto: z.infer<typeof PatchFolderSchema>) {
-    return this.foldersRepository.update({ id: dto.params.folderId }, dto.body);
+    const payload: DeepPartial<Folder> = dto.body;
+
+    if (payload.spaceId) {
+      payload.space = { id: payload.spaceId };
+      delete payload.spaceId;
+    }
+    if (payload.parentFolderId) {
+      payload.parentFolder = { id: payload.parentFolderId };
+      delete payload.parentFolderId;
+    }
+
+    return this.foldersRepository.update({ id: dto.params.folderId }, payload);
   }
 
   async put(dto: z.infer<typeof UpdateFolderSchema>) {
-    return this.foldersRepository.update({ id: dto.params.folderId }, dto.body);
+    const payload: DeepPartial<Folder> = dto.body;
+
+    payload.space = { id: payload.spaceId };
+    delete payload.spaceId;
+    payload.parentFolder = { id: payload.parentFolderId };
+    delete payload.parentFolderId;
+
+    return this.foldersRepository.update({ id: dto.params.folderId }, payload);
   }
 
   async delete(dto: z.infer<typeof DeleteFolderSchema>) {

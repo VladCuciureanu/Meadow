@@ -28,19 +28,25 @@ export class Document implements DocumentInterface {
   @Column("boolean", { default: true })
   isEmpty: boolean;
 
-  @ManyToOne(() => User, (user) => user.authoredDocuments)
+  @ManyToOne(() => User, (user) => user.authoredDocuments, {
+    onDelete: "CASCADE",
+  })
   author: User;
 
   @RelationId((document: Document) => document.author)
   authorId: string;
 
-  @ManyToOne(() => Space, (space) => space.documents)
+  @ManyToOne(() => Space, (space) => space.documents, {
+    onDelete: "CASCADE",
+  })
   space: Space;
 
   @RelationId((document: Document) => document.space)
   spaceId: string;
 
-  @ManyToOne(() => Folder, (folder) => folder.documents)
+  @ManyToOne(() => Folder, (folder) => folder.documents, {
+    onDelete: "CASCADE",
+  })
   folder?: Folder;
 
   @RelationId((document: Document) => document.folder)

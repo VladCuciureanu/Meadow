@@ -29,7 +29,7 @@ export const UpdateFolderSchema = HasFolderId.extend({
 });
 
 export const PatchFolderSchema = HasFolderId.extend({
-  body: MutableFields.partial().strict(),
+  body: MutableFields.deepPartial().strict(),
 });
 
 export const DeleteFolderSchema = HasFolderId;

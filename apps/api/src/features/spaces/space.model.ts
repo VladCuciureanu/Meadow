@@ -35,7 +35,9 @@ export class Space implements SpaceInterface {
   @Column("text", { array: true })
   rootFolderOrder: string[];
 
-  @ManyToOne(() => Team, (team) => team.spaces)
+  @ManyToOne(() => Team, (team) => team.spaces, {
+    onDelete: "CASCADE",
+  })
   team: Team;
 
   @RelationId((space: Space) => space.team)

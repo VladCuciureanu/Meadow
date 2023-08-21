@@ -59,7 +59,9 @@ export class Block
   @Column("text")
   color: BlockColor;
 
-  @ManyToOne(() => Space, (space) => space.blocks)
+  @ManyToOne(() => Space, (space) => space.blocks, {
+    onDelete: "CASCADE",
+  })
   space: Space;
 
   @RelationId((block: Block) => block.space)
@@ -80,7 +82,9 @@ export class Block
   @Column("jsonb")
   style: TextBlockStyle;
 
-  @ManyToOne(() => Block, (block) => block.subblocks)
+  @ManyToOne(() => Block, (block) => block.subblocks, {
+    onDelete: "CASCADE",
+  })
   parentBlock?: Block;
 
   @OneToMany(() => Block, (block) => block.parentBlock)

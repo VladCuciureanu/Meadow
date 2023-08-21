@@ -24,7 +24,7 @@ export const UpdateTeamSchema = HasTeamId.extend({
 });
 
 export const PatchTeamSchema = HasTeamId.extend({
-  body: MutableFields.partial().strict(),
+  body: MutableFields.deepPartial().strict(),
 });
 
 export const DeleteTeamSchema = HasTeamId;

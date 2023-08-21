@@ -19,7 +19,7 @@ export const FolderSchema: FolderSchemaType = z.object({
   parentFolderId: z.string().uuid().optional(),
   parentFolder: z.lazy(() => FolderSchema.optional()),
   childrenFolders: z.lazy(() => FolderSchema.array()),
-  spaceId: z.string().uuid().optional(),
+  spaceId: z.string().uuid(),
   space: SpaceSchema,
   created: z.date(),
   updated: z.date(),
@@ -54,7 +54,7 @@ type FolderSchemaType = z.ZodObject<
     parentFolderId: z.ZodOptional<z.ZodString>;
     parentFolder: z.ZodLazy<z.ZodOptional<z.ZodType<Folder>>>;
     childrenFolders: z.ZodLazy<z.ZodArray<z.ZodType<Folder>>>;
-    spaceId: z.ZodOptional<z.ZodString>;
+    spaceId: z.ZodString;
     space: z.ZodType<Space>;
     created: z.ZodDate;
     updated: z.ZodDate;

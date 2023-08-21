@@ -32,7 +32,9 @@ export class Folder implements FolderInterface {
   @OneToMany(() => Document, (document) => document.folder)
   documents: Document[];
 
-  @ManyToOne(() => Folder, (folder) => folder.childrenFolders)
+  @ManyToOne(() => Folder, (folder) => folder.childrenFolders, {
+    onDelete: "CASCADE",
+  })
   parentFolder?: Folder;
 
   @RelationId((folder: Folder) => folder.parentFolder)
@@ -41,7 +43,9 @@ export class Folder implements FolderInterface {
   @OneToMany(() => Folder, (folder) => folder.parentFolder)
   childrenFolders: Folder[];
 
-  @ManyToOne(() => Space, (space) => space.folders)
+  @ManyToOne(() => Space, (space) => space.folders, {
+    onDelete: "CASCADE",
+  })
   space: Space;
 
   @RelationId((folder: Folder) => folder.space)

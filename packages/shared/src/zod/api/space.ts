@@ -27,7 +27,7 @@ export const UpdateSpaceSchema = HasSpaceId.extend({
 });
 
 export const PatchSpaceSchema = HasSpaceId.extend({
-  body: MutableFields.partial().strict(),
+  body: MutableFields.deepPartial().strict(),
 });
 
 export const DeleteSpaceSchema = HasSpaceId;

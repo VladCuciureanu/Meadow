@@ -1,5 +1,8 @@
 import express from "express";
-import DocumentsService from "./documents.service";
+import documentsService from "./documents.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import teamsService from "../teams/teams.service";
+import spacesService from "../spaces/spaces.service";
 
 class DocumentsMiddleware {
   async validateDocumentExists(
@@ -7,23 +10,35 @@ class DocumentsMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const document = await DocumentsService.readById(req.params.documentId);
+    const document = await documentsService.getById(req.params.documentId);
+
     if (document) {
       next();
     } else {
-      res
-        .status(404)
-        .send({ error: `Document ${req.params.documentId} not found` });
+      res.status(404);
     }
   }
 
-  async extractDocumentId(
+  // TODO: Cache
+  async validateDocumentAuthority(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    req.body.id = req.params.documentId;
-    next();
+    const document = await documentsService.getById(req.params.documentId);
+    const space = await spacesService.getById(document!.spaceId);
+    const team = await teamsService.getById(space!.teamId);
+
+    const memberIsPartOfTeam =
+      team?.members.find(
+        (member) => member.id === (req as AuthenticatedRequest).auth.user.id
+      ) !== undefined;
+
+    if (memberIsPartOfTeam) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
   }
 }
 

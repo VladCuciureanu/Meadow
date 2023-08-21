@@ -9,28 +9,20 @@ const HasTeamId = z.object({
   }),
 });
 
+const MutableFields = TeamSchema.omit({
+  id: true,
+  members: true,
+  spaces: true,
+});
+
 export const CreateTeamSchema = z.object({
-  body: TeamSchema.omit({
-    id: true,
-    members: true,
-    spaces: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const UpdateTeamSchema = HasTeamId.extend({
-  body: TeamSchema.omit({
-    id: true,
-    members: true,
-    spaces: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const PatchTeamSchema = HasTeamId.extend({
-  body: TeamSchema.omit({
-    id: true,
-    members: true,
-    spaces: true,
-  })
-    .partial()
-    .strict(),
+  body: MutableFields.partial().strict(),
 });

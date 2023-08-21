@@ -1,40 +1,37 @@
 import express from "express";
-import DocumentsService from "./documents.service";
+import documentsService from "./documents.service";
+import { AuthenticatedRequest } from "../auth/auth.interfaces";
 class DocumentsController {
-  // async listDocuments(req: express.Request, res: express.Response) {
-  //   const documents = await documentsService.list(100, 0);
-  //   res.status(200).send(documents);
-  // }
-
-  async getDocumentById(req: express.Request, res: express.Response) {
-    const document = await DocumentsService.readById(req.params.documentId);
-    res.status(200).send(document);
+  async getMany(req: express.Request, res: express.Response) {
+    const user = (req as AuthenticatedRequest).auth.user!;
+    const response = await documentsService.getMany(100, 0, user);
+    res.status(200).send(response);
   }
 
-  // async createDocument(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   const documentId = await documentsService.create(req.body);
-  //   res.status(201).send({ id: documentId });
-  // }
+  async getById(req: express.Request, res: express.Response) {
+    const response = await documentsService.getById(req.params.documentId);
+    res.status(200).send(response);
+  }
 
-  // async patch(req: express.Request, res: express.Response) {
-  //   if (req.body.password) {
-  //     req.body.password = await argon2.hash(req.body.password);
-  //   }
-  //   log(await documentsService.patchById(req.body));
-  //   res.status(204).send(``);
-  // }
+  async create(req: express.Request, res: express.Response) {
+    const response = await documentsService.create(req);
+    res.status(201).send(response);
+  }
 
-  // async put(req: express.Request, res: express.Response) {
-  //   req.body.password = await argon2.hash(req.body.password);
-  //   log(await documentsService.updateById({ id: req.params.documentId, ...req.body }));
-  //   res.status(204).send(``);
-  // }
+  async patch(req: express.Request, res: express.Response) {
+    const response = await documentsService.patch(req as any);
+    res.status(204).send(response);
+  }
 
-  // async removeDocument(req: express.Request, res: express.Response) {
-  //   log(await documentsService.deleteById(req.params.documentId));
-  //   res.status(204).send(``);
-  // }
+  async put(req: express.Request, res: express.Response) {
+    const response = await documentsService.put(req as any);
+    res.status(204).send(response);
+  }
+
+  async delete(req: express.Request, res: express.Response) {
+    const response = await documentsService.delete(req as any);
+    res.status(204).send(response);
+  }
 }
 
 export default new DocumentsController();

@@ -9,43 +9,25 @@ const HasFolderId = z.object({
   }),
 });
 
+const MutableFields = FolderSchema.omit({
+  id: true,
+  itemOrder: true,
+  documents: true,
+  parentFolder: true,
+  childrenFolders: true,
+  space: true,
+  created: true,
+  updated: true,
+});
+
 export const CreateFolderSchema = z.object({
-  body: FolderSchema.omit({
-    id: true,
-    itemOrder: true,
-    documents: true,
-    parentFolder: true,
-    childrenFolders: true,
-    space: true,
-    created: true,
-    updated: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const UpdateFolderSchema = HasFolderId.extend({
-  body: FolderSchema.omit({
-    id: true,
-    itemOrder: true,
-    documents: true,
-    parentFolder: true,
-    childrenFolders: true,
-    space: true,
-    created: true,
-    updated: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const PatchFolderSchema = HasFolderId.extend({
-  body: FolderSchema.omit({
-    id: true,
-    itemOrder: true,
-    documents: true,
-    parentFolder: true,
-    childrenFolders: true,
-    space: true,
-    created: true,
-    updated: true,
-  })
-    .partial()
-    .strict(),
+  body: MutableFields.partial().strict(),
 });

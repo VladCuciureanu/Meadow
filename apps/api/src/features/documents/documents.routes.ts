@@ -1,20 +1,28 @@
 import { Router } from "express";
 
-import DocumentsMiddleware from "./documents.middleware";
-import DocumentsController from "./documents.controller";
+import documentsMiddleware from "./documents.middleware";
+import documentsController from "./documents.controller";
+import { validate } from "../common/common.middleware";
+import {
+  CreateDocumentSchema,
+  PatchDocumentSchema,
+  UpdateDocumentSchema,
+} from "@meadow/shared";
 
 const DocumentRoutes = Router();
 
-DocumentRoutes.route(`/documents`);
-// .get(DocumentsController.listDocuments)
-// .post(DocumentsController.createDocument);
+DocumentRoutes.route(`/`)
+  .get(documentsController.getMany)
+  .post(validate(CreateDocumentSchema), documentsController.create);
 
-DocumentRoutes.param(`documentId`, DocumentsMiddleware.extractDocumentId);
-DocumentRoutes.route(`/documents/:documentId`)
-  .all(DocumentsMiddleware.validateDocumentExists)
-  .get(DocumentsController.getDocumentById);
-// .delete(DocumentsController.removeDocument)
-// .put(DocumentsController.put)
-// .patch(DocumentsController.patch);
+DocumentRoutes.route(`/:documentId`)
+  .all(
+    documentsMiddleware.validateDocumentExists,
+    documentsMiddleware.validateDocumentAuthority
+  )
+  .get(documentsController.getById)
+  .put(validate(UpdateDocumentSchema), documentsController.put)
+  .patch(validate(PatchDocumentSchema), documentsController.patch)
+  .delete(documentsController.delete);
 
 export default DocumentRoutes;

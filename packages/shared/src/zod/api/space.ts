@@ -9,37 +9,23 @@ const HasSpaceId = z.object({
   }),
 });
 
+const MutableFields = SpaceSchema.omit({
+  id: true,
+  blocks: true,
+  documents: true,
+  folders: true,
+  rootFolderOrder: true,
+  team: true,
+});
+
 export const CreateSpaceSchema = z.object({
-  body: SpaceSchema.omit({
-    id: true,
-    blocks: true,
-    documents: true,
-    folders: true,
-    rootFolderOrder: true,
-    team: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const UpdateSpaceSchema = HasSpaceId.extend({
-  body: SpaceSchema.omit({
-    id: true,
-    blocks: true,
-    documents: true,
-    folders: true,
-    rootFolderOrder: true,
-    team: true,
-  }).strict(),
+  body: MutableFields.strict(),
 });
 
 export const PatchSpaceSchema = HasSpaceId.extend({
-  body: SpaceSchema.omit({
-    id: true,
-    blocks: true,
-    documents: true,
-    folders: true,
-    rootFolderOrder: true,
-    team: true,
-  })
-    .partial()
-    .strict(),
+  body: MutableFields.partial().strict(),
 });

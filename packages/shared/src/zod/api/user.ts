@@ -22,42 +22,31 @@ export const UserCredentialsSchema = z.object({
     .strict(),
 });
 
+const MutableFields = UserSchema.omit({
+  id: true,
+  passwordHash: true,
+  teams: true,
+});
+
 export const CreateUserSchema = z.object({
-  body: UserSchema.omit({
-    id: true,
-    passwordHash: true,
-    teams: true,
-  })
-    .extend({
-      password: z.string(),
-    })
-    .strict(),
+  body: MutableFields.extend({
+    password: z.string(),
+  }).strict(),
 });
 
 export const UpdateUserSchema = HasUserId.merge(
   z.object({
-    body: UserSchema.omit({
-      id: true,
-      passwordHash: true,
-      teams: true,
-    })
-      .extend({
-        password: z.string(),
-      })
-      .strict(),
+    body: MutableFields.extend({
+      password: z.string(),
+    }).strict(),
   })
 );
 
 export const PatchUserSchema = HasUserId.merge(
   z.object({
-    body: UserSchema.omit({
-      id: true,
-      passwordHash: true,
-      teams: true,
+    body: MutableFields.extend({
+      password: z.string(),
     })
-      .extend({
-        password: z.string(),
-      })
       .partial()
       .strict(),
   })

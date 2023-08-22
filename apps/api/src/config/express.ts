@@ -15,6 +15,7 @@ import createHttpError from "http-errors";
 import routes from "./routes";
 import swaggerRoutes from "./swagger";
 import passport from "passport";
+import helmet from "helmet";
 
 // Create express server
 const app: Application = express();
@@ -25,8 +26,13 @@ if (config.environment === Environments.Development) {
   app.use("/api-docs", swaggerRoutes);
 }
 
+// Secure API via Helmet
+app.use(helmet());
+
 // Payload handling
 app.use(json());
+
+// Enable gzip compression for faster data streaming (built-in in most modern browsers)
 app.use(compression());
 
 // Enable cookie parsing

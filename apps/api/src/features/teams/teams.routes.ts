@@ -1,13 +1,14 @@
 import { Router } from "express";
 
-import teamsMiddleware from "./teams.middleware";
 import teamsController from "./teams.controller";
-import { validate } from "../common/common.middleware";
 import {
   CreateTeamSchema,
   PatchTeamSchema,
   UpdateTeamSchema,
 } from "@meadow/shared";
+import { validate } from "../common/middlewares/validate";
+import { validateTeamExists } from "./middlewares/validate-team-exists";
+import { validateTeamMembership } from "./middlewares/validate-team-membership";
 
 const TeamRoutes = Router();
 
@@ -16,10 +17,7 @@ TeamRoutes.route(`/`)
   .post(validate(CreateTeamSchema), teamsController.create);
 
 TeamRoutes.route(`/:teamId`)
-  .all(
-    teamsMiddleware.validateTeamExists,
-    teamsMiddleware.validateTeamMembership
-  )
+  .all(validateTeamExists, validateTeamMembership)
   .get(teamsController.getById)
   .put(validate(UpdateTeamSchema), teamsController.put)
   .patch(validate(PatchTeamSchema), teamsController.patch)

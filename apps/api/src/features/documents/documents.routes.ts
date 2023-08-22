@@ -1,13 +1,13 @@
 import { Router } from "express";
-
-import documentsMiddleware from "./documents.middleware";
 import documentsController from "./documents.controller";
-import { validate } from "../common/common.middleware";
 import {
   CreateDocumentSchema,
   PatchDocumentSchema,
   UpdateDocumentSchema,
 } from "@meadow/shared";
+import { validate } from "../common/middlewares/validate";
+import { validateDocumentAuthority } from "./middlewares/validate-document-authority";
+import { validateDocumentExists } from "./middlewares/validate-document-exists";
 
 const DocumentRoutes = Router();
 
@@ -16,10 +16,7 @@ DocumentRoutes.route(`/`)
   .post(validate(CreateDocumentSchema), documentsController.create);
 
 DocumentRoutes.route(`/:documentId`)
-  .all(
-    documentsMiddleware.validateDocumentExists,
-    documentsMiddleware.validateDocumentAuthority
-  )
+  .all(validateDocumentExists, validateDocumentAuthority)
   .get(documentsController.getById)
   .put(validate(UpdateDocumentSchema), documentsController.put)
   .patch(validate(PatchDocumentSchema), documentsController.patch)

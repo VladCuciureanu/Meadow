@@ -1,7 +1,7 @@
 import { LogInSchema } from "@meadow/shared";
-import { validate } from "../common/common.middleware";
 import { Router } from "express";
 import authController from "./auth.controller";
+import { validate } from "../common/middlewares/validate";
 
 const AuthRoutes = Router();
 

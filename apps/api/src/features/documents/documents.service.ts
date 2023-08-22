@@ -1,5 +1,5 @@
 import { Repository, DeepPartial } from "typeorm";
-import { Document } from "./document.model";
+import { DocumentEntity } from "./document.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import blocksService from "../blocks/blocks.service";
 import {
@@ -13,10 +13,10 @@ import {
 import { randomUUID } from "crypto";
 
 class DocumentsService {
-  documentsRepository: Repository<Document>;
+  documentsRepository: Repository<DocumentEntity>;
 
   constructor() {
-    this.documentsRepository = MeadowDataSource.getRepository(Document);
+    this.documentsRepository = MeadowDataSource.getRepository(DocumentEntity);
   }
 
   async getMany(limit: number, page: number, user: User) {

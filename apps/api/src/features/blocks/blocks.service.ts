@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Block } from "./block.model";
+import { BlockEntity } from "./block.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateBlockDto,
@@ -10,10 +10,10 @@ import {
 } from "@meadow/shared";
 
 class BlocksService {
-  blocksRepository: Repository<Block>;
+  blocksRepository: Repository<BlockEntity>;
 
   constructor() {
-    this.blocksRepository = MeadowDataSource.getRepository(Block);
+    this.blocksRepository = MeadowDataSource.getRepository(BlockEntity);
   }
 
   async getMany(limit: number, page: number, user: User) {

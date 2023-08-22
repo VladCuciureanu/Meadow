@@ -1,6 +1,5 @@
 import express from "express";
 import foldersService from "./folders.service";
-import { AuthenticatedRequest } from "../auth/auth.interfaces";
 import {
   CreateFolderDto,
   CreateFolderRequest,
@@ -11,9 +10,10 @@ import {
   UpdateFolderDto,
   UpdateFolderRequest,
 } from "@meadow/shared";
+import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class FoldersController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).user!;
+    const user = (req as any as AuthenticatedRequest).user!;
     const response = await foldersService.getMany(100, 0, user);
     res.status(200).send(response);
   }

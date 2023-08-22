@@ -1,6 +1,5 @@
 import express from "express";
 import blocksService from "./blocks.service";
-import { AuthenticatedRequest } from "../auth/auth.interfaces";
 import {
   CreateBlockDto,
   CreateBlockRequest,
@@ -11,9 +10,10 @@ import {
   UpdateBlockDto,
   UpdateBlockRequest,
 } from "@meadow/shared";
+import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class BlocksController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).user!;
+    const user = (req as any as AuthenticatedRequest).user!;
     const response = await blocksService.getMany(100, 0, user);
     res.status(200).send(response);
   }

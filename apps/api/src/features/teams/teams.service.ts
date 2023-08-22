@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Team } from "./team.model";
+import { TeamEntity } from "./team.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateTeamDto,
@@ -9,10 +9,10 @@ import {
 } from "@meadow/shared";
 
 class TeamsService {
-  teamsRepository: Repository<Team>;
+  teamsRepository: Repository<TeamEntity>;
 
   constructor() {
-    this.teamsRepository = MeadowDataSource.getRepository(Team);
+    this.teamsRepository = MeadowDataSource.getRepository(TeamEntity);
   }
 
   async getMany(limit: number, page: number) {

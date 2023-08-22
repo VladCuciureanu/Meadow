@@ -1,16 +1,16 @@
 import { Repository } from "typeorm";
 import { MeadowDataSource } from "../../config/typeorm";
 import { LogInDto } from "@meadow/shared";
-import { JWTPayload } from "./auth.interfaces";
-import { User } from "../users/user.model";
+import { UserEntity } from "../users/user.entity";
 import jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
+import { JWTPayload } from "./middlewares/jwt-payload";
 
 class AuthService {
-  userRepository: Repository<User>;
+  userRepository: Repository<UserEntity>;
 
   constructor() {
-    this.userRepository = MeadowDataSource.getRepository(User);
+    this.userRepository = MeadowDataSource.getRepository(UserEntity);
   }
 
   async getToken(dto: LogInDto) {

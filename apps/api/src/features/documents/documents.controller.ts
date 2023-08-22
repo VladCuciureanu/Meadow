@@ -1,6 +1,5 @@
 import express from "express";
 import documentsService from "./documents.service";
-import { AuthenticatedRequest } from "../auth/auth.interfaces";
 import {
   CreateDocumentDto,
   CreateDocumentRequest,
@@ -11,9 +10,10 @@ import {
   UpdateDocumentDto,
   UpdateDocumentRequest,
 } from "@meadow/shared";
+import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class DocumentsController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).user!;
+    const user = (req as any as AuthenticatedRequest).user!;
     const response = await documentsService.getMany(100, 0, user);
     res.status(200).send(response);
   }
@@ -24,7 +24,7 @@ class DocumentsController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).user!;
+    const user = (req as any as AuthenticatedRequest).user!;
     const dto = new CreateDocumentDto(req as CreateDocumentRequest, user);
     const response = await documentsService.create(dto);
     res.status(201).send(response);

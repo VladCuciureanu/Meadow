@@ -1,13 +1,14 @@
 import { Router } from "express";
 
-import blocksMiddleware from "./blocks.middleware";
 import blocksController from "./blocks.controller";
-import { validate } from "../common/common.middleware";
 import {
   CreateBlockSchema,
   PatchBlockSchema,
   UpdateBlockSchema,
 } from "@meadow/shared";
+import { validate } from "../common/middlewares/validate";
+import { validateBlockAuthority } from "./middlewares/validate-block-authority";
+import { validateBlockExists } from "./middlewares/validate-block-exists";
 
 const BlockRoutes = Router();
 
@@ -16,10 +17,7 @@ BlockRoutes.route(`/`)
   .post(validate(CreateBlockSchema), blocksController.create);
 
 BlockRoutes.route(`/:blockId`)
-  .all(
-    blocksMiddleware.validateBlockExists,
-    blocksMiddleware.validateBlockAuthority
-  )
+  .all(validateBlockExists, validateBlockAuthority)
   .get(blocksController.getById)
   .put(validate(UpdateBlockSchema), blocksController.put)
   .patch(validate(PatchBlockSchema), blocksController.patch)

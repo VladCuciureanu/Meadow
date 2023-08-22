@@ -1,6 +1,5 @@
 import express from "express";
 import teamsService from "./teams.service";
-import { AuthenticatedRequest } from "../auth/auth.interfaces";
 import {
   CreateTeamDto,
   CreateTeamRequest,
@@ -11,6 +10,7 @@ import {
   UpdateTeamDto,
   UpdateTeamRequest,
 } from "@meadow/shared";
+import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class TeamsController {
   async getMany(req: express.Request, res: express.Response) {
     const response = await teamsService.getMany(100, 0);
@@ -23,7 +23,7 @@ class TeamsController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const user = (req as AuthenticatedRequest).user;
+    const user = (req as any as AuthenticatedRequest).user;
     const dto = new CreateTeamDto(req as CreateTeamRequest, user);
     const response = await teamsService.create(dto);
     res.status(201).send(response);

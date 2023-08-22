@@ -1,16 +1,15 @@
-import { Router } from "express";
-
-import usersMiddleware from "./users.middleware";
-import usersController from "./users.controller";
-
 import {
   CreateUserSchema,
   PatchUserSchema,
   UpdateUserSchema,
 } from "@meadow/shared";
-
-import { validate } from "../common/common.middleware";
-import { authenticate } from "../auth/auth.middleware";
+import { Router } from "express";
+import usersController from "./users.controller";
+import { authenticate } from "../auth/middlewares/authenticate";
+import { validate } from "../common/middlewares/validate";
+import { validateCurrentUser } from "./middlewares/validate-current-user";
+import { validateEmailIsUnique } from "./middlewares/validate-unique-email";
+import { validateUserExists } from "./middlewares/validate-user-exists";
 
 const UserRoutes = Router();
 
@@ -18,25 +17,25 @@ UserRoutes.route(`/`)
   .get(authenticate, usersController.getMany)
   .post(
     validate(CreateUserSchema),
-    usersMiddleware.validateEmailIsUnique,
+    validateEmailIsUnique,
     usersController.create
   );
 
 UserRoutes.route(`/:userId`)
-  .all(authenticate, usersMiddleware.validateUserExists)
+  .all(authenticate, validateUserExists)
   .get(usersController.getById)
   .put(
-    usersMiddleware.validateCurrentUser,
+    validateCurrentUser,
     validate(UpdateUserSchema),
-    usersMiddleware.validateEmailIsUnique,
+    validateEmailIsUnique,
     usersController.put
   )
   .patch(
-    usersMiddleware.validateCurrentUser,
+    validateCurrentUser,
     validate(PatchUserSchema),
-    usersMiddleware.validateEmailIsUnique,
+    validateEmailIsUnique,
     usersController.patch
   )
-  .delete(usersMiddleware.validateCurrentUser, usersController.delete);
+  .delete(validateCurrentUser, usersController.delete);
 
 export default UserRoutes;

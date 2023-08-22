@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { User } from "./user.model";
+import { UserEntity } from "./user.entity";
 import * as argon2 from "argon2";
 import {
   CreateUserDto,
@@ -10,10 +10,10 @@ import {
 import { MeadowDataSource } from "../../config/typeorm";
 
 class UsersService {
-  usersRepository: Repository<User>;
+  usersRepository: Repository<UserEntity>;
 
   constructor() {
-    this.usersRepository = MeadowDataSource.getRepository(User);
+    this.usersRepository = MeadowDataSource.getRepository(UserEntity);
   }
 
   async getMany(limit: number, page: number) {

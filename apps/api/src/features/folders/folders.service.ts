@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Folder } from "./folder.model";
+import { FolderEntity } from "./folder.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateFolderDto,
@@ -10,10 +10,10 @@ import {
 } from "@meadow/shared";
 
 class FoldersService {
-  foldersRepository: Repository<Folder>;
+  foldersRepository: Repository<FolderEntity>;
 
   constructor() {
-    this.foldersRepository = MeadowDataSource.getRepository(Folder);
+    this.foldersRepository = MeadowDataSource.getRepository(FolderEntity);
   }
 
   async getMany(limit: number, page: number, user: User) {

@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Space } from "./space.model";
+import { SpaceEntity } from "./space.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateSpaceDto,
@@ -9,10 +9,10 @@ import {
 } from "@meadow/shared";
 
 class SpacesService {
-  spacesRepository: Repository<Space>;
+  spacesRepository: Repository<SpaceEntity>;
 
   constructor() {
-    this.spacesRepository = MeadowDataSource.getRepository(Space);
+    this.spacesRepository = MeadowDataSource.getRepository(SpaceEntity);
   }
 
   async getMany(limit: number, page: number) {

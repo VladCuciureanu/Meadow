@@ -6,11 +6,11 @@ import {
   PrimaryGeneratedColumn,
   JoinTable,
 } from "typeorm";
-import { Space } from "../spaces/space.model";
-import { User } from "../users/user.model";
+import { SpaceEntity } from "../spaces/space.entity";
+import { UserEntity } from "../users/user.entity";
 
 @Entity()
-export class Team {
+export class TeamEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -20,12 +20,12 @@ export class Team {
   @Column("text", { nullable: true })
   imgUrl?: string;
 
-  @ManyToMany(() => User, (user) => user.teams, {
+  @ManyToMany(() => UserEntity, (user) => user.teams, {
     onDelete: "CASCADE",
   })
   @JoinTable()
-  members: User[];
+  members: UserEntity[];
 
-  @OneToMany(() => Space, (space) => space.team)
-  spaces: Space[];
+  @OneToMany(() => SpaceEntity, (space) => space.team)
+  spaces: SpaceEntity[];
 }

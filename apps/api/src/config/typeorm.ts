@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Block } from "../features/blocks/block.model";
-import { User } from "../features/users/user.model";
-import { Team } from "../features/teams/team.model";
-import { Space } from "../features/spaces/space.model";
-import { Folder } from "../features/folders/folder.model";
-import { Document } from "../features/documents/document.model";
+import { BlockEntity } from "../features/blocks/block.entity";
+import { UserEntity } from "../features/users/user.entity";
+import { TeamEntity } from "../features/teams/team.entity";
+import { SpaceEntity } from "../features/spaces/space.entity";
+import { FolderEntity } from "../features/folders/folder.entity";
+import { DocumentEntity } from "../features/documents/document.entity";
 import config from "./env";
 
 export const MeadowDataSource = new DataSource({
@@ -17,7 +17,14 @@ export const MeadowDataSource = new DataSource({
   database: config.db.name,
   synchronize: config.db.sync,
   logging: config.db.logging,
-  entities: [User, Team, Space, Folder, Document, Block],
+  entities: [
+    UserEntity,
+    TeamEntity,
+    SpaceEntity,
+    FolderEntity,
+    DocumentEntity,
+    BlockEntity,
+  ],
   subscribers: [],
   migrations: [],
 });

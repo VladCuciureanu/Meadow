@@ -6,7 +6,7 @@ import DocumentRoutes from "../features/documents/documents.routes";
 import FolderRoutes from "../features/folders/folders.routes";
 import TeamRoutes from "../features/teams/teams.routes";
 import SpaceRoutes from "../features/spaces/spaces.routes";
-import { authenticate } from "../features/auth/auth.middleware";
+import { authenticate } from "../features/auth/middlewares/authenticate";
 
 const router = Router();
 

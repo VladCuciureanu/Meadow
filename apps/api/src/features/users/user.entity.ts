@@ -5,11 +5,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Team } from "../teams/team.model";
-import { Document } from "../documents/document.model";
+import { TeamEntity } from "../teams/team.entity";
+import { DocumentEntity } from "../documents/document.entity";
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -28,9 +28,9 @@ export class User {
   @Column("text", { nullable: true })
   imgUrl?: string;
 
-  @ManyToMany(() => Team, (team) => team.members)
-  teams: Team[];
+  @ManyToMany(() => TeamEntity, (team) => team.members)
+  teams: TeamEntity[];
 
-  @OneToMany(() => Document, (document) => document.author)
-  authoredDocuments: Document[];
+  @OneToMany(() => DocumentEntity, (document) => document.author)
+  authoredDocuments: DocumentEntity[];
 }

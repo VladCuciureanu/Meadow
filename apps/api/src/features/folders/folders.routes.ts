@@ -1,13 +1,14 @@
 import { Router } from "express";
 
-import foldersMiddleware from "./folders.middleware";
 import foldersController from "./folders.controller";
-import { validate } from "../common/common.middleware";
 import {
   CreateFolderSchema,
   PatchFolderSchema,
   UpdateFolderSchema,
 } from "@meadow/shared";
+import { validate } from "../common/middlewares/validate";
+import { validateFolderAuthority } from "./middlewares/validate-folder-authority";
+import { validateFolderExists } from "./middlewares/validate-folder-exists";
 
 const FolderRoutes = Router();
 
@@ -16,10 +17,7 @@ FolderRoutes.route(`/`)
   .post(validate(CreateFolderSchema), foldersController.create);
 
 FolderRoutes.route(`/:folderId`)
-  .all(
-    foldersMiddleware.validateFolderExists,
-    foldersMiddleware.validateFolderAuthority
-  )
+  .all(validateFolderExists, validateFolderAuthority)
   .get(foldersController.getById)
   .put(validate(UpdateFolderSchema), foldersController.put)
   .patch(validate(PatchFolderSchema), foldersController.patch)

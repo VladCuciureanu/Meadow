@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import { Document } from "../documents/document.model";
-import { Space } from "../spaces/space.model";
+import { DocumentEntity } from "../documents/document.entity";
+import { SpaceEntity } from "../spaces/space.entity";
 import { ListStyle, TextRun, TextBlockStyle, ImageStyle } from "@meadow/shared";
 import {
   ListStyleType,
@@ -25,7 +25,7 @@ import {
 } from "@meadow/shared/src/block/enum";
 
 @Entity()
-export class Block {
+export class BlockEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -44,18 +44,18 @@ export class Block {
   @Column("text", { default: BlockColor.Text })
   color: BlockColor;
 
-  @ManyToOne(() => Space, (space) => space.blocks, {
+  @ManyToOne(() => SpaceEntity, (space) => space.blocks, {
     onDelete: "CASCADE",
   })
-  space: Space;
+  space: SpaceEntity;
 
-  @RelationId((block: Block) => block.space)
+  @RelationId((block: BlockEntity) => block.space)
   spaceId: string;
 
-  @OneToOne(() => Document, (document) => document.rootBlock)
-  document?: Document;
+  @OneToOne(() => DocumentEntity, (document) => document.rootBlock)
+  document?: DocumentEntity;
 
-  @RelationId((block: Block) => block.document)
+  @RelationId((block: BlockEntity) => block.document)
   documentId?: string;
 
   @Column({ type: "enum", enum: BlockType, default: BlockType.Text })
@@ -73,13 +73,13 @@ export class Block {
   })
   style: TextBlockStyle;
 
-  @ManyToOne(() => Block, (block) => block.subblocks, {
+  @ManyToOne(() => BlockEntity, (block) => block.subblocks, {
     onDelete: "CASCADE",
   })
-  parentBlock?: Block;
+  parentBlock?: BlockEntity;
 
-  @OneToMany(() => Block, (block) => block.parentBlock)
-  subblocks: Block[];
+  @OneToMany(() => BlockEntity, (block) => block.parentBlock)
+  subblocks: BlockEntity[];
 
   @Column("text", { default: LineStyle.Regular })
   lineStyle: LineStyle;

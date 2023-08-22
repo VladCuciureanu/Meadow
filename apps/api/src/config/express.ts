@@ -45,7 +45,7 @@ app.use(cors());
 app.use(passport.initialize());
 
 // Base router
-app.use("/api/", routes);
+app.use("/api/v1/", routes);
 
 // 404 handler
 app.use((req, res, next) => {

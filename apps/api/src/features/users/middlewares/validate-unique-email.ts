@@ -1,6 +1,6 @@
 import express from "express";
-import { MeadowError } from "../../common/interfaces/error";
 import usersService from "../users.service";
+import MeadowError from "../../common/interfaces/error";
 
 export async function validateEmailIsUnique(
   req: express.Request,
@@ -18,9 +18,6 @@ export async function validateEmailIsUnique(
   if (!user) {
     next();
   } else {
-    res.status(500).send({
-      status: "Failed payload validations.",
-      errors: ["Email must be unique."],
-    } as MeadowError);
+    next(new MeadowError(500, "Request payload failed validation"));
   }
 }

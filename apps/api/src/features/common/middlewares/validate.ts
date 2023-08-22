@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { MeadowError } from "../interfaces/error";
+import MeadowError from "../interfaces/error";
 
 export const validate =
   (schema: z.AnyZodObject | z.ZodOptional<z.AnyZodObject>) =>
@@ -12,9 +12,6 @@ export const validate =
       if (err instanceof z.ZodError) {
         err = err.issues.map((e) => ({ message: e.message, path: e.path }));
       }
-      return res.status(400).json({
-        status: "Failed payload validations.",
-        errors: err,
-      } as MeadowError);
+      next(new MeadowError(500, "Request payload failed validation"));
     }
   };

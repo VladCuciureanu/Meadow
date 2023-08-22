@@ -1,4 +1,5 @@
-import { TypeOf, boolean, nativeEnum, number, object, string } from "zod";
+import { boolean, nativeEnum, object, string } from "zod";
+import MeadowError from "../features/common/interfaces/error";
 
 export enum Environments {
   Development = "development",
@@ -28,7 +29,7 @@ let env;
 try {
   env = EnvironmentVariablesSchema.parse(process.env);
 } catch (err) {
-  throw new Error(`Config validation error: ${err}`);
+  throw new MeadowError(500, `Config validation error: ${err}`);
 }
 
 const config = {

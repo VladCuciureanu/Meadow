@@ -13,7 +13,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column("text", { select: false, unique: true })
+  @Column("text", { unique: true })
   email: string;
 
   @Column("text")
@@ -22,7 +22,7 @@ export class UserEntity {
   @Column("text")
   lastName: string;
 
-  @Column("text", { select: false })
+  @Column("text")
   passwordHash: string;
 
   @Column("text", { nullable: true })

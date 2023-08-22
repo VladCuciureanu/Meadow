@@ -9,23 +9,20 @@ import {
 } from "typeorm";
 import { Document } from "../documents/document.model";
 import { Space } from "../spaces/space.model";
+import { ListStyle, TextRun, TextBlockStyle, ImageStyle } from "@meadow/shared";
 import {
-  CodeLanguage,
-  BlockColor,
-  ImageStyle,
-  LayoutStyle,
-  LineStyle,
-  ListStyle,
-  TextBlockStyle,
-  TextRun,
-  BlockType,
   ListStyleType,
+  BlockColor,
+  BlockType,
   TextStyle,
   FontStyle,
   AlignmentStyle,
+  LineStyle,
+  CodeLanguage,
   ImageSizeStyle,
   ImageFillStyle,
-} from "@meadow/shared";
+  LayoutStyle,
+} from "@meadow/shared/src/block/enum";
 
 @Entity()
 export class Block {

@@ -1,23 +1,23 @@
 import { z } from "zod";
 import {
-  AlignmentStyle,
-  BlockColor,
-  BlockType,
-  CardBackgroundColorKey,
-  CardFontStyle,
-  CardType,
-  CodeLanguage,
-  FontStyle,
-  ImageFillStyle,
-  ImageSizeStyle,
-  LayoutStyle,
-  LineStyle,
   ListStyleType,
-  TextHighlightColor,
-  TextRunLinkType,
-  TextStyle,
   TodoState,
-} from "..";
+  BlockColor,
+  CardType,
+  CardFontStyle,
+  CardBackgroundColorKey,
+  TextStyle,
+  FontStyle,
+  AlignmentStyle,
+  TextRunLinkType,
+  TextHighlightColor,
+  BlockType,
+  LineStyle,
+  CodeLanguage,
+  ImageSizeStyle,
+  ImageFillStyle,
+  LayoutStyle,
+} from "./enum";
 
 const HasBlockId = z.object({
   params: z.object({
@@ -196,16 +196,6 @@ const MutableFields = z.discriminatedUnion("type", [
   UrlMutableFields.strict(),
 ]);
 
-const PartialMutableFields = z.discriminatedUnion("type", [
-  TextMutableFields.deepPartial().strict(),
-  DividerMutableFields.deepPartial().strict(),
-  CodeMutableFields.deepPartial().strict(),
-  ImageMutableFields.deepPartial().strict(),
-  VideoMutableFields.deepPartial().strict(),
-  FileMutableFields.deepPartial().strict(),
-  UrlMutableFields.deepPartial().strict(),
-]);
-
 export const CreateBlockSchema = z.object({
   body: MutableFields,
 });
@@ -215,8 +205,8 @@ export const UpdateBlockSchema = HasBlockId.extend({
 });
 
 export const PatchBlockSchema = HasBlockId.extend({
-  body: PartialMutableFields,
-});
+  body: MutableFields,
+}).deepPartial();
 
 export const DeleteBlockSchema = HasBlockId;
 

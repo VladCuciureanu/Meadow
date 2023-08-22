@@ -7,15 +7,15 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
+  JoinColumn,
 } from "typeorm";
 import { Space } from "../spaces/space.model";
 import { User } from "../users/user.model";
 import { Folder } from "../folders/folder.model";
 import { Block } from "../blocks/block.model";
-import { Document as DocumentInterface } from "@meadow/shared";
 
 @Entity()
-export class Document implements DocumentInterface {
+export class Document {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -53,6 +53,7 @@ export class Document implements DocumentInterface {
   folderId?: string;
 
   @OneToOne(() => Block, (block) => block.document)
+  @JoinColumn()
   rootBlock: Block;
 
   @RelationId((document: Document) => document.rootBlock)

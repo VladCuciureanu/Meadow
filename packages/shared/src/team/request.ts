@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { TeamSchema } from "../entities";
 
 const HasTeamId = z.object({
   params: z.object({
@@ -9,10 +8,9 @@ const HasTeamId = z.object({
   }),
 });
 
-const MutableFields = TeamSchema.omit({
-  id: true,
-  members: true,
-  spaces: true,
+const MutableFields = z.object({
+  name: z.string(),
+  imgUrl: z.string().url().optional(),
 });
 
 export const CreateTeamSchema = z.object({
@@ -28,3 +26,8 @@ export const PatchTeamSchema = HasTeamId.extend({
 });
 
 export const DeleteTeamSchema = HasTeamId;
+
+export type CreateTeamRequest = z.infer<typeof CreateTeamSchema>;
+export type UpdateTeamRequest = z.infer<typeof UpdateTeamSchema>;
+export type PatchTeamRequest = z.infer<typeof PatchTeamSchema>;
+export type DeleteTeamRequest = z.infer<typeof DeleteTeamSchema>;

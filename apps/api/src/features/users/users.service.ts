@@ -1,12 +1,11 @@
 import { Repository } from "typeorm";
 import { User } from "./user.model";
 import * as argon2 from "argon2";
-import { z } from "zod";
 import {
-  CreateUserSchema,
-  DeleteUserSchema,
-  PatchUserSchema,
-  UpdateUserSchema,
+  CreateUserDto,
+  DeleteUserDto,
+  PatchUserDto,
+  UpdateUserDto,
 } from "@meadow/shared";
 import { MeadowDataSource } from "../../config/typeorm";
 
@@ -61,63 +60,63 @@ class UsersService {
     });
   }
 
-  async create(dto: z.infer<typeof CreateUserSchema>) {
-    const passwordHash = await argon2.hash(dto.body.password);
+  async create(dto: CreateUserDto) {
+    const passwordHash = await argon2.hash(dto.password);
 
     const user = await this.usersRepository.save(
       this.usersRepository.create({
-        email: dto.body.email,
+        email: dto.email,
         passwordHash: passwordHash,
-        firstName: dto.body.firstName,
-        lastName: dto.body.lastName,
-        imgUrl: dto.body.imgUrl,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        imgUrl: dto.imgUrl,
       })
     );
 
     return user;
   }
 
-  async patch(dto: z.infer<typeof PatchUserSchema>) {
-    if (dto.body.password) {
-      dto.body.password = await argon2.hash(dto.body.password);
+  async patch(dto: PatchUserDto) {
+    if (dto.password) {
+      dto.password = await argon2.hash(dto.password);
     }
 
-    (dto.body as any).passwordHash = dto.body.password;
+    (dto as any).passwordHash = dto.password;
 
-    delete (dto.body as any).password;
+    delete (dto as any).password;
 
     const updatedUser = await this.usersRepository.update(
       {
-        id: dto.params.userId,
+        id: dto.id,
       },
-      dto.body
+      dto
     );
 
     return updatedUser;
   }
 
-  async put(dto: z.infer<typeof UpdateUserSchema>) {
-    if (dto.body.password) {
-      dto.body.password = await argon2.hash(dto.body.password);
+  async put(dto: UpdateUserDto) {
+    if (dto.password) {
+      dto.password = await argon2.hash(dto.password);
     }
 
-    (dto.body as any).passwordHash = dto.body.password;
+    (dto as any).passwordHash = dto.password;
 
-    delete (dto.body as any).password;
+    delete (dto as any).password;
 
     const updatedUser = await this.usersRepository.update(
       {
-        id: dto.params.userId,
+        id: dto.id,
       },
-      dto.body
+      dto
     );
 
     return updatedUser;
   }
 
-  async delete(dto: z.infer<typeof DeleteUserSchema>) {
+  async delete(dto: DeleteUserDto) {
     return this.usersRepository.delete({
-      id: dto.params.userId,
+      id: dto.id,
     });
   }
 }

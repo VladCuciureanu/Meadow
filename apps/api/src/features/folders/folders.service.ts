@@ -1,12 +1,11 @@
-import { Repository, DeepPartial } from "typeorm";
+import { Repository } from "typeorm";
 import { Folder } from "./folder.model";
 import { MeadowDataSource } from "../../config/typeorm";
-import { z } from "zod";
 import {
-  CreateFolderSchema,
-  DeleteFolderSchema,
-  PatchFolderSchema,
-  UpdateFolderSchema,
+  CreateFolderDto,
+  DeleteFolderDto,
+  PatchFolderDto,
+  UpdateFolderDto,
   User,
 } from "@meadow/shared";
 
@@ -44,45 +43,60 @@ class FoldersService {
     });
   }
 
-  async create(dto: z.infer<typeof CreateFolderSchema>) {
-    const payload: DeepPartial<Folder> = dto.body;
-
-    payload.space = { id: payload.spaceId };
-    payload.parentFolder = { id: payload.parentFolderId };
-    payload.itemOrder = [];
-
-    const folder = this.foldersRepository.create(payload);
+  async create(dto: CreateFolderDto) {
+    const folder = this.foldersRepository.create({
+      name: dto.name,
+      description: dto.description,
+      icon: dto.icon,
+      itemOrder: [],
+      parentFolder: {
+        id: dto.parentFolderId,
+      },
+      space: {
+        id: dto.spaceId,
+      },
+    });
     return this.foldersRepository.save(folder);
   }
 
-  async patch(dto: z.infer<typeof PatchFolderSchema>) {
-    const payload: DeepPartial<Folder> = dto.body;
-
-    if (payload.spaceId) {
-      payload.space = { id: payload.spaceId };
-      delete payload.spaceId;
-    }
-    if (payload.parentFolderId) {
-      payload.parentFolder = { id: payload.parentFolderId };
-      delete payload.parentFolderId;
-    }
-
-    return this.foldersRepository.update({ id: dto.params.folderId }, payload);
+  async patch(dto: PatchFolderDto) {
+    return this.foldersRepository.update(
+      { id: dto.id },
+      {
+        name: dto.name,
+        description: dto.description,
+        icon: dto.icon,
+        itemOrder: dto.itemOrder,
+        parentFolder: {
+          id: dto.parentFolderId,
+        },
+        space: {
+          id: dto.spaceId,
+        },
+      }
+    );
   }
 
-  async put(dto: z.infer<typeof UpdateFolderSchema>) {
-    const payload: DeepPartial<Folder> = dto.body;
-
-    payload.space = { id: payload.spaceId };
-    delete payload.spaceId;
-    payload.parentFolder = { id: payload.parentFolderId };
-    delete payload.parentFolderId;
-
-    return this.foldersRepository.update({ id: dto.params.folderId }, payload);
+  async put(dto: UpdateFolderDto) {
+    return this.foldersRepository.update(
+      { id: dto.id },
+      {
+        name: dto.name,
+        description: dto.description,
+        icon: dto.icon,
+        itemOrder: dto.itemOrder,
+        parentFolder: {
+          id: dto.parentFolderId,
+        },
+        space: {
+          id: dto.spaceId,
+        },
+      }
+    );
   }
 
-  async delete(dto: z.infer<typeof DeleteFolderSchema>) {
-    return this.foldersRepository.delete({ id: dto.params.folderId });
+  async delete(dto: DeleteFolderDto) {
+    return this.foldersRepository.delete({ id: dto.id });
   }
 }
 

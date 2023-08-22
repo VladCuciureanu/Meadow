@@ -1,6 +1,16 @@
 import express from "express";
 import foldersService from "./folders.service";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import {
+  CreateFolderDto,
+  CreateFolderRequest,
+  DeleteFolderDto,
+  DeleteFolderRequest,
+  PatchFolderDto,
+  PatchFolderRequest,
+  UpdateFolderDto,
+  UpdateFolderRequest,
+} from "@meadow/shared";
 class FoldersController {
   async getMany(req: express.Request, res: express.Response) {
     const user = (req as AuthenticatedRequest).user!;
@@ -14,22 +24,26 @@ class FoldersController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const response = await foldersService.create(req);
+    const dto = new CreateFolderDto(req as CreateFolderRequest);
+    const response = await foldersService.create(dto);
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const response = await foldersService.patch(req as any);
+    const dto = new PatchFolderDto(req as any as PatchFolderRequest);
+    const response = await foldersService.patch(dto);
     res.status(204).send(response);
   }
 
   async put(req: express.Request, res: express.Response) {
-    const response = await foldersService.put(req as any);
+    const dto = new UpdateFolderDto(req as any as UpdateFolderRequest);
+    const response = await foldersService.put(dto);
     res.status(204).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const response = await foldersService.delete(req as any);
+    const dto = new DeleteFolderDto(req as any as DeleteFolderRequest);
+    const response = await foldersService.delete(dto);
     res.status(204).send(response);
   }
 }

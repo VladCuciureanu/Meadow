@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { DocumentSchema } from "../entities";
 
 const HasDocumentId = z.object({
   params: z.object({
@@ -9,20 +8,15 @@ const HasDocumentId = z.object({
   }),
 });
 
-const MutableFields = DocumentSchema.omit({
-  id: true,
-  previewUrl: true,
-  isEmpty: true,
-  author: true,
-  space: true,
-  folder: true,
-  rootBlock: true,
-  created: true,
-  updated: true,
+const MutableFields = z.object({
+  title: z.string(),
+  spaceId: z.string().uuid(),
+  folderId: z.string().uuid().optional(),
+  rootBlockId: z.string().uuid(),
 });
 
 export const CreateDocumentSchema = z.object({
-  body: MutableFields.strict(),
+  body: MutableFields.omit({ rootBlockId: true }).strict(),
 });
 
 export const UpdateDocumentSchema = HasDocumentId.extend({
@@ -34,3 +28,8 @@ export const PatchDocumentSchema = HasDocumentId.extend({
 });
 
 export const DeleteDocumentSchema = HasDocumentId;
+
+export type CreateDocumentRequest = z.infer<typeof CreateDocumentSchema>;
+export type UpdateDocumentRequest = z.infer<typeof UpdateDocumentSchema>;
+export type PatchDocumentRequest = z.infer<typeof PatchDocumentSchema>;
+export type DeleteDocumentRequest = z.infer<typeof DeleteDocumentSchema>;

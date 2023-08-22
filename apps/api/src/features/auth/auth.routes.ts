@@ -1,13 +1,10 @@
+import { LogInSchema } from "@meadow/shared";
 import { validate } from "../common/common.middleware";
-import { UserCredentialsSchema } from "@meadow/shared";
-import authController from "./auth.controller";
 import { Router } from "express";
+import authController from "./auth.controller";
 
 const AuthRoutes = Router();
 
-AuthRoutes.route(`/token`).get(
-  validate(UserCredentialsSchema),
-  authController.getToken
-);
+AuthRoutes.route(`/token`).get(validate(LogInSchema), authController.getToken);
 
 export default AuthRoutes;

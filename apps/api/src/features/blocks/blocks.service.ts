@@ -1,12 +1,11 @@
 import { Repository } from "typeorm";
 import { Block } from "./block.model";
 import { MeadowDataSource } from "../../config/typeorm";
-import { z } from "zod";
 import {
-  CreateBlockSchema,
-  DeleteBlockSchema,
-  PatchBlockSchema,
-  UpdateBlockSchema,
+  CreateBlockDto,
+  DeleteBlockDto,
+  PatchBlockDto,
+  UpdateBlockDto,
   User,
 } from "@meadow/shared";
 
@@ -42,21 +41,54 @@ class BlocksService {
     });
   }
 
-  async create(dto: z.infer<typeof CreateBlockSchema>) {
-    const block = this.blocksRepository.create(dto.body);
+  async create(dto: CreateBlockDto) {
+    const block = this.blocksRepository.create({
+      type: dto.type,
+      listStyle: dto.listStyle,
+      color: dto.color,
+      document: { id: dto.documentId },
+      space: { id: dto.spaceId },
+      hasBlockDecoration: dto.hasBlockDecoration,
+      hasFocusDecoration: dto.hasFocusDecoration,
+      indentationLevel: dto.indentationLevel,
+    });
     return this.blocksRepository.save(block);
   }
 
-  async patch(dto: z.infer<typeof PatchBlockSchema>) {
-    return this.blocksRepository.update({ id: dto.params.blockId }, dto.body);
+  async patch(dto: PatchBlockDto) {
+    return this.blocksRepository.update(
+      { id: dto.id },
+      {
+        type: dto.type,
+        listStyle: dto.listStyle,
+        color: dto.color,
+        document: { id: dto.documentId },
+        space: { id: dto.spaceId },
+        hasBlockDecoration: dto.hasBlockDecoration,
+        hasFocusDecoration: dto.hasFocusDecoration,
+        indentationLevel: dto.indentationLevel,
+      }
+    );
   }
 
-  async put(dto: z.infer<typeof UpdateBlockSchema>) {
-    return this.blocksRepository.update({ id: dto.params.blockId }, dto.body);
+  async put(dto: UpdateBlockDto) {
+    return this.blocksRepository.update(
+      { id: dto.id },
+      {
+        type: dto.type,
+        listStyle: dto.listStyle,
+        color: dto.color,
+        document: { id: dto.documentId },
+        space: { id: dto.spaceId },
+        hasBlockDecoration: dto.hasBlockDecoration,
+        hasFocusDecoration: dto.hasFocusDecoration,
+        indentationLevel: dto.indentationLevel,
+      }
+    );
   }
 
-  async delete(dto: z.infer<typeof DeleteBlockSchema>) {
-    return this.blocksRepository.delete({ id: dto.params.blockId });
+  async delete(dto: DeleteBlockDto) {
+    return this.blocksRepository.delete({ id: dto.id });
   }
 }
 

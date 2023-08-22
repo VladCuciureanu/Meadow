@@ -1,67 +1,4 @@
-// Models
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  passwordHash: string;
-  imgUrl?: string;
-  teams: Team[];
-}
-
-export interface Team {
-  id: string;
-  name: string;
-  imgUrl?: string;
-  members: User[];
-  spaces: Space[];
-}
-
-export type Space = {
-  id: string;
-  name: string;
-  imgUrl?: string;
-  blocks: Block[];
-  documents: Document[];
-  folders: Folder[];
-  rootFolderOrder: string[];
-  team: Team;
-  teamId: string;
-};
-
-export type Document = {
-  id: string;
-  title: string;
-  previewUrl: string;
-  isEmpty: boolean;
-  author: User;
-  authorId: string;
-  space: Space;
-  spaceId: string;
-  folder?: Folder;
-  folderId?: string;
-  rootBlock: Block;
-  rootBlockId: string;
-  created: Date;
-  updated: Date;
-};
-
-export type Folder = {
-  id: string;
-  name: string;
-  description?: string;
-  icon: FolderIconConfig;
-  itemOrder: string[];
-  documents: Document[];
-  parentFolder?: Folder;
-  parentFolderId?: string;
-  childrenFolders: Folder[];
-  space?: Space;
-  spaceId?: string;
-  created: Date;
-  updated: Date;
-};
+import { Space } from "../space/model";
 
 export type Block =
   | TextBlock
@@ -74,10 +11,10 @@ export type Block =
 
 export type BaseBlock = {
   id: string;
-  space?: Space;
-  spaceId?: string;
-  document?: Document;
-  documentId?: string;
+  space: Space;
+  spaceId: string;
+  document: Document;
+  documentId: string;
   indentationLevel: number;
   listStyle: ListStyle;
   hasBlockDecoration: boolean;
@@ -136,22 +73,7 @@ export interface UrlBlock extends BaseBlock {
   pageDescription?: string;
 }
 
-// Helper interfaces
-
-export interface FolderIconConfig {
-  tintColor?: string;
-  type: FolderIconType;
-  value: string;
-}
-
-export enum FolderIconType {
-  Emoji = "emoji",
-  LocalImage = "localImage",
-}
-
-export interface DocumentUserAttributes {
-  isStarred: boolean;
-}
+// Various enums and interfaces
 
 export interface TextBlockStyle {
   textStyle: TextStyle;

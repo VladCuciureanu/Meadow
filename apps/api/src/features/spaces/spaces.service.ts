@@ -1,12 +1,11 @@
-import { Repository, DeepPartial } from "typeorm";
+import { Repository } from "typeorm";
 import { Space } from "./space.model";
 import { MeadowDataSource } from "../../config/typeorm";
-import { z } from "zod";
 import {
-  CreateSpaceSchema,
-  DeleteSpaceSchema,
-  PatchSpaceSchema,
-  UpdateSpaceSchema,
+  CreateSpaceDto,
+  DeleteSpaceDto,
+  PatchSpaceDto,
+  UpdateSpaceDto,
 } from "@meadow/shared";
 
 class SpacesService {
@@ -32,45 +31,45 @@ class SpacesService {
     });
   }
 
-  async create(dto: z.infer<typeof CreateSpaceSchema>) {
-    const payload: DeepPartial<Space> = {
-      ...dto.body,
-    };
-
-    payload.team = { id: dto.body.teamId };
-    payload.rootFolderOrder = [];
-
-    const space = this.spacesRepository.create(payload);
+  async create(dto: CreateSpaceDto) {
+    const space = this.spacesRepository.create({
+      name: dto.name,
+      imgUrl: dto.imgUrl,
+      team: {
+        id: dto.teamId,
+      },
+    });
     return this.spacesRepository.save(space);
   }
 
-  async patch(dto: z.infer<typeof PatchSpaceSchema>) {
-    const payload: DeepPartial<Space> = {
-      ...dto.body,
-    };
-
-    if (payload.teamId) {
-      payload.team = { id: payload.teamId };
-      delete payload.teamId;
-    }
-
-    return this.spacesRepository.update({ id: dto.params.spaceId }, payload);
+  async patch(dto: PatchSpaceDto) {
+    return this.spacesRepository.update(
+      { id: dto.id },
+      {
+        name: dto.name,
+        imgUrl: dto.imgUrl,
+        team: {
+          id: dto.teamId,
+        },
+      }
+    );
   }
 
-  async put(dto: z.infer<typeof UpdateSpaceSchema>) {
-    const payload: DeepPartial<Space> = {
-      ...dto.body,
-    };
-
-    if (payload.teamId) {
-      payload.team = { id: payload.teamId };
-    }
-
-    return this.spacesRepository.update({ id: dto.params.spaceId }, payload);
+  async put(dto: UpdateSpaceDto) {
+    return this.spacesRepository.update(
+      { id: dto.id },
+      {
+        name: dto.name,
+        imgUrl: dto.imgUrl,
+        team: {
+          id: dto.teamId,
+        },
+      }
+    );
   }
 
-  async delete(dto: z.infer<typeof DeleteSpaceSchema>) {
-    return this.spacesRepository.delete({ id: dto.params.spaceId });
+  async delete(dto: DeleteSpaceDto) {
+    return this.spacesRepository.delete({ id: dto.id });
   }
 }
 

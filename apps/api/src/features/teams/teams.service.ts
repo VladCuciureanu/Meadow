@@ -1,13 +1,11 @@
 import { Repository } from "typeorm";
 import { Team } from "./team.model";
 import { MeadowDataSource } from "../../config/typeorm";
-import { z } from "zod";
 import {
-  CreateTeamSchema,
-  DeleteTeamSchema,
-  PatchTeamSchema,
-  UpdateTeamSchema,
-  User,
+  CreateTeamDto,
+  DeleteTeamDto,
+  PatchTeamDto,
+  UpdateTeamDto,
 } from "@meadow/shared";
 
 class TeamsService {
@@ -29,24 +27,31 @@ class TeamsService {
     });
   }
 
-  async create(dto: z.infer<typeof CreateTeamSchema>, user: User) {
+  async create(dto: CreateTeamDto) {
     const team = this.teamsRepository.create({
-      ...dto.body,
-      members: [{ id: user.id }],
+      name: dto.name,
+      imgUrl: dto.imgUrl,
+      members: [{ id: dto.creatorId }],
     });
     return this.teamsRepository.save(team);
   }
 
-  async patch(dto: z.infer<typeof PatchTeamSchema>) {
-    return this.teamsRepository.update({ id: dto.params.teamId }, dto.body);
+  async patch(dto: PatchTeamDto) {
+    return this.teamsRepository.update(
+      { id: dto.id },
+      { name: dto.name, imgUrl: dto.imgUrl }
+    );
   }
 
-  async put(dto: z.infer<typeof UpdateTeamSchema>) {
-    return this.teamsRepository.update({ id: dto.params.teamId }, dto.body);
+  async put(dto: UpdateTeamDto) {
+    return this.teamsRepository.update(
+      { id: dto.id },
+      { name: dto.name, imgUrl: dto.imgUrl }
+    );
   }
 
-  async delete(dto: z.infer<typeof DeleteTeamSchema>) {
-    return this.teamsRepository.delete({ id: dto.params.teamId });
+  async delete(dto: DeleteTeamDto) {
+    return this.teamsRepository.delete({ id: dto.id });
   }
 }
 

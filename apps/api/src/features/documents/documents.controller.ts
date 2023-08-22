@@ -1,6 +1,16 @@
 import express from "express";
 import documentsService from "./documents.service";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import {
+  CreateDocumentDto,
+  CreateDocumentRequest,
+  DeleteDocumentDto,
+  DeleteDocumentRequest,
+  PatchDocumentDto,
+  PatchDocumentRequest,
+  UpdateDocumentDto,
+  UpdateDocumentRequest,
+} from "@meadow/shared";
 class DocumentsController {
   async getMany(req: express.Request, res: express.Response) {
     const user = (req as AuthenticatedRequest).user!;
@@ -14,22 +24,27 @@ class DocumentsController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const response = await documentsService.create(req);
+    const user = (req as AuthenticatedRequest).user!;
+    const dto = new CreateDocumentDto(req as CreateDocumentRequest, user);
+    const response = await documentsService.create(dto);
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const response = await documentsService.patch(req as any);
+    const dto = new PatchDocumentDto(req as any as PatchDocumentRequest);
+    const response = await documentsService.patch(dto);
     res.status(204).send(response);
   }
 
   async put(req: express.Request, res: express.Response) {
-    const response = await documentsService.put(req as any);
+    const dto = new UpdateDocumentDto(req as any as UpdateDocumentRequest);
+    const response = await documentsService.put(dto);
     res.status(204).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const response = await documentsService.delete(req as any);
+    const dto = new DeleteDocumentDto(req as any as DeleteDocumentRequest);
+    const response = await documentsService.delete(dto);
     res.status(204).send(response);
   }
 }

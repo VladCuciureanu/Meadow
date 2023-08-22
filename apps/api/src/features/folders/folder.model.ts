@@ -13,7 +13,7 @@ import { Space } from "../spaces/space.model";
 import { FolderIconConfig, Folder as FolderInterface } from "@meadow/shared";
 
 @Entity()
-export class Folder implements FolderInterface {
+export class Folder {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

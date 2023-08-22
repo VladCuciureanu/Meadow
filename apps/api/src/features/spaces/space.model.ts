@@ -10,10 +10,9 @@ import { Document } from "../documents/document.model";
 import { Folder } from "../folders/folder.model";
 import { Block } from "../blocks/block.model";
 import { Team } from "../teams/team.model";
-import { Space as SpaceInterface } from "@meadow/shared";
 
 @Entity()
-export class Space implements SpaceInterface {
+export class Space {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

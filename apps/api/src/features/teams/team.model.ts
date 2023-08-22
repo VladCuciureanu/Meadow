@@ -7,11 +7,10 @@ import {
   JoinTable,
 } from "typeorm";
 import { Space } from "../spaces/space.model";
-import { Team as TeamInterface } from "@meadow/shared";
 import { User } from "../users/user.model";
 
 @Entity()
-export class Team implements TeamInterface {
+export class Team {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

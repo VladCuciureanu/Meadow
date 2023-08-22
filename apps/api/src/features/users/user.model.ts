@@ -7,10 +7,9 @@ import {
 } from "typeorm";
 import { Team } from "../teams/team.model";
 import { Document } from "../documents/document.model";
-import { User as UserInterface } from "@meadow/shared";
 
 @Entity()
-export class User implements UserInterface {
+export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

@@ -1,6 +1,16 @@
 import express from "express";
 import blocksService from "./blocks.service";
 import { AuthenticatedRequest } from "../auth/auth.interfaces";
+import {
+  CreateBlockDto,
+  CreateBlockRequest,
+  DeleteBlockDto,
+  DeleteBlockRequest,
+  PatchBlockDto,
+  PatchBlockRequest,
+  UpdateBlockDto,
+  UpdateBlockRequest,
+} from "@meadow/shared";
 class BlocksController {
   async getMany(req: express.Request, res: express.Response) {
     const user = (req as AuthenticatedRequest).user!;
@@ -14,22 +24,26 @@ class BlocksController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const response = await blocksService.create(req);
+    const dto = new CreateBlockDto(req as CreateBlockRequest);
+    const response = await blocksService.create(dto);
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const response = await blocksService.patch(req as any);
+    const dto = new PatchBlockDto(req as any as PatchBlockRequest);
+    const response = await blocksService.patch(dto);
     res.status(204).send(response);
   }
 
   async put(req: express.Request, res: express.Response) {
-    const response = await blocksService.put(req as any);
+    const dto = new UpdateBlockDto(req as any as UpdateBlockRequest);
+    const response = await blocksService.put(dto);
     res.status(204).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const response = await blocksService.delete(req as any);
+    const dto = new DeleteBlockDto(req as any as DeleteBlockRequest);
+    const response = await blocksService.delete(dto);
     res.status(204).send(response);
   }
 }

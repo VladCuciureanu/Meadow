@@ -1,14 +1,16 @@
-import { Repository } from "typeorm";
+import { Repository, DeepPartial } from "typeorm";
 import { Document } from "./document.model";
 import { MeadowDataSource } from "../../config/typeorm";
-import { z } from "zod";
+import blocksService from "../blocks/blocks.service";
 import {
-  CreateDocumentSchema,
-  DeleteDocumentSchema,
-  PatchDocumentSchema,
-  UpdateDocumentSchema,
+  CreateBlockDto,
+  CreateDocumentDto,
+  DeleteDocumentDto,
+  PatchDocumentDto,
+  UpdateDocumentDto,
   User,
 } from "@meadow/shared";
+import { randomUUID } from "crypto";
 
 class DocumentsService {
   documentsRepository: Repository<Document>;
@@ -31,6 +33,7 @@ class DocumentsService {
           },
         },
       },
+      relations: ["space", "folder", "author", "rootBlock"],
     });
   }
 
@@ -39,30 +42,72 @@ class DocumentsService {
       where: {
         id: documentId,
       },
+      relations: ["space", "folder", "author", "rootBlock"],
     });
   }
 
-  async create(dto: z.infer<typeof CreateDocumentSchema>) {
-    const document = this.documentsRepository.create(dto.body);
+  async create(dto: CreateDocumentDto) {
+    const newDocumentId = randomUUID();
+
+    const document = this.documentsRepository.create({
+      id: newDocumentId,
+      title: dto.title,
+      author: {
+        id: dto.authorId,
+      },
+      folder: {
+        id: dto.folderId,
+      },
+      rootBlock: {
+        documentId: newDocumentId,
+        spaceId: dto.spaceId,
+      },
+      space: {
+        id: dto.spaceId,
+      },
+      previewUrl: "https://todo.functionality",
+    });
     return this.documentsRepository.save(document);
   }
 
-  async patch(dto: z.infer<typeof PatchDocumentSchema>) {
+  async patch(dto: PatchDocumentDto) {
     return this.documentsRepository.update(
-      { id: dto.params.documentId },
-      dto.body
+      { id: dto.id },
+      {
+        title: dto.title,
+        folder: {
+          id: dto.folderId,
+        },
+        rootBlock: {
+          id: dto.rootBlockId,
+        },
+        space: {
+          id: dto.spaceId,
+        },
+      }
     );
   }
 
-  async put(dto: z.infer<typeof UpdateDocumentSchema>) {
+  async put(dto: UpdateDocumentDto) {
     return this.documentsRepository.update(
-      { id: dto.params.documentId },
-      dto.body
+      { id: dto.id },
+      {
+        title: dto.title,
+        folder: {
+          id: dto.folderId,
+        },
+        rootBlock: {
+          id: dto.rootBlockId,
+        },
+        space: {
+          id: dto.spaceId,
+        },
+      }
     );
   }
 
-  async delete(dto: z.infer<typeof DeleteDocumentSchema>) {
-    return this.documentsRepository.delete({ id: dto.params.documentId });
+  async delete(dto: DeleteDocumentDto) {
+    return this.documentsRepository.delete({ id: dto.id });
   }
 }
 

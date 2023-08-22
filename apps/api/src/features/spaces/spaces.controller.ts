@@ -1,5 +1,14 @@
 import express from "express";
 import spacesService from "./spaces.service";
+import {
+  CreateSpaceDto,
+  DeleteSpaceDto,
+  DeleteSpaceRequest,
+  PatchSpaceDto,
+  PatchSpaceRequest,
+  UpdateSpaceDto,
+  UpdateSpaceRequest,
+} from "@meadow/shared";
 class SpacesController {
   async getMany(req: express.Request, res: express.Response) {
     const response = await spacesService.getMany(100, 0);
@@ -12,22 +21,26 @@ class SpacesController {
   }
 
   async create(req: express.Request, res: express.Response) {
-    const response = await spacesService.create(req);
+    const dto = new CreateSpaceDto(req);
+    const response = await spacesService.create(dto);
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const response = await spacesService.patch(req as any);
+    const dto = new PatchSpaceDto(req as any as PatchSpaceRequest);
+    const response = await spacesService.patch(dto);
     res.status(204).send(response);
   }
 
   async put(req: express.Request, res: express.Response) {
-    const response = await spacesService.put(req as any);
+    const dto = new UpdateSpaceDto(req as any as UpdateSpaceRequest);
+    const response = await spacesService.put(dto);
     res.status(204).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const response = await spacesService.delete(req as any);
+    const dto = new DeleteSpaceDto(req as any as DeleteSpaceRequest);
+    const response = await spacesService.delete(dto);
     res.status(204).send(response);
   }
 }

@@ -16,47 +16,35 @@ import {
   LayoutStyle,
   LineStyle,
   ListStyle,
-  BaseBlock as BaseBlockInterface,
-  TextBlock as TextBlockInterface,
-  DividerBlock as DividerBlockInterface,
-  CodeBlock as CodeBlockInterface,
-  ImageBlock as ImageBlockInterface,
-  VideoBlock as VideoBlockInterface,
-  FileBlock as FileBlockInterface,
-  UrlBlock as UrlBlockInterface,
   TextBlockStyle,
   TextRun,
   BlockType,
+  ListStyleType,
+  TextStyle,
+  FontStyle,
+  AlignmentStyle,
+  ImageSizeStyle,
+  ImageFillStyle,
 } from "@meadow/shared";
 
 @Entity()
-export class Block
-  implements
-    BaseBlockInterface,
-    Omit<TextBlockInterface, "type">,
-    Omit<DividerBlockInterface, "type">,
-    Omit<CodeBlockInterface, "type">,
-    Omit<ImageBlockInterface, "type">,
-    Omit<VideoBlockInterface, "type">,
-    Omit<FileBlockInterface, "type">,
-    Omit<UrlBlockInterface, "type">
-{
+export class Block {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column("int")
+  @Column("int", { default: 0 })
   indentationLevel: number;
 
-  @Column("jsonb")
+  @Column("jsonb", { default: { type: ListStyleType.None } })
   listStyle: ListStyle;
 
-  @Column("boolean")
+  @Column("boolean", { default: false })
   hasBlockDecoration: boolean;
 
-  @Column("boolean")
+  @Column("boolean", { default: false })
   hasFocusDecoration: boolean;
 
-  @Column("text")
+  @Column("text", { default: BlockColor.Text })
   color: BlockColor;
 
   @ManyToOne(() => Space, (space) => space.blocks, {
@@ -73,13 +61,19 @@ export class Block
   @RelationId((block: Block) => block.document)
   documentId?: string;
 
-  @Column({ type: "enum", enum: BlockType })
+  @Column({ type: "enum", enum: BlockType, default: BlockType.Text })
   type: BlockType;
 
-  @Column("jsonb")
+  @Column("jsonb", { default: [] })
   content: TextRun[];
 
-  @Column("jsonb")
+  @Column("jsonb", {
+    default: {
+      textStyle: TextStyle.Body,
+      fontStyle: FontStyle.System,
+      alignmentStyle: AlignmentStyle.Left,
+    },
+  })
   style: TextBlockStyle;
 
   @ManyToOne(() => Block, (block) => block.subblocks, {
@@ -90,22 +84,24 @@ export class Block
   @OneToMany(() => Block, (block) => block.parentBlock)
   subblocks: Block[];
 
-  @Column("text")
+  @Column("text", { default: LineStyle.Regular })
   lineStyle: LineStyle;
 
-  @Column("text")
+  @Column("text", { default: "" })
   code: string;
 
-  @Column("text")
+  @Column("text", { default: CodeLanguage.JavaScript })
   language: CodeLanguage;
 
   @Column("text", { nullable: true })
   filename?: string;
 
-  @Column("jsonb")
+  @Column("jsonb", {
+    default: { sizeStyle: ImageSizeStyle.Auto, fillStyle: ImageFillStyle.Auto },
+  })
   previewImageStyle: ImageStyle;
 
-  @Column("jsonb")
+  @Column({ enum: LayoutStyle, default: LayoutStyle.Regular })
   layoutStyle: LayoutStyle;
 
   @Column("text", { nullable: true })

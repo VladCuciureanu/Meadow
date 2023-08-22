@@ -1,10 +1,4 @@
-import { Space } from "../space/model";
 import {
-  BlockColor,
-  BlockType,
-  LineStyle,
-  CodeLanguage,
-  LayoutStyle,
   TextStyle,
   FontStyle,
   AlignmentStyle,
@@ -18,81 +12,6 @@ import {
   ImageSizeStyle,
   ImageFillStyle,
 } from "./enum";
-
-export type Block =
-  | TextBlock
-  | DividerBlock
-  | CodeBlock
-  | ImageBlock
-  | VideoBlock
-  | FileBlock
-  | UrlBlock;
-
-export type BaseBlock = {
-  id: string;
-  space: Space;
-  spaceId: string;
-  document: Document;
-  documentId: string;
-  indentationLevel: number;
-  listStyle: ListStyle;
-  hasBlockDecoration: boolean;
-  hasFocusDecoration: boolean;
-  color: BlockColor;
-};
-
-export type TextBlock = BaseBlock & {
-  type: BlockType.Text;
-  content: TextRun[];
-  style: TextBlockStyle;
-  parentBlock?: Block;
-  parentBlockId?: string;
-  subblocks: Block[];
-};
-
-export interface DividerBlock extends BaseBlock {
-  type: BlockType.Divider;
-  lineStyle: LineStyle;
-}
-
-export interface CodeBlock extends BaseBlock {
-  type: BlockType.Code;
-  code: string;
-  language: CodeLanguage;
-}
-
-export interface ResourceBlock extends BaseBlock {
-  url?: string;
-  previewUrl?: string;
-  filename?: string;
-}
-
-export interface ImageBlock extends ResourceBlock {
-  type: BlockType.Image;
-  previewImageStyle: ImageStyle;
-}
-
-export interface VideoBlock extends ResourceBlock {
-  type: BlockType.Video;
-  previewImageStyle: ImageStyle;
-}
-
-export interface FileBlock extends ResourceBlock {
-  type: BlockType.File;
-  layoutStyle: LayoutStyle;
-}
-
-export interface UrlBlock extends BaseBlock {
-  type: BlockType.Url;
-  layoutStyle: LayoutStyle;
-  url?: string;
-  originalUrl?: string;
-  imageUrl?: string;
-  title?: string;
-  pageDescription?: string;
-}
-
-// Various enums and interfaces
 
 export interface TextBlockStyle {
   textStyle: TextStyle;

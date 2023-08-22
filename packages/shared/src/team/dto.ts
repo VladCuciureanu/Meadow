@@ -1,51 +1,24 @@
-import { User } from "../user";
-import {
-  CreateTeamRequest,
-  DeleteTeamRequest,
-  PatchTeamRequest,
-  UpdateTeamRequest,
-} from "./request";
+import { BaseEntityDto } from "../common";
+import { SpaceDto } from "../space";
+import { UserDto } from "../user";
 
-export class CreateTeamDto {
+export class TeamDto extends BaseEntityDto {
   name: string;
   imgUrl?: string;
-  creatorId: string;
+  members: UserDto[];
+  spaces: SpaceDto[];
 
-  constructor(request: CreateTeamRequest, user: User) {
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-    this.creatorId = user.id;
-  }
-}
-
-export class PatchTeamDto {
-  id: string;
-  name?: string;
-  imgUrl?: string;
-
-  constructor(request: PatchTeamRequest) {
-    this.id = request.params.teamId;
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-  }
-}
-
-export class UpdateTeamDto {
-  id: string;
-  name: string;
-  imgUrl?: string;
-
-  constructor(request: UpdateTeamRequest) {
-    this.id = request.params.teamId;
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-  }
-}
-
-export class DeleteTeamDto {
-  id: string;
-
-  constructor(request: DeleteTeamRequest) {
-    this.id = request.params.teamId;
+  constructor(
+    id: string,
+    name: string,
+    imgUrl: string | undefined,
+    members: UserDto[],
+    spaces: SpaceDto[]
+  ) {
+    super(id);
+    this.name = name;
+    this.imgUrl = imgUrl;
+    this.members = members;
+    this.spaces = spaces;
   }
 }

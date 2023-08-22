@@ -22,6 +22,7 @@ import {
   ImageSizeStyle,
   ImageFillStyle,
   LayoutStyle,
+  TodoState,
 } from "@meadow/shared/src/block/enum";
 
 @Entity()
@@ -31,9 +32,6 @@ export class BlockEntity {
 
   @Column("int", { default: 0 })
   indentationLevel: number;
-
-  @Column("jsonb", { default: { type: ListStyleType.None } })
-  listStyle: ListStyle;
 
   @Column("boolean", { default: false })
   hasBlockDecoration: boolean;
@@ -53,25 +51,37 @@ export class BlockEntity {
   spaceId: string;
 
   @OneToOne(() => DocumentEntity, (document) => document.rootBlock)
-  document?: DocumentEntity;
+  document: DocumentEntity;
 
   @RelationId((block: BlockEntity) => block.document)
-  documentId?: string;
+  documentId: string;
 
   @Column({ type: "enum", enum: BlockType, default: BlockType.Text })
   type: BlockType;
 
+  //-------------------- List Style --------------------
+  @Column({ enum: ListStyleType, default: ListStyleType.None })
+  listStyleType: ListStyleType;
+
+  @Column("int", { default: 0 })
+  listStyleOrdinal: number;
+
+  @Column({ enum: TodoState, default: TodoState.Unchecked })
+  listStyleTodoState: TodoState;
+
+  //-------------------- Text Block --------------------
+
   @Column("jsonb", { default: [] })
   content: TextRun[];
 
-  @Column("jsonb", {
-    default: {
-      textStyle: TextStyle.Body,
-      fontStyle: FontStyle.System,
-      alignmentStyle: AlignmentStyle.Left,
-    },
-  })
-  style: TextBlockStyle;
+  @Column({ enum: TextStyle, default: TextStyle.Body })
+  textStyle: TextStyle;
+
+  @Column({ enum: FontStyle, default: FontStyle.System })
+  fontStyle: FontStyle;
+
+  @Column({ enum: AlignmentStyle, default: AlignmentStyle.Left })
+  alignmentStyle: AlignmentStyle;
 
   @ManyToOne(() => BlockEntity, (block) => block.subblocks, {
     onDelete: "CASCADE",
@@ -81,25 +91,36 @@ export class BlockEntity {
   @OneToMany(() => BlockEntity, (block) => block.parentBlock)
   subblocks: BlockEntity[];
 
+  //------------------- Divider Block -------------------
+
   @Column("text", { default: LineStyle.Regular })
   lineStyle: LineStyle;
 
-  @Column("text", { default: "" })
-  code: string;
+  //-------------------- Code Block --------------------
+
+  @Column("text", { nullable: true })
+  code?: string;
 
   @Column("text", { default: CodeLanguage.JavaScript })
   language: CodeLanguage;
 
+  //------------------ Resource Block ------------------
+
   @Column("text", { nullable: true })
   filename?: string;
 
-  @Column("jsonb", {
-    default: { sizeStyle: ImageSizeStyle.Auto, fillStyle: ImageFillStyle.Auto },
-  })
-  previewImageStyle: ImageStyle;
+  @Column({ enum: ImageSizeStyle, default: ImageSizeStyle.Auto })
+  previewImageSizeStyle: ImageSizeStyle;
+
+  @Column({ enum: ImageFillStyle, default: ImageFillStyle.Auto })
+  previewImageFillStyle: ImageFillStyle;
+
+  //-------------------- File Block --------------------
 
   @Column({ enum: LayoutStyle, default: LayoutStyle.Regular })
   layoutStyle: LayoutStyle;
+
+  //-------------------- Url Block --------------------
 
   @Column("text", { nullable: true })
   url?: string;

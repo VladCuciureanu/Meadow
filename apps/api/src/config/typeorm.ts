@@ -8,15 +8,20 @@ import { FolderEntity } from "../features/folders/folder.entity";
 import { DocumentEntity } from "../features/documents/document.entity";
 import config from "./env";
 
+const databaseName =
+  config.environment !== "test" ? config.db.name : `${config.db.name}-test`;
+const shouldDropSchema = config.db.dropSchema || config.environment === "test";
+
 export const MeadowDataSource = new DataSource({
   type: "postgres",
   host: config.db.host,
   port: config.db.port,
   username: config.db.username,
   password: config.db.password,
-  database: config.db.name,
+  database: databaseName,
   synchronize: config.db.sync,
   logging: config.db.logging,
+  dropSchema: shouldDropSchema,
   entities: [
     UserEntity,
     TeamEntity,

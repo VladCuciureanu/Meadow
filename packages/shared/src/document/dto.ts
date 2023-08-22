@@ -1,59 +1,51 @@
-import { User } from "../user";
-import {
-  CreateDocumentRequest,
-  DeleteDocumentRequest,
-  PatchDocumentRequest,
-  UpdateDocumentRequest,
-} from "./request";
+import { BlockDto } from "../block";
+import { BaseAuditableEntityDto } from "../common";
+import { FolderDto } from "../folder";
+import { SpaceDto } from "../space";
+import { UserDto } from "../user";
 
-export class CreateDocumentDto {
+export class DocumentDto extends BaseAuditableEntityDto {
   title: string;
-  folderId?: string;
-  spaceId: string;
+  previewUrl: string;
+  isEmpty: boolean;
+  author: UserDto;
   authorId: string;
-  constructor(request: CreateDocumentRequest, user: User) {
-    this.title = request.body.title;
-    this.folderId = request.body.folderId;
-    this.spaceId = request.body.spaceId;
-    this.authorId = user.id;
-  }
-}
-
-export class PatchDocumentDto {
-  id: string;
-  title?: string;
-  folderId?: string;
-  spaceId?: string;
-  rootBlockId?: string;
-
-  constructor(request: PatchDocumentRequest) {
-    this.id = request.params.documentId;
-    this.title = request.body.title;
-    this.folderId = request.body.folderId;
-    this.spaceId = request.body.spaceId;
-    this.rootBlockId = request.body.rootBlockId;
-  }
-}
-
-export class UpdateDocumentDto {
-  id: string;
-  title: string;
-  folderId?: string;
+  space: SpaceDto;
   spaceId: string;
+  folder?: FolderDto;
+  folderId?: string;
+  rootBlock: BlockDto;
   rootBlockId: string;
 
-  constructor(request: UpdateDocumentRequest) {
-    this.id = request.params.documentId;
-    this.title = request.body.title;
-    this.folderId = request.body.folderId;
-    this.spaceId = request.body.spaceId;
-    this.rootBlockId = request.body.rootBlockId;
-  }
-}
-
-export class DeleteDocumentDto {
-  id: string;
-  constructor(request: DeleteDocumentRequest) {
-    this.id = request.params.documentId;
+  constructor(
+    id: string,
+    title: string,
+    previewUrl: string,
+    isEmpty: boolean,
+    author: UserDto,
+    authorId: string,
+    space: SpaceDto,
+    spaceId: string,
+    folder: FolderDto | undefined,
+    folderId: string | undefined,
+    rootBlock: BlockDto,
+    rootBlockId: string,
+    created: Date,
+    createdBy: UserDto,
+    modified: Date,
+    modifiedBy: UserDto
+  ) {
+    super(id, created, createdBy, modified, modifiedBy);
+    this.title = title;
+    this.previewUrl = previewUrl;
+    this.isEmpty = isEmpty;
+    this.author = author;
+    this.authorId = authorId;
+    this.space = space;
+    this.spaceId = spaceId;
+    this.folder = folder;
+    this.folderId = folderId;
+    this.rootBlock = rootBlock;
+    this.rootBlockId = rootBlockId;
   }
 }

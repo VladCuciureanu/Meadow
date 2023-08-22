@@ -1,86 +1,74 @@
-import { BlockType, BlockColor } from "./enum";
-import { ListStyle } from "./model";
+import { BaseEntityDto } from "../common";
+import { DocumentDto } from "../document";
+import { SpaceDto } from "../space";
 import {
-  CreateBlockRequest,
-  DeleteBlockRequest,
-  PatchBlockRequest,
-  UpdateBlockRequest,
-} from "./request";
+  BlockType,
+  BlockColor,
+  LineStyle,
+  CodeLanguage,
+  LayoutStyle,
+} from "./enum";
+import { ListStyle, TextRun, TextBlockStyle, ImageStyle } from "./interfaces";
 
-export class CreateBlockDto {
-  type: BlockType;
-  listStyle?: ListStyle;
-  indentationLevel?: number;
-  hasFocusDecoration?: boolean;
-  hasBlockDecoration?: boolean;
+export interface BlockDto extends BaseEntityDto {
+  space: SpaceDto;
   spaceId: string;
+  document: DocumentDto;
   documentId: string;
-  color?: BlockColor;
-
-  constructor(request: CreateBlockRequest) {
-    this.type = request.body.type;
-    this.spaceId = request.body.spaceId;
-    this.listStyle = request.body.listStyle;
-    this.indentationLevel = request.body.indentationLevel;
-    this.hasFocusDecoration = request.body.hasFocusDecoration;
-    this.hasBlockDecoration = request.body.hasBlockDecoration;
-    this.documentId = request.body.documentId;
-    this.color = request.body.color;
-  }
-}
-
-export class PatchBlockDto {
-  type?: BlockType;
-  listStyle?: ListStyle;
-  indentationLevel?: number;
-  hasFocusDecoration?: boolean;
-  hasBlockDecoration?: boolean;
-  spaceId?: string;
-  documentId?: string;
-  color?: BlockColor;
-  id: string;
-
-  constructor(request: PatchBlockRequest) {
-    this.id = request.params!.blockId!;
-    this.type = request.body!.type;
-    this.spaceId = request.body!.spaceId;
-    this.listStyle = request.body!.listStyle;
-    this.indentationLevel = request.body!.indentationLevel;
-    this.hasFocusDecoration = request.body!.hasFocusDecoration;
-    this.hasBlockDecoration = request.body!.hasBlockDecoration;
-    this.documentId = request.body!.documentId;
-    this.color = request.body!.color;
-  }
-}
-
-export class UpdateBlockDto {
+  indentationLevel: number;
+  listStyle: ListStyle;
+  hasBlockDecoration: boolean;
+  hasFocusDecoration: boolean;
+  color: BlockColor;
   type: BlockType;
-  listStyle?: ListStyle;
-  indentationLevel?: number;
-  hasFocusDecoration?: boolean;
-  hasBlockDecoration?: boolean;
-  spaceId: string;
-  documentId: string;
-  color?: BlockColor;
-  id: string;
-
-  constructor(request: UpdateBlockRequest) {
-    this.id = request.params.blockId;
-    this.type = request.body.type;
-    this.spaceId = request.body.spaceId;
-    this.listStyle = request.body.listStyle;
-    this.indentationLevel = request.body.indentationLevel;
-    this.hasFocusDecoration = request.body.hasFocusDecoration;
-    this.hasBlockDecoration = request.body.hasBlockDecoration;
-    this.documentId = request.body.documentId;
-    this.color = request.body.color;
-  }
 }
 
-export class DeleteBlockDto {
-  id: string;
+export interface TextBlockDto extends BlockDto {
+  type: BlockType.Text;
+  content: TextRun[];
+  style: TextBlockStyle;
+  parentBlock?: BlockDto;
+  parentBlockId?: string;
+  subblocks: BlockDto[];
+}
 
-  constructor(request: DeleteBlockRequest) {
-    this.id = request.params.blockId;
-  }
+export interface DividerBlockDto extends BlockDto {
+  type: BlockType.Divider;
+  lineStyle: LineStyle;
+}
+
+export interface CodeBlockDto extends BlockDto {
+  type: BlockType.Code;
+  code: string;
+  language: CodeLanguage;
+}
+export interface ResourceBlockDto extends BlockDto {
+  url?: string;
+  previewUrl?: string;
+  filename?: string;
+}
+
+export interface ImageBlock extends ResourceBlockDto {
+  type: BlockType.Image;
+  previewImageStyle: ImageStyle;
+}
+
+export interface VideoBlock extends ResourceBlockDto {
+  type: BlockType.Video;
+  previewImageStyle: ImageStyle;
+}
+
+export interface FileBlock extends ResourceBlockDto {
+  type: BlockType.File;
+  layoutStyle: LayoutStyle;
+}
+
+export interface UrlBlockDto extends BlockDto {
+  type: BlockType.Url;
+  layoutStyle: LayoutStyle;
+  url?: string;
+  originalUrl?: string;
+  imageUrl?: string;
+  title?: string;
+  pageDescription?: string;
 }

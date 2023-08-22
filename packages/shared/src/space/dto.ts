@@ -1,50 +1,38 @@
-import {
-  CreateSpaceRequest,
-  DeleteSpaceRequest,
-  PatchSpaceRequest,
-  UpdateSpaceRequest,
-} from "./request";
+import { BlockDto } from "../block";
+import { BaseEntityDto } from "../common";
+import { DocumentDto } from "../document";
+import { FolderDto } from "../folder";
+import { TeamDto } from "../team";
 
-export class CreateSpaceDto {
+export class SpaceDto extends BaseEntityDto {
   name: string;
   imgUrl?: string;
+  blocks: BlockDto[];
+  documents: DocumentDto[];
+  folders: FolderDto[];
+  rootFolderOrder: string[];
+  team: TeamDto;
   teamId: string;
-  constructor(request: CreateSpaceRequest) {
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-    this.teamId = request.body.teamId;
-  }
-}
 
-export class PatchSpaceDto {
-  id: string;
-  name?: string;
-  imgUrl?: string;
-  teamId?: string;
-  constructor(request: PatchSpaceRequest) {
-    this.id = request.params.spaceId;
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-    this.teamId = request.body.teamId;
-  }
-}
-
-export class UpdateSpaceDto {
-  id: string;
-  name: string;
-  imgUrl?: string;
-  teamId: string;
-  constructor(request: UpdateSpaceRequest) {
-    this.id = request.params.spaceId;
-    this.name = request.body.name;
-    this.imgUrl = request.body.imgUrl;
-    this.teamId = request.body.teamId;
-  }
-}
-
-export class DeleteSpaceDto {
-  id: string;
-  constructor(request: DeleteSpaceRequest) {
-    this.id = request.params.spaceId;
+  constructor(
+    id: string,
+    name: string,
+    imgUrl: string | undefined,
+    blocks: BlockDto[],
+    documents: DocumentDto[],
+    folders: FolderDto[],
+    rootFolderOrder: string[],
+    team: TeamDto,
+    teamId: string
+  ) {
+    super(id);
+    this.name = name;
+    this.imgUrl = imgUrl;
+    this.blocks = blocks;
+    this.documents = documents;
+    this.folders = folders;
+    this.rootFolderOrder = rootFolderOrder;
+    this.team = team;
+    this.teamId = teamId;
   }
 }

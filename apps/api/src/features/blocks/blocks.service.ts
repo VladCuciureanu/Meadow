@@ -44,7 +44,7 @@ class BlocksService {
   async create(dto: CreateBlockDto) {
     const block = this.blocksRepository.create({
       type: dto.type,
-      listStyle: dto.listStyle,
+      listStyleType: dto.listStyle?.type,
       color: dto.color,
       document: { id: dto.documentId },
       space: { id: dto.spaceId },
@@ -60,7 +60,7 @@ class BlocksService {
       { id: dto.id },
       {
         type: dto.type,
-        listStyle: dto.listStyle,
+        listStyleType: dto.listStyle?.type,
         color: dto.color,
         document: { id: dto.documentId },
         space: { id: dto.spaceId },
@@ -76,7 +76,7 @@ class BlocksService {
       { id: dto.id },
       {
         type: dto.type,
-        listStyle: dto.listStyle,
+        listStyleType: dto.listStyle?.type,
         color: dto.color,
         document: { id: dto.documentId },
         space: { id: dto.spaceId },

@@ -23,6 +23,9 @@ const EnvironmentVariablesSchema = object({
     .default(true)
     .describe("Should TypeORM sync the DB schema?"),
   DB_LOGGING: boolean().default(false).describe("Should TypeORM output logs?"),
+  DB_DROP: boolean()
+    .default(false)
+    .describe("Should TypeORM drop the database before syncing?"),
 });
 
 let env;
@@ -46,6 +49,7 @@ const config = {
     name: env.DB_NAME,
     sync: env.DB_SYNC,
     logging: env.DB_LOGGING,
+    dropSchema: env.DB_DROP,
   },
 };
 

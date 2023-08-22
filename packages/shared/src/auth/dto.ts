@@ -1,4 +1,4 @@
-import { LogInRequest } from "./request";
+import { LogInRequest } from "./requests";
 
 export class LogInDto {
   email: string;

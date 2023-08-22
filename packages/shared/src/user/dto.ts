@@ -1,66 +1,26 @@
-import {
-  CreateUserRequest,
-  DeleteUserRequest,
-  PatchUserRequest,
-  UpdateUserRequest,
-} from "./request";
+import { BaseEntityDto } from "../common";
+import { TeamDto } from "../team";
 
-export class CreateUserDto {
+export class UserDto extends BaseEntityDto {
   email: string;
   firstName: string;
   lastName: string;
-  password: string;
   imgUrl?: string;
+  teams: TeamDto[];
 
-  constructor(request: CreateUserRequest) {
-    this.email = request.body.email;
-    this.firstName = request.body.firstName;
-    this.lastName = request.body.lastName;
-    this.password = request.body.password;
-    this.imgUrl = request.body.imgUrl;
-  }
-}
-
-export class PatchUserDto {
-  id: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  password?: string;
-  imgUrl?: string;
-
-  constructor(request: PatchUserRequest) {
-    this.id = request.params.userId;
-    this.email = request.body.email;
-    this.firstName = request.body.firstName;
-    this.lastName = request.body.lastName;
-    this.password = request.body.password;
-    this.imgUrl = request.body.imgUrl;
-  }
-}
-
-export class UpdateUserDto {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  imgUrl?: string;
-
-  constructor(request: UpdateUserRequest) {
-    this.id = request.params.userId;
-    this.email = request.body.email;
-    this.firstName = request.body.firstName;
-    this.lastName = request.body.lastName;
-    this.password = request.body.password;
-    this.imgUrl = request.body.imgUrl;
-  }
-}
-
-export class DeleteUserDto {
-  id: string;
-
-  constructor(request: DeleteUserRequest) {
-    this.id = request.params.userId;
+  constructor(
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    imgUrl: string | undefined,
+    teams: TeamDto[]
+  ) {
+    super(id);
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.imgUrl = imgUrl;
+    this.teams = teams;
   }
 }

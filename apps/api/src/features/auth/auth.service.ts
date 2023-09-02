@@ -4,7 +4,7 @@ import { LogInDto } from "@meadow/shared";
 import { UserEntity } from "../users/user.entity";
 import jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
-import { JWTPayload } from "./middlewares/jwt-payload";
+import { JWTPayload } from "./interfaces/jwt-payload";
 
 class AuthService {
   userRepository: Repository<UserEntity>;

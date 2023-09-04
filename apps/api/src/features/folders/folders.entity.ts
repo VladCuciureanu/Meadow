@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import { DocumentEntity } from "../documents/documents.entity";
 import { SpaceEntity } from "../spaces/spaces.entity";
-import { FolderIconConfig } from "@meadow/shared";
+import { FolderIconConfig, FolderIconType } from "@meadow/shared";
 import { UserEntity } from "../users/users.entity";
 
 @Entity()
@@ -24,8 +24,14 @@ export class FolderEntity {
   @Column("text", { nullable: true })
   description?: string;
 
-  @Column("jsonb")
-  icon: FolderIconConfig;
+  @Column("text", { nullable: true })
+  iconTintColor?: string;
+
+  @Column("enum", { enum: FolderIconType })
+  iconType: FolderIconType;
+
+  @Column("text")
+  iconValue: string;
 
   @Column("text", { array: true })
   itemOrder: string[];
@@ -34,6 +40,7 @@ export class FolderEntity {
   documents: DocumentEntity[];
 
   @ManyToOne(() => FolderEntity, (folder) => folder.childrenFolders, {
+    nullable: true,
     onDelete: "CASCADE",
   })
   parentFolder?: FolderEntity;

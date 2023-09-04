@@ -1,19 +1,4 @@
 import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  RelationId,
-} from "typeorm";
-import { DocumentEntity } from "../documents/documents.entity";
-import { SpaceEntity } from "../spaces/spaces.entity";
-import {
-  ListStyle,
-  TextRun,
-  TextBlockStyle,
-  ImageStyle,
   ListStyleType,
   BlockColor,
   BlockType,
@@ -26,107 +11,163 @@ import {
   ImageFillStyle,
   LayoutStyle,
   TodoState,
+  CardType,
+  CardFontStyle,
+  CardBackgroundColorKey,
+  TextHighlightColor,
+  TextRunLinkType,
 } from "@meadow/shared";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  RelationId,
+  UpdateDateColumn,
+} from "typeorm";
+import { DocumentEntity } from "../documents/documents.entity";
+import { UserEntity } from "../users/users.entity";
 
 @Entity()
 export class BlockEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column("int", { default: 0 })
-  indentationLevel: number;
-
-  @Column("boolean", { default: false })
-  hasBlockDecoration: boolean;
-
-  @Column("boolean", { default: false })
-  hasFocusDecoration: boolean;
-
-  @Column("text", { default: BlockColor.Text })
-  color: BlockColor;
-
-  @ManyToOne(() => SpaceEntity, (space) => space.blocks, {
-    onDelete: "CASCADE",
+  @ManyToOne(() => DocumentEntity, (document) => document.rootBlock, {
+    nullable: true,
   })
-  space: SpaceEntity;
-
-  @RelationId((block: BlockEntity) => block.space)
-  spaceId: string;
-
-  @OneToOne(() => DocumentEntity, (document) => document.rootBlock)
-  document: DocumentEntity;
+  document?: DocumentEntity;
 
   @RelationId((block: BlockEntity) => block.document)
-  documentId: string;
+  documentId?: string;
 
-  @Column({ type: "enum", enum: BlockType, default: BlockType.Text })
+  @Column("enum", { enum: BlockType })
   type: BlockType;
 
-  //-------------------- List Style --------------------
-  @Column({ enum: ListStyleType, default: ListStyleType.None })
+  @Column("int")
+  indentationLevel: number;
+
+  @Column("enum", { enum: ListStyleType })
   listStyleType: ListStyleType;
 
-  @Column("int", { default: 0 })
-  listStyleOrdinal: number;
+  @Column("int", { nullable: true })
+  listStyleOrdinal?: number;
 
-  @Column({ enum: TodoState, default: TodoState.Unchecked })
-  listStyleTodoState: TodoState;
+  @Column("enum", { enum: TodoState })
+  listStyleState: TodoState;
 
-  //-------------------- Text Block --------------------
+  @Column("boolean")
+  hasBlockDecoration: boolean;
 
-  @Column("jsonb", { default: [] })
-  content: TextRun[];
+  @Column("boolean")
+  hasFocusDecoration: boolean;
 
-  @Column({ enum: TextStyle, default: TextStyle.Body })
-  textStyle: TextStyle;
+  @Column("enum", { enum: BlockColor })
+  color: BlockColor;
 
-  @Column({ enum: FontStyle, default: FontStyle.System })
-  fontStyle: FontStyle;
+  // ---------------------- Text Block ----------------------
 
-  @Column({ enum: AlignmentStyle, default: AlignmentStyle.Left })
-  alignmentStyle: AlignmentStyle;
+  @OneToMany(() => TextRunEntity, (textRun) => textRun.block)
+  content: TextRunEntity[];
 
-  @ManyToOne(() => BlockEntity, (block) => block.subblocks, {
-    onDelete: "CASCADE",
-  })
+  @Column("enum", { enum: TextStyle })
+  styleTextStyle: TextStyle;
+
+  @Column("enum", { enum: FontStyle })
+  styleFontStyle: FontStyle;
+
+  @Column("enum", { enum: AlignmentStyle })
+  styleAlignmentStyle: AlignmentStyle;
+
+  @Column("enum", { enum: CardType })
+  styleCardStyleType: CardType;
+
+  @Column("enum", { enum: CardFontStyle, nullable: true })
+  styleCardStyleFontStyle?: CardFontStyle;
+
+  @Column("enum", { enum: CardBackgroundColorKey, nullable: true })
+  styleCardStyleBackgroundColorKey?: CardBackgroundColorKey;
+
+  @Column("text", { nullable: true })
+  styleCardStyleBackgroundColor?: string;
+
+  @Column("text", { nullable: true })
+  styleCardStyleBackgroundUrl?: string;
+
+  @Column("boolean")
+  styleCardStyleIsLightColor: boolean;
+
+  @Column("boolean")
+  styleCoverImageEnabled: boolean;
+
+  @Column("text", { nullable: true })
+  styleCoverImageUrl?: string;
+
+  @Column("int", { nullable: true })
+  styleCoverImageAspectRatio?: number;
+
+  @Column("text", { nullable: true })
+  styleCoverImageAttribution?: string;
+
+  @Column("text", { nullable: true })
+  styleCoverPrimaryColor?: string;
+
+  @Column("int", { nullable: true })
+  styleCoverImageWidth?: number;
+
+  @Column("boolean", { nullable: true })
+  styleCoverImageHasTransparency?: boolean;
+
+  @ManyToOne(() => BlockEntity, (block) => block.subblocks)
   parentBlock?: BlockEntity;
+
+  @RelationId((block: BlockEntity) => block.parentBlock)
+  parentBlockId?: string;
 
   @OneToMany(() => BlockEntity, (block) => block.parentBlock)
   subblocks: BlockEntity[];
 
-  //------------------- Divider Block -------------------
+  // ---------------------- Divider Block ----------------------
 
-  @Column("text", { default: LineStyle.Regular })
+  @Column("enum", { enum: LineStyle })
   lineStyle: LineStyle;
 
-  //-------------------- Code Block --------------------
+  // ---------------------- Code Block ----------------------
 
-  @Column("text", { nullable: true })
-  code?: string;
+  @Column("text")
+  code: string;
 
-  @Column("text", { default: CodeLanguage.JavaScript })
+  @Column("enum", { enum: CodeLanguage })
   language: CodeLanguage;
 
-  //------------------ Resource Block ------------------
+  // ---------------------- Resource Block ----------------------
+
+  @Column("text", { nullable: true })
+  url?: string; // Also used in URL block
+
+  @Column("text", { nullable: true })
+  previewUrl?: string;
 
   @Column("text", { nullable: true })
   filename?: string;
 
-  @Column({ enum: ImageSizeStyle, default: ImageSizeStyle.Auto })
-  previewImageSizeStyle: ImageSizeStyle;
+  // ---------------------- Image/Video Block ----------------------
 
-  @Column({ enum: ImageFillStyle, default: ImageFillStyle.Auto })
-  previewImageFillStyle: ImageFillStyle;
+  @Column("enum", { enum: ImageSizeStyle })
+  previewImageStyleSizeStyle: ImageSizeStyle;
 
-  //-------------------- File Block --------------------
+  @Column("enum", { enum: ImageFillStyle })
+  previewImageStyleFillStyle: ImageFillStyle;
 
-  @Column({ enum: LayoutStyle, default: LayoutStyle.Regular })
-  layoutStyle: LayoutStyle;
+  // ---------------------- File Block ----------------------
 
-  //-------------------- Url Block --------------------
+  @Column("enum", { enum: LayoutStyle })
+  layoutStyle: LayoutStyle; // Also used in URL block
 
-  @Column("text", { nullable: true })
-  url?: string;
+  // ---------------------- Url Block ----------------------
 
   @Column("text", { nullable: true })
   originalUrl?: string;
@@ -139,4 +180,73 @@ export class BlockEntity {
 
   @Column("text", { nullable: true })
   pageDescription?: string;
+
+  // ---------------------- Audit ----------------------
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  createdBy: UserEntity;
+
+  @RelationId((block: BlockEntity) => block.createdBy)
+  createdById: string;
+
+  @UpdateDateColumn()
+  modifiedAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  modifiedBy: UserEntity;
+
+  @RelationId((block: BlockEntity) => block.modifiedBy)
+  modifiedById: string;
+}
+
+@Entity()
+export class TextRunEntity {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ManyToOne(() => BlockEntity, (block) => block.content)
+  @Index()
+  block: BlockEntity;
+
+  @RelationId((textRun: TextRunEntity) => textRun.block)
+  blockId: string;
+
+  @Column("text")
+  text: string;
+
+  @Column("boolean", { nullable: true })
+  isBold?: boolean;
+
+  @Column("boolean", { nullable: true })
+  isItalic?: boolean;
+
+  @Column("boolean", { nullable: true })
+  isStrikeThrough?: boolean;
+
+  @Column("boolean", { nullable: true })
+  isCode?: boolean;
+
+  @Column("enum", { enum: TextHighlightColor, nullable: true })
+  highlightColor?: TextHighlightColor;
+
+  @Column("enum", { enum: TextRunLinkType, nullable: true })
+  linkType?: TextRunLinkType;
+
+  @Column("text", { nullable: true })
+  linkSpaceId?: string;
+
+  @Column("text", { nullable: true })
+  linkBlockId?: string;
+
+  @Column("date", { nullable: true })
+  linkDate?: Date;
+
+  @Column("text", { nullable: true })
+  linkUrl?: string;
+
+  @Column("text", { nullable: true })
+  linkFormula?: string;
 }

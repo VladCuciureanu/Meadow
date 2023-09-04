@@ -8,7 +8,6 @@ import {
 } from "typeorm";
 import { DocumentEntity } from "../documents/documents.entity";
 import { FolderEntity } from "../folders/folders.entity";
-import { BlockEntity } from "../blocks/blocks.entity";
 import { TeamEntity } from "../teams/teams.entity";
 
 @Entity()
@@ -21,9 +20,6 @@ export class SpaceEntity {
 
   @Column("text", { nullable: true })
   imgUrl?: string;
-
-  @OneToMany(() => BlockEntity, (block) => block.space)
-  blocks: BlockEntity[];
 
   @OneToMany(() => DocumentEntity, (document) => document.space)
   documents: DocumentEntity[];

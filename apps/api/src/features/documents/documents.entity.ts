@@ -8,6 +8,7 @@ import {
   RelationId,
   UpdateDateColumn,
   JoinColumn,
+  Unique,
 } from "typeorm";
 import { SpaceEntity } from "../spaces/spaces.entity";
 import { UserEntity } from "../users/users.entity";
@@ -39,10 +40,10 @@ export class DocumentEntity {
   @ManyToOne(() => FolderEntity, (folder) => folder.documents, {
     onDelete: "CASCADE",
   })
-  folder: FolderEntity;
+  folder?: FolderEntity;
 
   @RelationId((document: DocumentEntity) => document.folder)
-  folderId: string;
+  folderId?: string;
 
   @OneToOne(() => BlockEntity, (block) => block.document)
   @JoinColumn()
@@ -50,6 +51,12 @@ export class DocumentEntity {
 
   @RelationId((document: DocumentEntity) => document.rootBlock)
   rootBlockId: string;
+
+  @ManyToOne(() => SpaceEntity, (space) => space.documents)
+  space?: SpaceEntity;
+
+  @RelationId((document: DocumentEntity) => document.space)
+  spaceId?: string;
 
   @CreateDateColumn()
   createdAt: Date;

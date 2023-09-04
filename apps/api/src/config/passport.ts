@@ -4,6 +4,7 @@ import { ExtractJwt } from "passport-jwt";
 import usersService from "../features/users/users.service";
 import config from "./env";
 import express from "express";
+import { PartialUserDto, UserDto } from "@meadow/shared";
 
 export const JWTCookieName = "jwt";
 
@@ -24,13 +25,21 @@ const JWTLogin = new JWTStrategy(
     secretOrKey: config.jwt.secret,
   },
   async (payload, done) => {
-    let user = await usersService.getById(payload.userId);
+    let user = await usersService.getUserById(payload.userId);
 
     if (!user) {
       return done(null, false);
     }
 
-    done(null, user);
+    done(null, {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      imgUrl: user.imgUrl,
+      teams: user.teams,
+      createdAt: user.createdAt,
+    } as UserDto);
   }
 );
 

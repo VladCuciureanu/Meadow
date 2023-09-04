@@ -2,12 +2,19 @@ import { Repository } from "typeorm";
 import { UserEntity } from "./user.entity";
 import * as argon2 from "argon2";
 import {
-  CreateUserDto,
-  DeleteUserDto,
-  PatchUserDto,
-  UpdateUserDto,
+  CreateUserRequest,
+  CreateUserResponse,
+  DeleteUserRequest,
+  GetUserRequest,
+  GetUserResponse,
+  GetUsersRequest,
+  GetUsersResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+  UserDto,
 } from "@meadow/shared";
 import { MeadowDataSource } from "../../config/typeorm";
+import { UserMapper } from "./user.mapper";
 
 class UsersService {
   usersRepository: Repository<UserEntity>;
@@ -16,51 +23,44 @@ class UsersService {
     this.usersRepository = MeadowDataSource.getRepository(UserEntity);
   }
 
-  async getMany(limit: number, page: number) {
-    const skipCount = Math.max(0, limit * page);
-    return this.usersRepository.find({
-      take: limit,
+  async getUsers(dto: GetUsersRequest): Promise<GetUsersResponse> {
+    const skipCount = Math.max(0, dto.limit * dto.page);
+    const users = await this.usersRepository.find({
+      take: dto.limit,
       skip: skipCount,
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        imgUrl: true,
-        passwordHash: false,
-      },
     });
+
+    return users.map((user) => UserMapper.toPartialDto(user));
   }
 
-  async getById(userId: string) {
-    return this.usersRepository.findOne({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        imgUrl: true,
-        passwordHash: false,
-      },
+  async getUserById(
+    dto: GetUserRequest,
+    currentUser?: UserDto
+  ): Promise<GetUserResponse> {
+    const user = await this.usersRepository.findOne({
+      where: { id: dto.id },
     });
+
+    if (!user) {
+      return Promise.reject("Could not find user.");
+    }
+
+    if (user.id === currentUser?.id) {
+      return UserMapper.toDto(user);
+    }
+
+    return UserMapper.toPartialDto(user);
   }
 
-  async getByEmail(email: string) {
-    return this.usersRepository.findOne({
+  async getUserByEmail(email: string): Promise<GetUserResponse | null> {
+    const user = await this.usersRepository.findOne({
       where: { email: email },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        imgUrl: true,
-        passwordHash: false,
-      },
     });
+
+    return user ? UserMapper.toDto(user) : null;
   }
 
-  async create(dto: CreateUserDto) {
+  async createUser(dto: CreateUserRequest): Promise<CreateUserResponse> {
     const passwordHash = await argon2.hash(dto.password);
 
     const user = await this.usersRepository.save(
@@ -73,51 +73,54 @@ class UsersService {
       })
     );
 
-    return user;
+    return UserMapper.toDto(user);
   }
 
-  async patch(dto: PatchUserDto) {
+  async updateUser(dto: UpdateUserRequest): Promise<UpdateUserResponse | null> {
+    let updatedFields: Record<string, any> = {};
+
+    if (dto.email) {
+      updatedFields.email = dto.email;
+    }
+    if (dto.firstName) {
+      updatedFields.firstName = dto.firstName;
+    }
+    if (dto.lastName) {
+      updatedFields.lastName = dto.lastName;
+    }
+    if (dto.imgUrl) {
+      updatedFields.imgUrl = dto.imgUrl;
+    }
     if (dto.password) {
-      dto.password = await argon2.hash(dto.password);
+      updatedFields.passwordHash = await argon2.hash(dto.password);
     }
 
-    (dto as any).passwordHash = dto.password;
-
-    delete (dto as any).password;
-
-    const updatedUser = await this.usersRepository.update(
+    const updateResponse = await this.usersRepository.update(
       {
         id: dto.id,
       },
-      dto
+      updatedFields
     );
 
-    return updatedUser;
-  }
-
-  async put(dto: UpdateUserDto) {
-    if (dto.password) {
-      dto.password = await argon2.hash(dto.password);
+    if ((updateResponse.affected ?? 1) === 0) {
+      return null;
     }
 
-    (dto as any).passwordHash = dto.password;
+    const updatedUser = updateResponse.generatedMaps.at(0) as UserEntity;
 
-    delete (dto as any).password;
-
-    const updatedUser = await this.usersRepository.update(
-      {
-        id: dto.id,
-      },
-      dto
-    );
-
-    return updatedUser;
+    return UserMapper.toDto(updatedUser);
   }
 
-  async delete(dto: DeleteUserDto) {
-    return this.usersRepository.delete({
+  async deleteUser(dto: DeleteUserRequest): Promise<boolean> {
+    const result = await this.usersRepository.delete({
       id: dto.id,
     });
+
+    if (result.affected === 0) {
+      return false;
+    }
+
+    return true;
   }
 }
 

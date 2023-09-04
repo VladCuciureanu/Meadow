@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
   OneToMany,
@@ -33,4 +34,7 @@ export class UserEntity {
 
   @OneToMany(() => DocumentEntity, (document) => document.author)
   authoredDocuments: DocumentEntity[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

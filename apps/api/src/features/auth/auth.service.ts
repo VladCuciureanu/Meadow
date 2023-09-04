@@ -1,10 +1,11 @@
 import { Repository } from "typeorm";
 import { MeadowDataSource } from "../../config/typeorm";
-import { LogInDto } from "@meadow/shared";
 import { UserEntity } from "../users/user.entity";
 import jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
 import { JWTPayload } from "./interfaces/jwt-payload";
+import { GetTokenRequest } from "@meadow/shared";
+import { GetTokenResponse } from "@meadow/shared";
 
 class AuthService {
   userRepository: Repository<UserEntity>;
@@ -13,7 +14,7 @@ class AuthService {
     this.userRepository = MeadowDataSource.getRepository(UserEntity);
   }
 
-  async getToken(dto: LogInDto) {
+  async getToken(dto: GetTokenRequest): Promise<GetTokenResponse> {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
     });

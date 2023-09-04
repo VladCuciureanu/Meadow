@@ -7,7 +7,7 @@ export async function validateTeamMembership(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const team = await teamsService.getById(req.params.teamId);
+  const team = await teamsService.getTeamById(req.params.teamId);
 
   const memberIsPartOfTeam =
     team?.members.find(

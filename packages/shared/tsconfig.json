@@ -8,6 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "noErrorTruncation": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*"],
   "$schema": "https://json.schemastore.org/tsconfig"
 }

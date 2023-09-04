@@ -12,7 +12,7 @@ export async function validateDocumentAuthority(
 ) {
   const document = await documentsService.getById(req.params.documentId);
   const space = await spacesService.getById(document!.spaceId);
-  const team = await teamsService.getById(space!.teamId);
+  const team = await teamsService.getTeamById(space!.teamId);
 
   const memberIsPartOfTeam =
     team?.members.find(

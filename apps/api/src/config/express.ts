@@ -53,8 +53,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     handleError(err, req, res);
     next();
   } else {
-    const err = createHttpError(404);
-    return next(err);
+    res.sendStatus(404);
+    return next();
   }
 });
 

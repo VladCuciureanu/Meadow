@@ -1,48 +1,76 @@
 import express from "express";
 import usersService from "./users.service";
 import {
-  CreateUserDto,
-  CreateUserRequest,
-  DeleteUserDto,
-  DeleteUserRequest,
-  PatchUserDto,
-  PatchUserRequest,
-  UpdateUserDto,
-  UpdateUserRequest,
+  CreateUserRequestSchema,
+  DeleteUserRequestSchema,
+  GetUserRequestSchema,
+  GetUsersRequestSchema,
+  UpdateUserRequestSchema,
 } from "@meadow/shared";
+import { z } from "zod";
 
 class UsersController {
-  async getMany(req: express.Request, res: express.Response) {
-    const response = await usersService.getMany(100, 0);
+  async getMany(
+    req: z.infer<typeof GetUsersRequestSchema>,
+    res: express.Response
+  ) {
+    const response = await usersService.getUsers({
+      limit: req.body.limit ?? 100,
+      page: req.body.page ?? 1,
+    });
+
     res.status(200).send(response);
   }
 
-  async getById(req: express.Request, res: express.Response) {
-    const response = await usersService.getById(req.params.userId);
+  async getById(
+    req: z.infer<typeof GetUserRequestSchema>,
+    res: express.Response
+  ) {
+    const response = await usersService.getUserById(
+      { id: req.params.id },
+      (req as any).user
+    );
+
     res.status(200).send(response);
   }
 
-  async create(req: express.Request, res: express.Response) {
-    const dto = new CreateUserDto(req as CreateUserRequest);
-    const response = await usersService.create(dto);
+  async create(
+    req: z.infer<typeof CreateUserRequestSchema>,
+    res: express.Response
+  ) {
+    const response = await usersService.createUser({
+      email: req.body.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      password: req.body.password,
+      imgUrl: req.body.imgUrl,
+    });
+
     res.status(201).send(response);
   }
 
-  async patch(req: express.Request, res: express.Response) {
-    const dto = new PatchUserDto(req as any as PatchUserRequest);
-    const response = await usersService.patch(dto);
+  async patch(
+    req: z.infer<typeof UpdateUserRequestSchema>,
+    res: express.Response
+  ) {
+    const response = await usersService.updateUser({
+      id: req.params.id,
+      email: req.body.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      password: req.body.password,
+      imgUrl: req.body.imgUrl,
+    });
+
     res.status(204).send(response);
   }
 
-  async put(req: express.Request, res: express.Response) {
-    const dto = new UpdateUserDto(req as any as UpdateUserRequest);
-    const response = await usersService.put(dto);
-    res.status(204).send(response);
-  }
+  async delete(
+    req: z.infer<typeof DeleteUserRequestSchema>,
+    res: express.Response
+  ) {
+    const response = await usersService.deleteUser({ id: req.params.id });
 
-  async delete(req: express.Request, res: express.Response) {
-    const dto = new DeleteUserDto(req as any as DeleteUserRequest);
-    const response = await usersService.delete(dto);
     res.status(204).send(response);
   }
 }

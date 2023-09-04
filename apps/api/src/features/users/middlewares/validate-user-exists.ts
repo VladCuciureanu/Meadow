@@ -6,10 +6,13 @@ export async function validateUserExists(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const user = await usersService.getById(req.params.userId);
+  const userId = req.params.userId;
+
+  const user = await usersService.getUserById({ id: userId });
+
   if (user) {
     next();
   } else {
-    res.status(404).send({ error: `User ${req.params.userId} not found` });
+    res.status(404).send({ error: `User ${userId} not found` });
   }
 }

@@ -2,10 +2,14 @@ import { Repository } from "typeorm";
 import { TeamEntity } from "./team.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
-  CreateTeamDto,
-  DeleteTeamDto,
-  PatchTeamDto,
-  UpdateTeamDto,
+  CreateTeamRequest,
+  CreateTeamResponse,
+  DeleteTeamRequest,
+  GetTeamRequest,
+  GetTeamsRequest,
+  GetTeamsResponse,
+  UpdateTeamRequest,
+  UpdateTeamResponse,
 } from "@meadow/shared";
 
 class TeamsService {
@@ -15,19 +19,19 @@ class TeamsService {
     this.teamsRepository = MeadowDataSource.getRepository(TeamEntity);
   }
 
-  async getMany(limit: number, page: number) {
+  async getTeams(dto: GetTeamsRequest): GetTeamsResponse {
     const skipCount = Math.max(0, limit * (page - 1));
     return this.teamsRepository.find({ take: limit, skip: skipCount });
   }
 
-  async getById(teamId: string) {
+  async getTeamById(dto: GetTeamRequest): GetTeamsResponse {
     return this.teamsRepository.findOne({
       where: { id: teamId },
       relations: ["members"],
     });
   }
 
-  async create(dto: CreateTeamDto) {
+  async createTeam(dto: CreateTeamRequest): CreateTeamResponse {
     const team = this.teamsRepository.create({
       name: dto.name,
       imgUrl: dto.imgUrl,
@@ -36,21 +40,14 @@ class TeamsService {
     return this.teamsRepository.save(team);
   }
 
-  async patch(dto: PatchTeamDto) {
+  async updateTeam(dto: UpdateTeamRequest): UpdateTeamResponse {
     return this.teamsRepository.update(
       { id: dto.id },
       { name: dto.name, imgUrl: dto.imgUrl }
     );
   }
 
-  async put(dto: UpdateTeamDto) {
-    return this.teamsRepository.update(
-      { id: dto.id },
-      { name: dto.name, imgUrl: dto.imgUrl }
-    );
-  }
-
-  async delete(dto: DeleteTeamDto) {
+  async deleteTeam(dto: DeleteTeamRequest) {
     return this.teamsRepository.delete({ id: dto.id });
   }
 }

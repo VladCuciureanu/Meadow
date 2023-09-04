@@ -13,7 +13,7 @@ export async function validateEmailIsUnique(
     next();
   }
 
-  const user = await usersService.getByEmail(req.body.email);
+  const user = await usersService.getUserByEmail(req.body.email);
 
   if (!user) {
     next();

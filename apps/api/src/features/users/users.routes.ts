@@ -1,7 +1,9 @@
 import {
-  CreateUserSchema,
-  PatchUserSchema,
-  UpdateUserSchema,
+  CreateUserRequestSchema,
+  DeleteUserRequestSchema,
+  GetUserRequestSchema,
+  GetUsersRequestSchema,
+  UpdateUserRequestSchema,
 } from "@meadow/shared";
 import { Router } from "express";
 import usersController from "./users.controller";
@@ -14,28 +16,26 @@ import { validateUserExists } from "./middlewares/validate-user-exists";
 const UserRoutes = Router();
 
 UserRoutes.route(`/`)
-  .get(authenticate, usersController.getMany)
+  .get(authenticate, validate(GetUsersRequestSchema), usersController.getMany)
   .post(
-    validate(CreateUserSchema),
+    validate(CreateUserRequestSchema),
     validateEmailIsUnique,
     usersController.create
   );
 
 UserRoutes.route(`/:userId`)
   .all(authenticate, validateUserExists)
-  .get(usersController.getById)
-  .put(
-    validateCurrentUser,
-    validate(UpdateUserSchema),
-    validateEmailIsUnique,
-    usersController.put
-  )
+  .get(validate(GetUserRequestSchema), usersController.getById)
   .patch(
     validateCurrentUser,
-    validate(PatchUserSchema),
+    validate(UpdateUserRequestSchema),
     validateEmailIsUnique,
     usersController.patch
   )
-  .delete(validateCurrentUser, usersController.delete);
+  .delete(
+    validateCurrentUser,
+    validate(DeleteUserRequestSchema),
+    usersController.delete
+  );
 
 export default UserRoutes;

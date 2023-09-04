@@ -12,7 +12,7 @@ export async function validateFolderAuthority(
 ) {
   const folder = await foldersService.getById(req.params.folderId);
   const space = await spacesService.getById(folder!.spaceId);
-  const team = await teamsService.getById(space!.teamId);
+  const team = await teamsService.getTeamById(space!.teamId);
 
   const memberIsPartOfTeam =
     team?.members.find(

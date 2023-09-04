@@ -1,12 +1,12 @@
+import { UserDto } from "@meadow/shared";
 import express from "express";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
 
 export function validateCurrentUser(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
-  if ((req as any as AuthenticatedRequest).user.id === req.params.userId) {
+  if ((req.user as UserDto).id === req.params.userId) {
     next();
   } else {
     res

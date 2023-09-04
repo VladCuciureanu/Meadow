@@ -1,12 +1,19 @@
-import { Repository } from "typeorm";
+import { ArrayContains, Repository } from "typeorm";
 import { SpaceEntity } from "./spaces.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
-  CreateSpaceDto,
-  DeleteSpaceDto,
-  PatchSpaceDto,
-  UpdateSpaceDto,
+  CreateSpaceRequest,
+  CreateSpaceResponse,
+  DeleteSpaceRequest,
+  GetSpaceRequest,
+  GetSpaceResponse,
+  GetSpacesRequest,
+  GetSpacesResponse,
+  UpdateSpaceRequest,
+  UpdateSpaceResponse,
+  UserDto,
 } from "@meadow/shared";
+import { SpacesMapper } from "./spaces.mapper";
 
 class SpacesService {
   spacesRepository: Repository<SpaceEntity>;
@@ -15,61 +22,74 @@ class SpacesService {
     this.spacesRepository = MeadowDataSource.getRepository(SpaceEntity);
   }
 
-  async getMany(limit: number, page: number) {
-    const skipCount = Math.max(0, limit * (page - 1));
-    return this.spacesRepository.find({
-      take: limit,
-      skip: skipCount,
-      relations: ["team"],
-    });
-  }
+  async getSpaces(
+    dto: GetSpacesRequest,
+    currentUser: UserDto
+  ): Promise<GetSpacesResponse> {
+    const skipCount = dto.limit * (dto.page - 1);
 
-  async getById(spaceId: string) {
-    return this.spacesRepository.findOne({
-      where: { id: spaceId },
-      relations: ["team"],
-    });
-  }
-
-  async create(dto: CreateSpaceDto) {
-    const space = this.spacesRepository.create({
-      name: dto.name,
-      imgUrl: dto.imgUrl,
-      team: {
-        id: dto.teamId,
+    const entities = await this.spacesRepository.find({
+      where: {
+        team: {
+          members: ArrayContains([{ id: currentUser.id }]),
+        },
       },
+      take: dto.limit,
+      skip: skipCount,
     });
-    return this.spacesRepository.save(space);
+
+    return entities.map((entity) => SpacesMapper.toDto(entity));
   }
 
-  async patch(dto: PatchSpaceDto) {
-    return this.spacesRepository.update(
-      { id: dto.id },
-      {
+  async getSpaceById(dto: GetSpaceRequest): Promise<GetSpaceResponse> {
+    const entity = await this.spacesRepository.findOne({
+      where: { id: dto.id },
+    });
+
+    return SpacesMapper.toDto(entity!);
+  }
+
+  async createSpace(dto: CreateSpaceRequest): Promise<CreateSpaceResponse> {
+    const entity = await this.spacesRepository.save(
+      this.spacesRepository.create({
         name: dto.name,
         imgUrl: dto.imgUrl,
-        team: {
-          id: dto.teamId,
-        },
-      }
+        team: { id: dto.teamId }, //TODO Team membership validation
+      })
     );
+
+    return SpacesMapper.toDto(entity);
   }
 
-  async put(dto: UpdateSpaceDto) {
-    return this.spacesRepository.update(
-      { id: dto.id },
+  async updateSpace(dto: UpdateSpaceRequest): Promise<UpdateSpaceResponse> {
+    let updatedFields: Record<string, any> = {};
+
+    if (dto.name) {
+      updatedFields.name = dto.name;
+    }
+    if (dto.imgUrl) {
+      updatedFields.imgUrl = dto.imgUrl;
+    }
+    if (dto.teamId) {
+      updatedFields.team = {
+        id: dto.teamId, //TODO Team membership validation
+      };
+    }
+
+    const updateResponse = await this.spacesRepository.update(
       {
-        name: dto.name,
-        imgUrl: dto.imgUrl,
-        team: {
-          id: dto.teamId,
-        },
-      }
+        id: dto.id,
+      },
+      updatedFields
     );
+
+    const updatedEntity = updateResponse.generatedMaps.at(0) as SpaceEntity;
+
+    return SpacesMapper.toDto(updatedEntity);
   }
 
-  async delete(dto: DeleteSpaceDto) {
-    return this.spacesRepository.delete({ id: dto.id });
+  async deleteSpace(dto: DeleteSpaceRequest) {
+    await this.spacesRepository.delete({ id: dto.id });
   }
 }
 

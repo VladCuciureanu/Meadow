@@ -6,7 +6,7 @@ export async function validateUserExists(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const userId = req.params.userId;
+  const userId = req.params.id;
 
   const user = await usersService.getUserById({ id: userId });
 

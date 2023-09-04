@@ -26,7 +26,7 @@ class TeamsService {
     dto: GetTeamsRequest,
     currentUser: UserDto
   ): Promise<GetTeamsResponse> {
-    const skipCount = dto.limit * dto.page;
+    const skipCount = dto.limit * (dto.page - 1);
 
     const entities = await this.teamsRepository.find({
       where: {

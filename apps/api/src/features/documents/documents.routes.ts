@@ -17,7 +17,7 @@ DocumentRoutes.route(`/`)
   .get(documentsController.getMany)
   .post(validate(CreateDocumentSchema), documentsController.create);
 
-DocumentRoutes.route(`/:documentId`)
+DocumentRoutes.route(`/:id`)
   .all(authenticate, validateDocumentExists, validateDocumentAuthority)
   .get(documentsController.getById)
   .put(validate(UpdateDocumentSchema), documentsController.put)

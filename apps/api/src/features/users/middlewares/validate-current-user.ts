@@ -6,7 +6,7 @@ export function validateCurrentUser(
   res: express.Response,
   next: express.NextFunction
 ) {
-  if ((req.user as UserDto).id === req.params.userId) {
+  if ((req.user as UserDto).id === req.params.id) {
     next();
   } else {
     res

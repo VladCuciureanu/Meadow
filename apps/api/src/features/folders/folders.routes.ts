@@ -18,7 +18,7 @@ FolderRoutes.route(`/`)
   .get(foldersController.getMany)
   .post(validate(CreateFolderSchema), foldersController.create);
 
-FolderRoutes.route(`/:folderId`)
+FolderRoutes.route(`/:id`)
   .all(authenticate, validateFolderExists, validateFolderAuthority)
   .get(foldersController.getById)
   .put(validate(UpdateFolderSchema), foldersController.put)

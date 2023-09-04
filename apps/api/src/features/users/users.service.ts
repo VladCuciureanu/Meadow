@@ -24,7 +24,7 @@ class UsersService {
   }
 
   async getUsers(dto: GetUsersRequest): Promise<GetUsersResponse> {
-    const skipCount = dto.limit * dto.page;
+    const skipCount = dto.limit * (dto.page - 1);
 
     const entities = await this.usersRepository.find({
       take: dto.limit,
@@ -36,13 +36,13 @@ class UsersService {
 
   async getUserById(
     dto: GetUserRequest,
-    currentUser: UserDto
+    currentUser?: UserDto
   ): Promise<GetUserResponse> {
     const entity = await this.usersRepository.findOne({
       where: { id: dto.id },
     })!;
 
-    if (entity!.id === currentUser.id) {
+    if (entity!.id === currentUser?.id) {
       return UsersMapper.toDto(entity!);
     }
 

@@ -11,7 +11,7 @@ export async function validateBlockAuthority(
   next: express.NextFunction
 ) {
   const block = await blocksService.getById(req.params.blockId);
-  const space = await spacesService.getById(block!.spaceId);
+  const space = await spacesService.getSpaceById(block!.spaceId);
   const team = await teamsService.getTeamById(space!.teamId);
 
   const memberIsPartOfTeam =

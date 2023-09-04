@@ -6,7 +6,7 @@ export async function validateTeamExists(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const team = await teamsService.getTeamById({ id: req.params.teamId });
+  const team = await teamsService.getTeamById({ id: req.params.id });
 
   if (team) {
     next();

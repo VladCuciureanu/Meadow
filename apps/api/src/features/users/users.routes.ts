@@ -23,7 +23,7 @@ UserRoutes.route(`/`)
     usersController.create
   );
 
-UserRoutes.route(`/:userId`)
+UserRoutes.route(`/:id`)
   .all(authenticate, validateUserExists)
   .get(validate(GetUserRequestSchema), usersController.getById)
   .patch(

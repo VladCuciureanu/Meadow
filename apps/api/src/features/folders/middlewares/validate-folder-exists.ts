@@ -6,7 +6,7 @@ export async function validateFolderExists(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const folder = await foldersService.getById(req.params.folderId);
+  const folder = await foldersService.getFolderById({ id: req.params.id });
 
   if (folder) {
     next();

@@ -2,6 +2,7 @@ import { PartialDocumentDto, DocumentDto } from "@meadow/shared";
 import { DocumentEntity } from "./documents.entity";
 import { FoldersMapper } from "../folders/folders.mapper";
 import { UsersMapper } from "../users/users.mapper";
+import { BlocksMapper } from "../blocks/blocks.mapper";
 
 export class DocumentsMapper {
   static toDto(entity: DocumentEntity): DocumentDto {
@@ -11,10 +12,8 @@ export class DocumentsMapper {
       previewUrl: entity.previewUrl,
       isEmpty: entity.isEmpty,
       author: UsersMapper.toPartialDto(entity.author),
-      folder: entity.folder
-        ? FoldersMapper.toPartialDto(entity.folder)
-        : undefined,
-      rootBlock: BlockMapper, // TODO
+      folder: FoldersMapper.toPartialDto(entity.folder),
+      rootBlock: BlocksMapper.toPartialDto(entity.rootBlock),
       createdAt: entity.createdAt,
       createdBy: UsersMapper.toPartialDto(entity.createdBy),
       modifiedAt: entity.modifiedAt,

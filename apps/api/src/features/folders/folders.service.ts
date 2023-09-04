@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { ArrayContainedBy, ArrayContains, Repository } from "typeorm";
 import { FolderEntity } from "./folders.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
@@ -34,9 +34,11 @@ class FoldersService {
       where: {
         space: {
           team: {
-            members: {
-              id: currentUser.id,
-            },
+            members: ArrayContains([
+              {
+                id: currentUser.id,
+              },
+            ]),
           },
         },
       },

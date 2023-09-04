@@ -36,21 +36,13 @@ export class DocumentEntity {
   @RelationId((document: DocumentEntity) => document.author)
   authorId: string;
 
-  @ManyToOne(() => SpaceEntity, (space) => space.documents, {
-    onDelete: "CASCADE",
-  })
-  space: SpaceEntity;
-
-  @RelationId((document: DocumentEntity) => document.space)
-  spaceId: string;
-
   @ManyToOne(() => FolderEntity, (folder) => folder.documents, {
     onDelete: "CASCADE",
   })
-  folder?: FolderEntity;
+  folder: FolderEntity;
 
   @RelationId((document: DocumentEntity) => document.folder)
-  folderId?: string;
+  folderId: string;
 
   @OneToOne(() => BlockEntity, (block) => block.document)
   @JoinColumn()

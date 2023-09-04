@@ -1,9 +1,11 @@
 import { Router } from "express";
 import documentsController from "./documents.controller";
 import {
-  CreateDocumentSchema,
-  PatchDocumentSchema,
-  UpdateDocumentSchema,
+  CreateFolderRequestSchema,
+  DeleteFolderRequestSchema,
+  GetFolderRequestSchema,
+  GetFoldersRequestSchema,
+  UpdateFolderRequestSchema,
 } from "@meadow/shared";
 import { validate } from "../common/middlewares/validate";
 import { validateDocumentAuthority } from "./middlewares/validate-document-authority";
@@ -14,14 +16,13 @@ const DocumentRoutes = Router();
 
 DocumentRoutes.route(`/`)
   .all(authenticate)
-  .get(documentsController.getMany)
-  .post(validate(CreateDocumentSchema), documentsController.create);
+  .get(validate(GetFoldersRequestSchema), documentsController.getMany)
+  .post(validate(CreateFolderRequestSchema), documentsController.create);
 
 DocumentRoutes.route(`/:id`)
   .all(authenticate, validateDocumentExists, validateDocumentAuthority)
-  .get(documentsController.getById)
-  .put(validate(UpdateDocumentSchema), documentsController.put)
-  .patch(validate(PatchDocumentSchema), documentsController.patch)
-  .delete(documentsController.delete);
+  .get(validate(GetFolderRequestSchema), documentsController.getById)
+  .patch(validate(UpdateFolderRequestSchema), documentsController.patch)
+  .delete(validate(DeleteFolderRequestSchema), documentsController.delete);
 
 export default DocumentRoutes;

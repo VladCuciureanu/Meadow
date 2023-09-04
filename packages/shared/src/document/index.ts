@@ -8,7 +8,7 @@ export type DocumentDto = {
   previewUrl: string;
   isEmpty: boolean;
   author: PartialUserDto;
-  folder?: PartialFolderDto;
+  folder: PartialFolderDto;
   rootBlock: PartialBlockDto;
   createdAt: Date;
   createdBy: PartialUserDto;

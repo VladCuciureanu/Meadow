@@ -1,51 +1,70 @@
 import express from "express";
 import documentsService from "./documents.service";
 import {
-  CreateDocumentDto,
-  CreateDocumentRequest,
-  DeleteDocumentDto,
-  DeleteDocumentRequest,
-  PatchDocumentDto,
-  PatchDocumentRequest,
-  UpdateDocumentDto,
-  UpdateDocumentRequest,
+  CreateDocumentRequestSchema,
+  DeleteDocumentRequestSchema,
+  GetDocumentRequestSchema,
+  GetDocumentsRequestSchema,
+  UpdateDocumentRequestSchema,
 } from "@meadow/shared";
 import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class DocumentsController {
   async getMany(req: express.Request, res: express.Response) {
-    const user = (req as any as AuthenticatedRequest).user!;
-    const response = await documentsService.getMany(100, 0, user);
-    res.status(200).send(response);
+    const schema = GetDocumentsRequestSchema.parse(req);
+    const currentUser = (req as AuthenticatedRequest).user;
+
+    const response = await documentsService.getDocuments(
+      {
+        limit: schema.body.limit,
+        page: schema.body.page,
+      },
+      currentUser
+    );
+
+    return res.status(200).send(response);
   }
 
   async getById(req: express.Request, res: express.Response) {
-    const response = await documentsService.getById(req.params.documentId);
-    res.status(200).send(response);
+    const schema = GetDocumentRequestSchema.parse(req);
+
+    const response = await documentsService.getDocumentById({
+      id: schema.params.id,
+    });
+
+    return res.status(200).send(response);
   }
 
   async create(req: express.Request, res: express.Response) {
-    const user = (req as any as AuthenticatedRequest).user!;
-    const dto = new CreateDocumentDto(req as CreateDocumentRequest, user);
-    const response = await documentsService.create(dto);
+    const schema = CreateDocumentRequestSchema.parse(req);
+
+    const response = await documentsService.createDocument({
+      title: schema.body.title,
+      authorId: schema.body.authorId,
+      folderId: schema.body.folderId,
+    });
+
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const dto = new PatchDocumentDto(req as any as PatchDocumentRequest);
-    const response = await documentsService.patch(dto);
-    res.status(204).send(response);
-  }
+    const schema = UpdateDocumentRequestSchema.parse(req);
 
-  async put(req: express.Request, res: express.Response) {
-    const dto = new UpdateDocumentDto(req as any as UpdateDocumentRequest);
-    const response = await documentsService.put(dto);
-    res.status(204).send(response);
+    const response = await documentsService.updateDocument({
+      id: schema.params.id,
+      title: schema.body.title,
+      authorId: schema.body.authorId,
+      folderId: schema.body.folderId,
+    });
+
+    res.status(200).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const dto = new DeleteDocumentDto(req as any as DeleteDocumentRequest);
-    const response = await documentsService.delete(dto);
-    res.status(204).send(response);
+    const schema = DeleteDocumentRequestSchema.parse(req);
+
+    await documentsService.deleteDocument({ id: schema.params.id });
+
+    res.status(204);
   }
 }
 

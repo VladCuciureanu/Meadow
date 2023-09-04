@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { PartialSpaceDto } from "../space";
-import { PartialUserDto } from "../user";
+import { PartialSpaceDto } from "../spaces";
+import { PartialUserDto } from "../users";
 
 export type TeamDto = {
   id: string;
@@ -17,3 +17,10 @@ export const HasTeamIdSchema = z.object({
     teamId: z.string().uuid(),
   }),
 });
+
+export * from "./commands";
+export * from "./commands/create-team";
+export * from "./commands/update-team";
+export * from "./commands/delete-team";
+export * from "./queries/get-team";
+export * from "./queries/get-teams";

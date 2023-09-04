@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PartialTeamDto } from "../team";
+import { PartialTeamDto } from "../teams";
 
 export type UserDto = {
   id: string;
@@ -21,3 +21,10 @@ export const HasUserIdSchema = z.object({
     userId: z.string().uuid(),
   }),
 });
+
+export * from "./commands";
+export * from "./commands/create-user";
+export * from "./commands/update-user";
+export * from "./commands/delete-user";
+export * from "./queries/get-user";
+export * from "./queries/get-users";

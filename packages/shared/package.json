@@ -1,7 +1,9 @@
 {
   "name": "@meadow/shared",
   "version": "0.1.0",
-  "scripts": {},
+  "scripts": {
+    "lint": ""
+  },
   "dependencies": {
     "typescript": "^5.1.6",
     "zod": "^3.21.4"

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { PartialBlockDto } from "../block";
-import { PartialFolderDto } from "../folder";
-import { PartialUserDto } from "../user";
+import { PartialBlockDto } from "../blocks";
+import { PartialFolderDto } from "../folders";
+import { PartialUserDto } from "../users";
 
 export type DocumentDto = {
   id: string;
@@ -27,3 +27,10 @@ export const HasDocumentIdSchema = z.object({
     documentId: z.string().uuid(),
   }),
 });
+
+export * from "./commands";
+export * from "./commands/create-document";
+export * from "./commands/update-document";
+export * from "./commands/delete-document";
+export * from "./queries/get-document";
+export * from "./queries/get-documents";

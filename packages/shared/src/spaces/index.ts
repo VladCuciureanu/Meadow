@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { PartialFolderDto } from "../folder";
-import { PartialTeamDto } from "../team";
+import { PartialFolderDto } from "../folders";
+import { PartialTeamDto } from "../teams";
 
 export type SpaceDto = {
   id: string;
@@ -18,3 +18,10 @@ export const HasSpaceIdSchema = z.object({
     spaceId: z.string().uuid(),
   }),
 });
+
+export * from "./commands";
+export * from "./commands/create-space";
+export * from "./commands/update-space";
+export * from "./commands/delete-space";
+export * from "./queries/get-space";
+export * from "./queries/get-spaces";

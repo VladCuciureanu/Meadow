@@ -1,0 +1,16 @@
+export enum TextHighlightColor {
+  Yellow,
+  Lime,
+  Green,
+  Cyan,
+  Blue,
+  Purple,
+  Pink,
+  Red,
+  Grey,
+  BeachGradient,
+  NightSkyGradient,
+  SunsetGradient,
+  OrangeGradient,
+  GoldGradient,
+}

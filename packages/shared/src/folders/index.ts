@@ -1,18 +1,8 @@
 import { z } from "zod";
-import { PartialDocumentDto } from "../document";
-import { PartialSpaceDto } from "../space";
-import { PartialUserDto } from "../user";
-
-export enum FolderIconType {
-  Emoji,
-  LocalImage,
-}
-
-export interface FolderIconConfig {
-  tintColor?: string;
-  type: FolderIconType;
-  value: string;
-}
+import { PartialDocumentDto } from "../documents";
+import { PartialSpaceDto } from "../spaces";
+import { PartialUserDto } from "../users";
+import { FolderIconConfig } from "./interfaces/folder-icon-config";
 
 export type FolderDto = {
   id: string;
@@ -40,3 +30,12 @@ export const HasFolderIdSchema = z.object({
     folderId: z.string().uuid(),
   }),
 });
+
+export * from "./commands";
+export * from "./commands/create-folder";
+export * from "./commands/update-folder";
+export * from "./commands/delete-folder";
+export * from "./enums/folder-icon-type";
+export * from "./interfaces/folder-icon-config";
+export * from "./queries/get-folder";
+export * from "./queries/get-folders";

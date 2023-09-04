@@ -20,7 +20,7 @@ export type FolderDto = {
   icon: FolderIconConfig;
   itemOrder: string[];
   documents: PartialDocumentDto[];
-  parentFolder: PartialFolderDto;
+  parentFolder?: PartialFolderDto;
   childrenFolders: PartialFolderDto[];
   space: PartialSpaceDto;
   createdAt: Date;
@@ -31,5 +31,5 @@ export type FolderDto = {
 
 export type PartialFolderDto = Pick<
   FolderDto,
-  "id" | "name" | "description" | "icon" | "createdAt" | "modifiedAt"
+  "id" | "name" | "description" | "icon" | "space" | "createdAt" | "modifiedAt"
 >;

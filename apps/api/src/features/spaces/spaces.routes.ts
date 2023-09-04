@@ -2,9 +2,11 @@ import { Router } from "express";
 
 import spacesController from "./spaces.controller";
 import {
-  CreateSpaceSchema,
-  PatchSpaceSchema,
-  UpdateSpaceSchema,
+  CreateSpaceRequestSchema,
+  DeleteSpaceRequestSchema,
+  GetSpaceRequestSchema,
+  GetSpacesRequestSchema,
+  UpdateSpaceRequestSchema,
 } from "@meadow/shared";
 import { validate } from "../common/middlewares/validate";
 import { validateSpaceAuthority } from "./middlewares/validate-space-authority";
@@ -15,14 +17,13 @@ const SpaceRoutes = Router();
 
 SpaceRoutes.route(`/`)
   .all(authenticate)
-  .get(spacesController.getMany)
-  .post(validate(CreateSpaceSchema), spacesController.create);
+  .get(validate(GetSpacesRequestSchema), spacesController.getMany)
+  .post(validate(CreateSpaceRequestSchema), spacesController.create);
 
 SpaceRoutes.route(`/:spaceId`)
   .all(authenticate, validateSpaceExists, validateSpaceAuthority)
-  .get(spacesController.getById)
-  .put(validate(UpdateSpaceSchema), spacesController.put)
-  .patch(validate(PatchSpaceSchema), spacesController.patch)
-  .delete(spacesController.delete);
+  .get(validate(GetSpaceRequestSchema), spacesController.getById)
+  .patch(validate(UpdateSpaceRequestSchema), spacesController.patch)
+  .delete(validate(DeleteSpaceRequestSchema), spacesController.delete);
 
 export default SpaceRoutes;

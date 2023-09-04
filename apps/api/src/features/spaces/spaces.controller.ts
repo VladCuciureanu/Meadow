@@ -1,47 +1,63 @@
 import express from "express";
 import spacesService from "./spaces.service";
 import {
-  CreateSpaceDto,
-  DeleteSpaceDto,
-  DeleteSpaceRequest,
-  PatchSpaceDto,
-  PatchSpaceRequest,
-  UpdateSpaceDto,
-  UpdateSpaceRequest,
+  CreateSpaceRequestSchema,
+  DeleteSpaceRequestSchema,
+  GetSpaceRequestSchema,
+  GetSpacesRequestSchema,
+  UpdateSpaceRequestSchema,
 } from "@meadow/shared";
 class SpacesController {
   async getMany(req: express.Request, res: express.Response) {
-    const response = await spacesService.getMany(100, 0);
-    res.status(200).send(response);
+    const schema = GetSpacesRequestSchema.parse(req);
+
+    const response = await spacesService.getMany({
+      limit: schema.body.limit,
+      page: schema.body.page,
+    });
+
+    return res.status(200).send(response);
   }
 
   async getById(req: express.Request, res: express.Response) {
-    const response = await spacesService.getById(req.params.spaceId);
-    res.status(200).send(response);
+    const schema = GetSpaceRequestSchema.parse(req);
+
+    const response = await spacesService.getById({ id: schema.params.spaceId });
+
+    return res.status(200).send(response);
   }
 
   async create(req: express.Request, res: express.Response) {
-    const dto = new CreateSpaceDto(req);
-    const response = await spacesService.create(dto);
+    const schema = CreateSpaceRequestSchema.parse(req);
+
+    const response = await spacesService.create({
+      name: schema.body.name,
+      imgUrl: schema.body.imgUrl,
+      teamId: schema.body.teamId,
+    });
+
     res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const dto = new PatchSpaceDto(req as any as PatchSpaceRequest);
-    const response = await spacesService.patch(dto);
-    res.status(204).send(response);
-  }
+    const schema = UpdateSpaceRequestSchema.parse(req);
 
-  async put(req: express.Request, res: express.Response) {
-    const dto = new UpdateSpaceDto(req as any as UpdateSpaceRequest);
-    const response = await spacesService.put(dto);
-    res.status(204).send(response);
+    const response = await spacesService.put({
+      id: schema.params.id,
+      name: schema.body.name,
+      imgUrl: schema.body.imgUrl,
+      teamId: schema.body.teamId,
+    });
+
+    res.status(200).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const dto = new DeleteSpaceDto(req as any as DeleteSpaceRequest);
-    const response = await spacesService.delete(dto);
-    res.status(204).send(response);
+    const schema = DeleteSpaceRequestSchema.parse(req);
+
+    await spacesService.delete({ id: schema.params.id });
+
+    res.status(204);
   }
 }
 

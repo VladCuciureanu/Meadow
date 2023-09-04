@@ -37,11 +37,11 @@ export type BlockDto = {
       hasTransparency?: boolean;
     };
   };
-  parentBlock: PartialBlockDto;
+  parentBlock?: PartialBlockDto;
   subblocks: PartialBlockDto[];
   lineStyle: LineStyle;
-  code: string;
-  language: CodeLanguage;
+  code?: string;
+  language?: CodeLanguage;
   url?: string;
   previewUrl?: string;
   filename?: string;

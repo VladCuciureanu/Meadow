@@ -28,7 +28,7 @@ export class DocumentEntity {
   @Column("boolean", { default: true })
   isEmpty: boolean;
 
-  @ManyToOne(() => UserEntity, (user) => user.authoredDocuments, {
+  @ManyToOne(() => UserEntity, {
     onDelete: "CASCADE",
   })
   author: UserEntity;
@@ -60,8 +60,20 @@ export class DocumentEntity {
   rootBlockId: string;
 
   @CreateDateColumn()
-  created: Date;
+  createdAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  createdBy: UserEntity;
+
+  @RelationId((folder: FolderEntity) => folder.createdBy)
+  createdById: string;
 
   @UpdateDateColumn()
-  updated: Date;
+  modifiedAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  modifiedBy: UserEntity;
+
+  @RelationId((folder: FolderEntity) => folder.modifiedBy)
+  modifiedById: string;
 }

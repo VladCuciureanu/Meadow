@@ -11,6 +11,7 @@ import {
 import { DocumentEntity } from "../documents/documents.entity";
 import { SpaceEntity } from "../spaces/spaces.entity";
 import { FolderIconConfig } from "@meadow/shared";
+import { UserEntity } from "../users/users.entity";
 
 @Entity()
 export class FolderEntity {
@@ -52,8 +53,20 @@ export class FolderEntity {
   spaceId: string;
 
   @CreateDateColumn()
-  created: Date;
+  createdAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  createdBy: UserEntity;
+
+  @RelationId((folder: FolderEntity) => folder.createdBy)
+  createdById: string;
 
   @UpdateDateColumn()
-  updated: Date;
+  modifiedAt: Date;
+
+  @ManyToOne(() => UserEntity)
+  modifiedBy: UserEntity;
+
+  @RelationId((folder: FolderEntity) => folder.modifiedBy)
+  modifiedById: string;
 }

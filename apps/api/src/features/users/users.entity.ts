@@ -32,9 +32,6 @@ export class UserEntity {
   @ManyToMany(() => TeamEntity, (team) => team.members)
   teams: TeamEntity[];
 
-  @OneToMany(() => DocumentEntity, (document) => document.author)
-  authoredDocuments: DocumentEntity[];
-
   @CreateDateColumn()
   createdAt: Date;
 }

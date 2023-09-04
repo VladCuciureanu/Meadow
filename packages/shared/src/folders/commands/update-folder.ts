@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FolderDto, FolderIconType, HasFolderIdSchema } from "..";
+import { FolderDto, HasFolderIdSchema } from "..";
 import { HasIdSchema } from "../../common/has-id";
 import { MutableFolderFields } from ".";
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FolderDto, FolderIconType } from "..";
+import { FolderDto } from "..";
 import { MutableFolderFields } from ".";
 
 const BodySchema = MutableFolderFields.strict();

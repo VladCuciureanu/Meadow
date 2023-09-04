@@ -9,7 +9,7 @@ export async function validateSpaceAuthority(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const space = await spacesService.getSpaceById({ id: req.params.id });
+  const space = await spacesService.getSpaceById({ id: req.params.spaceId });
   const team = await teamsService.getTeamById({ id: space!.team.id });
 
   const memberIsPartOfTeam =

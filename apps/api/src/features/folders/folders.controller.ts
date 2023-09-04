@@ -28,7 +28,7 @@ class FoldersController {
     const schema = GetFolderRequestSchema.parse(req);
 
     const response = await foldersService.getFolderById({
-      id: schema.params.id,
+      id: schema.params.folderId,
     });
 
     return res.status(200).send(response);
@@ -56,7 +56,7 @@ class FoldersController {
     const schema = UpdateFolderRequestSchema.parse(req);
 
     const response = await foldersService.updateFolder({
-      id: schema.params.id,
+      id: schema.params.folderId,
       name: schema.body.name,
       description: schema.body.description,
       icon: {
@@ -74,7 +74,7 @@ class FoldersController {
   async delete(req: express.Request, res: express.Response) {
     const schema = DeleteFolderRequestSchema.parse(req);
 
-    await foldersService.deleteFolder({ id: schema.params.id });
+    await foldersService.deleteFolder({ id: schema.params.folderId });
 
     res.status(204);
   }

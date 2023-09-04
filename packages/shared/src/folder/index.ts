@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { PartialDocumentDto } from "../document";
 import { PartialSpaceDto } from "../space";
 import { PartialUserDto } from "../user";
@@ -33,3 +34,9 @@ export type PartialFolderDto = Pick<
   FolderDto,
   "id" | "name" | "description" | "icon" | "space" | "createdAt" | "modifiedAt"
 >;
+
+export const HasFolderIdSchema = z.object({
+  params: z.object({
+    folderId: z.string().uuid(),
+  }),
+});

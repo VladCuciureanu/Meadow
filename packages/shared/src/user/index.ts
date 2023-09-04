@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { PartialTeamDto } from "../team";
 
 export type UserDto = {
@@ -14,3 +15,9 @@ export type PartialUserDto = Pick<
   UserDto,
   "id" | "firstName" | "lastName" | "imgUrl"
 >;
+
+export const HasUserIdSchema = z.object({
+  params: z.object({
+    userId: z.string().uuid(),
+  }),
+});

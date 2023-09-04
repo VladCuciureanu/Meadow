@@ -20,7 +20,7 @@ SpaceRoutes.route(`/`)
   .get(validate(GetSpacesRequestSchema), spacesController.getMany)
   .post(validate(CreateSpaceRequestSchema), spacesController.create);
 
-SpaceRoutes.route(`/:id`)
+SpaceRoutes.route(`/:spaceId`)
   .all(authenticate, validateSpaceExists, validateSpaceAuthority)
   .get(validate(GetSpaceRequestSchema), spacesController.getById)
   .patch(validate(UpdateSpaceRequestSchema), spacesController.patch)

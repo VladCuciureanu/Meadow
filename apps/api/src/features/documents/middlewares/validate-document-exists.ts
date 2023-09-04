@@ -7,7 +7,7 @@ export async function validateDocumentExists(
   next: express.NextFunction
 ) {
   const document = await documentsService.getDocumentById({
-    id: req.params.id,
+    id: req.params.documentId,
   });
 
   if (document) {

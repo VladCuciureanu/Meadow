@@ -10,7 +10,9 @@ export async function validateFolderAuthority(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const folder = await foldersService.getFolderById({ id: req.params.id });
+  const folder = await foldersService.getFolderById({
+    id: req.params.folderId,
+  });
   const space = await spacesService.getSpaceById({ id: folder!.space.id });
   const team = await teamsService.getTeamById({ id: space!.team.id });
 

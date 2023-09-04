@@ -2,7 +2,7 @@ import express from "express";
 import teamsService from "./teams.service";
 import {
   CreateTeamRequestSchema,
-  DeleteUserRequestSchema,
+  DeleteTeamRequestSchema,
   GetTeamRequestSchema,
   GetTeamsRequestSchema,
   UpdateTeamRequestSchema,
@@ -27,7 +27,9 @@ class TeamsController {
   async getById(req: express.Request, res: express.Response) {
     const schema = GetTeamRequestSchema.parse(req);
 
-    const response = await teamsService.getTeamById({ id: schema.params.id });
+    const response = await teamsService.getTeamById({
+      id: schema.params.teamId,
+    });
 
     return res.status(200).send(response);
   }
@@ -51,7 +53,7 @@ class TeamsController {
     const schema = UpdateTeamRequestSchema.parse(req);
 
     const response = await teamsService.updateTeam({
-      id: schema.params.id,
+      id: schema.params.teamId,
       name: schema.body.name,
       imgUrl: schema.body.imgUrl,
     });
@@ -60,10 +62,10 @@ class TeamsController {
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const schema = DeleteUserRequestSchema.parse(req);
+    const schema = DeleteTeamRequestSchema.parse(req);
 
     await teamsService.deleteTeam({
-      id: schema.params.id,
+      id: schema.params.teamId,
     });
 
     return res.status(204);

@@ -18,7 +18,7 @@ BlockRoutes.route(`/`)
   .get(blocksController.getMany)
   .post(validate(CreateBlockSchema), blocksController.create);
 
-BlockRoutes.route(`/:id`)
+BlockRoutes.route(`/:blockId`)
   .all(authenticate, validateBlockExists, validateBlockAuthority)
   .get(blocksController.getById)
   .put(validate(UpdateBlockSchema), blocksController.put)

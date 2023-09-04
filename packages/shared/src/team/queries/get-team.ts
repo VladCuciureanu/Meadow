@@ -1,10 +1,8 @@
 import { z } from "zod";
-import { TeamDto } from "..";
+import { HasTeamIdSchema, TeamDto } from "..";
 import { HasIdSchema } from "../../common/has-id";
 
-export const GetTeamRequestSchema = z.object({
-  params: HasIdSchema,
-});
+export const GetTeamRequestSchema = HasTeamIdSchema;
 
 export type GetTeamRequest = z.infer<typeof HasIdSchema>;
 

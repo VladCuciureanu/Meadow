@@ -12,7 +12,7 @@ export async function validateDocumentAuthority(
   next: express.NextFunction
 ) {
   const document = await documentsService.getDocumentById({
-    id: req.params.id,
+    id: req.params.documentId,
   });
   const folder = await foldersService.getFolderById({
     id: document!.folder.id,

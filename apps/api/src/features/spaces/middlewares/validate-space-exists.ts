@@ -6,7 +6,7 @@ export async function validateSpaceExists(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const space = await spacesService.getSpaceById({ id: req.params.id });
+  const space = await spacesService.getSpaceById({ id: req.params.spaceId });
 
   if (space) {
     next();

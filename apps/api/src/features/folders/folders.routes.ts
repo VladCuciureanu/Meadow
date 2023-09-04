@@ -20,7 +20,7 @@ FolderRoutes.route(`/`)
   .get(validate(GetFoldersRequestSchema), foldersController.getMany)
   .post(validate(CreateFolderRequestSchema), foldersController.create);
 
-FolderRoutes.route(`/:id`)
+FolderRoutes.route(`/:folderId`)
   .all(authenticate, validateFolderExists, validateFolderAuthority)
   .get(validate(GetFolderRequestSchema), foldersController.getById)
   .patch(validate(UpdateFolderRequestSchema), foldersController.patch)

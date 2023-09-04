@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { PartialDocumentDto } from "../document";
 import { PartialUserDto } from "../user";
 
@@ -335,3 +336,9 @@ export enum LayoutStyle {
   Small,
   Card,
 }
+
+export const HasBlockIdSchema = z.object({
+  params: z.object({
+    blockId: z.string().uuid(),
+  }),
+});

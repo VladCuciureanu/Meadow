@@ -1,10 +1,8 @@
 import { z } from "zod";
-import { FolderDto } from "..";
+import { FolderDto, HasFolderIdSchema } from "..";
 import { HasIdSchema } from "../../common/has-id";
 
-export const GetFolderRequestSchema = z.object({
-  params: HasIdSchema,
-});
+export const GetFolderRequestSchema = HasFolderIdSchema;
 
 export type GetFolderRequest = z.infer<typeof HasIdSchema>;
 

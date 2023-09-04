@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { HasIdSchema } from "../../common/has-id";
+import { HasBlockIdSchema } from "..";
 
-export const DeleteBlockRequestSchema = z.object({
-  params: HasIdSchema,
-});
+export const DeleteBlockRequestSchema = HasBlockIdSchema;
 
 export type DeleteBlockRequest = z.infer<typeof HasIdSchema>;

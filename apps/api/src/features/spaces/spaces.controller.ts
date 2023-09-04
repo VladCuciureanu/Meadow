@@ -28,7 +28,7 @@ class SpacesController {
     const schema = GetSpaceRequestSchema.parse(req);
 
     const response = await spacesService.getSpaceById({
-      id: schema.params.id,
+      id: schema.params.spaceId,
     });
 
     return res.status(200).send(response);
@@ -50,7 +50,7 @@ class SpacesController {
     const schema = UpdateSpaceRequestSchema.parse(req);
 
     const response = await spacesService.updateSpace({
-      id: schema.params.id,
+      id: schema.params.spaceId,
       name: schema.body.name,
       imgUrl: schema.body.imgUrl,
       teamId: schema.body.teamId,
@@ -62,7 +62,7 @@ class SpacesController {
   async delete(req: express.Request, res: express.Response) {
     const schema = DeleteSpaceRequestSchema.parse(req);
 
-    await spacesService.deleteSpace({ id: schema.params.id });
+    await spacesService.deleteSpace({ id: schema.params.spaceId });
 
     res.status(204);
   }

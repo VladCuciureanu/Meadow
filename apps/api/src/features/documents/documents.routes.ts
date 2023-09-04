@@ -19,7 +19,7 @@ DocumentRoutes.route(`/`)
   .get(validate(GetFoldersRequestSchema), documentsController.getMany)
   .post(validate(CreateFolderRequestSchema), documentsController.create);
 
-DocumentRoutes.route(`/:id`)
+DocumentRoutes.route(`/:documentId`)
   .all(authenticate, validateDocumentExists, validateDocumentAuthority)
   .get(validate(GetFolderRequestSchema), documentsController.getById)
   .patch(validate(UpdateFolderRequestSchema), documentsController.patch)

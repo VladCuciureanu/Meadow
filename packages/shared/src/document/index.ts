@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { PartialBlockDto } from "../block";
 import { PartialFolderDto } from "../folder";
 import { PartialUserDto } from "../user";
@@ -20,3 +21,9 @@ export type PartialDocumentDto = Pick<
   DocumentDto,
   "id" | "title" | "previewUrl" | "isEmpty" | "createdAt" | "modifiedAt"
 >;
+
+export const HasDocumentIdSchema = z.object({
+  params: z.object({
+    documentId: z.string().uuid(),
+  }),
+});

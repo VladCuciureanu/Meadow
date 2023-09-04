@@ -28,7 +28,7 @@ class DocumentsController {
     const schema = GetDocumentRequestSchema.parse(req);
 
     const response = await documentsService.getDocumentById({
-      id: schema.params.id,
+      id: schema.params.documentId,
     });
 
     return res.status(200).send(response);
@@ -50,7 +50,7 @@ class DocumentsController {
     const schema = UpdateDocumentRequestSchema.parse(req);
 
     const response = await documentsService.updateDocument({
-      id: schema.params.id,
+      id: schema.params.documentId,
       title: schema.body.title,
       authorId: schema.body.authorId,
       folderId: schema.body.folderId,
@@ -62,7 +62,7 @@ class DocumentsController {
   async delete(req: express.Request, res: express.Response) {
     const schema = DeleteDocumentRequestSchema.parse(req);
 
-    await documentsService.deleteDocument({ id: schema.params.id });
+    await documentsService.deleteDocument({ id: schema.params.documentId });
 
     res.status(204);
   }

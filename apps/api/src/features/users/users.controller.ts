@@ -26,7 +26,7 @@ class UsersController {
     const currentUser = (req as AuthenticatedRequest).user;
 
     const response = await usersService.getUserById(
-      { id: schema.params.id },
+      { id: schema.params.userId },
       currentUser
     );
 
@@ -51,7 +51,7 @@ class UsersController {
     const schema = UpdateUserRequestSchema.parse(req);
 
     const response = await usersService.updateUser({
-      id: schema.params.id,
+      id: schema.params.userId,
       email: schema.body.email,
       firstName: schema.body.firstName,
       lastName: schema.body.lastName,
@@ -65,7 +65,7 @@ class UsersController {
   async delete(req: express.Request, res: express.Response) {
     const schema = DeleteUserRequestSchema.parse(req);
 
-    await usersService.deleteUser({ id: schema.params.id });
+    await usersService.deleteUser({ id: schema.params.userId });
 
     res.status(204);
   }

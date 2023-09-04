@@ -1,10 +1,8 @@
 import { z } from "zod";
-import { DocumentDto } from "..";
+import { DocumentDto, HasDocumentIdSchema } from "..";
 import { HasIdSchema } from "../../common/has-id";
 
-export const GetDocumentRequestSchema = z.object({
-  params: HasIdSchema,
-});
+export const GetDocumentRequestSchema = HasDocumentIdSchema;
 
 export type GetDocumentRequest = z.infer<typeof HasIdSchema>;
 

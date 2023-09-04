@@ -20,7 +20,7 @@ TeamRoutes.route(`/`)
   .get(validate(GetTeamsRequestSchema), teamsController.getMany)
   .post(validate(CreateTeamRequestSchema), teamsController.create);
 
-TeamRoutes.route(`/:id`)
+TeamRoutes.route(`/:teamId`)
   .all(authenticate, validateTeamExists, validateTeamMembership)
   .get(validate(GetTeamRequestSchema), teamsController.getById)
   .patch(validate(UpdateTeamRequestSchema), teamsController.patch)

@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { BlockEntity } from "../features/blocks/block.entity";
-import { UserEntity } from "../features/users/user.entity";
-import { TeamEntity } from "../features/teams/team.entity";
-import { SpaceEntity } from "../features/spaces/space.entity";
-import { FolderEntity } from "../features/folders/folder.entity";
-import { DocumentEntity } from "../features/documents/document.entity";
+import { BlockEntity } from "../features/blocks/blocks.entity";
+import { UserEntity } from "../features/users/users.entity";
+import { TeamEntity } from "../features/teams/teams.entity";
+import { SpaceEntity } from "../features/spaces/spaces.entity";
+import { FolderEntity } from "../features/folders/folders.entity";
+import { DocumentEntity } from "../features/documents/documents.entity";
 import config from "./env";
 
 const databaseName =

@@ -9,10 +9,10 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from "typeorm";
-import { SpaceEntity } from "../spaces/space.entity";
-import { UserEntity } from "../users/user.entity";
-import { FolderEntity } from "../folders/folder.entity";
-import { BlockEntity } from "../blocks/block.entity";
+import { SpaceEntity } from "../spaces/spaces.entity";
+import { UserEntity } from "../users/users.entity";
+import { FolderEntity } from "../folders/folders.entity";
+import { BlockEntity } from "../blocks/blocks.entity";
 
 @Entity()
 export class DocumentEntity {

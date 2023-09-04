@@ -1,6 +1,3 @@
-import { Repository } from "typeorm";
-import { UserEntity } from "./user.entity";
-import * as argon2 from "argon2";
 import {
   CreateUserRequest,
   CreateUserResponse,
@@ -13,8 +10,11 @@ import {
   UpdateUserResponse,
   UserDto,
 } from "@meadow/shared";
+import * as argon2 from "argon2";
+import { Repository } from "typeorm";
+import { UserEntity } from "./users.entity";
+import { UsersMapper } from "./users.mapper";
 import { MeadowDataSource } from "../../config/typeorm";
-import { UserMapper } from "./user.mapper";
 
 class UsersService {
   usersRepository: Repository<UserEntity>;
@@ -24,46 +24,43 @@ class UsersService {
   }
 
   async getUsers(dto: GetUsersRequest): Promise<GetUsersResponse> {
-    const skipCount = Math.max(0, dto.limit * dto.page);
-    const users = await this.usersRepository.find({
+    const skipCount = dto.limit * dto.page;
+
+    const entities = await this.usersRepository.find({
       take: dto.limit,
       skip: skipCount,
     });
 
-    return users.map((user) => UserMapper.toPartialDto(user));
+    return entities.map((entity) => UsersMapper.toPartialDto(entity));
   }
 
   async getUserById(
     dto: GetUserRequest,
-    currentUser?: UserDto
+    currentUser: UserDto
   ): Promise<GetUserResponse> {
-    const user = await this.usersRepository.findOne({
+    const entity = await this.usersRepository.findOne({
       where: { id: dto.id },
-    });
+    })!;
 
-    if (!user) {
-      return Promise.reject("Could not find user.");
+    if (entity!.id === currentUser.id) {
+      return UsersMapper.toDto(entity!);
     }
 
-    if (user.id === currentUser?.id) {
-      return UserMapper.toDto(user);
-    }
-
-    return UserMapper.toPartialDto(user);
+    return UsersMapper.toPartialDto(entity!);
   }
 
-  async getUserByEmail(email: string): Promise<GetUserResponse | null> {
-    const user = await this.usersRepository.findOne({
+  async getUserByEmail(email: string): Promise<GetUserResponse> {
+    const entity = await this.usersRepository.findOne({
       where: { email: email },
     });
 
-    return user ? UserMapper.toDto(user) : null;
+    return UsersMapper.toDto(entity!);
   }
 
   async createUser(dto: CreateUserRequest): Promise<CreateUserResponse> {
     const passwordHash = await argon2.hash(dto.password);
 
-    const user = await this.usersRepository.save(
+    const entity = await this.usersRepository.save(
       this.usersRepository.create({
         email: dto.email,
         passwordHash: passwordHash,
@@ -73,10 +70,10 @@ class UsersService {
       })
     );
 
-    return UserMapper.toDto(user);
+    return UsersMapper.toDto(entity);
   }
 
-  async updateUser(dto: UpdateUserRequest): Promise<UpdateUserResponse | null> {
+  async updateUser(dto: UpdateUserRequest): Promise<UpdateUserResponse> {
     let updatedFields: Record<string, any> = {};
 
     if (dto.email) {
@@ -102,25 +99,15 @@ class UsersService {
       updatedFields
     );
 
-    if ((updateResponse.affected ?? 1) === 0) {
-      return null;
-    }
+    const updatedEntity = updateResponse.generatedMaps.at(0) as UserEntity;
 
-    const updatedUser = updateResponse.generatedMaps.at(0) as UserEntity;
-
-    return UserMapper.toDto(updatedUser);
+    return UsersMapper.toDto(updatedEntity);
   }
 
-  async deleteUser(dto: DeleteUserRequest): Promise<boolean> {
-    const result = await this.usersRepository.delete({
+  async deleteUser(dto: DeleteUserRequest) {
+    await this.usersRepository.delete({
       id: dto.id,
     });
-
-    if (result.affected === 0) {
-      return false;
-    }
-
-    return true;
   }
 }
 

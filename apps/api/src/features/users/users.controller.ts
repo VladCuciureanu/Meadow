@@ -7,71 +7,67 @@ import {
   GetUsersRequestSchema,
   UpdateUserRequestSchema,
 } from "@meadow/shared";
-import { z } from "zod";
+import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 
 class UsersController {
-  async getMany(
-    req: z.infer<typeof GetUsersRequestSchema>,
-    res: express.Response
-  ) {
+  async getMany(req: express.Request, res: express.Response) {
+    const schema = GetUsersRequestSchema.parse(req);
+
     const response = await usersService.getUsers({
-      limit: req.body.limit ?? 100,
-      page: req.body.page ?? 1,
+      limit: schema.body.limit,
+      page: schema.body.page,
     });
 
     res.status(200).send(response);
   }
 
-  async getById(
-    req: z.infer<typeof GetUserRequestSchema>,
-    res: express.Response
-  ) {
+  async getById(req: express.Request, res: express.Response) {
+    const schema = GetUserRequestSchema.parse(req);
+    const currentUser = (req as AuthenticatedRequest).user;
+
     const response = await usersService.getUserById(
-      { id: req.params.id },
-      (req as any).user
+      { id: schema.params.id },
+      currentUser
     );
 
     res.status(200).send(response);
   }
 
-  async create(
-    req: z.infer<typeof CreateUserRequestSchema>,
-    res: express.Response
-  ) {
+  async create(req: express.Request, res: express.Response) {
+    const schema = CreateUserRequestSchema.parse(req);
+
     const response = await usersService.createUser({
-      email: req.body.email,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      password: req.body.password,
-      imgUrl: req.body.imgUrl,
+      email: schema.body.email,
+      firstName: schema.body.firstName,
+      lastName: schema.body.lastName,
+      password: schema.body.password,
+      imgUrl: schema.body.imgUrl,
     });
 
     res.status(201).send(response);
   }
 
-  async patch(
-    req: z.infer<typeof UpdateUserRequestSchema>,
-    res: express.Response
-  ) {
+  async patch(req: express.Request, res: express.Response) {
+    const schema = UpdateUserRequestSchema.parse(req);
+
     const response = await usersService.updateUser({
-      id: req.params.id,
-      email: req.body.email,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      password: req.body.password,
-      imgUrl: req.body.imgUrl,
+      id: schema.params.id,
+      email: schema.body.email,
+      firstName: schema.body.firstName,
+      lastName: schema.body.lastName,
+      password: schema.body.password,
+      imgUrl: schema.body.imgUrl,
     });
 
-    res.status(204).send(response);
+    res.status(200).send(response);
   }
 
-  async delete(
-    req: z.infer<typeof DeleteUserRequestSchema>,
-    res: express.Response
-  ) {
-    const response = await usersService.deleteUser({ id: req.params.id });
+  async delete(req: express.Request, res: express.Response) {
+    const schema = DeleteUserRequestSchema.parse(req);
 
-    res.status(204).send(response);
+    await usersService.deleteUser({ id: schema.params.id });
+
+    res.status(204);
   }
 }
 

@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   JoinTable,
 } from "typeorm";
-import { SpaceEntity } from "../spaces/space.entity";
-import { UserEntity } from "../users/user.entity";
+import { SpaceEntity } from "../spaces/spaces.entity";
+import { UserEntity } from "../users/users.entity";
 
 @Entity()
 export class TeamEntity {

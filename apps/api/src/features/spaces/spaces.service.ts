@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { SpaceEntity } from "./space.entity";
+import { SpaceEntity } from "./spaces.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateSpaceDto,

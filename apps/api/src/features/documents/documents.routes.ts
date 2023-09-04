@@ -8,15 +8,17 @@ import {
 import { validate } from "../common/middlewares/validate";
 import { validateDocumentAuthority } from "./middlewares/validate-document-authority";
 import { validateDocumentExists } from "./middlewares/validate-document-exists";
+import { authenticate } from "../auth/middlewares/authenticate";
 
 const DocumentRoutes = Router();
 
 DocumentRoutes.route(`/`)
+  .all(authenticate)
   .get(documentsController.getMany)
   .post(validate(CreateDocumentSchema), documentsController.create);
 
 DocumentRoutes.route(`/:documentId`)
-  .all(validateDocumentExists, validateDocumentAuthority)
+  .all(authenticate, validateDocumentExists, validateDocumentAuthority)
   .get(documentsController.getById)
   .put(validate(UpdateDocumentSchema), documentsController.put)
   .patch(validate(PatchDocumentSchema), documentsController.patch)

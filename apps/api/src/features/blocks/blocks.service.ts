@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { BlockEntity } from "./block.entity";
+import { BlockEntity } from "./blocks.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateBlockDto,

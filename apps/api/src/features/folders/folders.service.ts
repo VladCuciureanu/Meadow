@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { FolderEntity } from "./folder.entity";
+import { FolderEntity } from "./folders.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateFolderDto,

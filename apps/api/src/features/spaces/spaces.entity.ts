@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import { DocumentEntity } from "../documents/document.entity";
-import { FolderEntity } from "../folders/folder.entity";
-import { BlockEntity } from "../blocks/block.entity";
-import { TeamEntity } from "../teams/team.entity";
+import { DocumentEntity } from "../documents/documents.entity";
+import { FolderEntity } from "../folders/folders.entity";
+import { BlockEntity } from "../blocks/blocks.entity";
+import { TeamEntity } from "../teams/teams.entity";
 
 @Entity()
 export class SpaceEntity {

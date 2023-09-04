@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { MeadowDataSource } from "../../config/typeorm";
-import { UserEntity } from "../users/user.entity";
+import { UserEntity } from "../users/users.entity";
 import jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
 import { JWTPayload } from "./interfaces/jwt-payload";
@@ -14,23 +14,28 @@ class AuthService {
     this.userRepository = MeadowDataSource.getRepository(UserEntity);
   }
 
-  async getToken(dto: GetTokenRequest): Promise<GetTokenResponse> {
+  async getToken(dto: GetTokenRequest): Promise<GetTokenResponse | null> {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
     });
 
-    if (
-      user !== null &&
-      (await argon2.verify(user!.passwordHash, dto.password))
-    ) {
-      const payload = jwt.sign(
-        { userId: user.id } satisfies JWTPayload,
-        process.env.JWT_SECRET!
-      );
-      return payload;
-    } else {
-      throw new Error();
+    if (user === null) {
+      return null;
     }
+
+    const isPasswordValid = await argon2.verify(
+      user.passwordHash,
+      dto.password
+    );
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    return jwt.sign(
+      { userId: user.id } satisfies JWTPayload,
+      process.env.JWT_SECRET!
+    );
   }
 }
 

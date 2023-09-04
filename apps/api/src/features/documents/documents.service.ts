@@ -1,5 +1,5 @@
 import { Repository, DeepPartial } from "typeorm";
-import { DocumentEntity } from "./document.entity";
+import { DocumentEntity } from "./documents.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import blocksService from "../blocks/blocks.service";
 import {

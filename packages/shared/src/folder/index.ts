@@ -7,15 +7,17 @@ export enum FolderIconType {
   LocalImage,
 }
 
+export interface FolderIconConfig {
+  tintColor?: string;
+  type: FolderIconType;
+  value: string;
+}
+
 export type FolderDto = {
   id: string;
   name: string;
   description?: string;
-  icon: {
-    tintColor?: string;
-    type: FolderIconType;
-    value: string;
-  };
+  icon: FolderIconConfig;
   itemOrder: string[];
   documents: PartialDocumentDto[];
   parentFolder: PartialFolderDto;

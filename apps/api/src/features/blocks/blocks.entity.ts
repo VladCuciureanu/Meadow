@@ -7,10 +7,13 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import { DocumentEntity } from "../documents/document.entity";
-import { SpaceEntity } from "../spaces/space.entity";
-import { ListStyle, TextRun, TextBlockStyle, ImageStyle } from "@meadow/shared";
+import { DocumentEntity } from "../documents/documents.entity";
+import { SpaceEntity } from "../spaces/spaces.entity";
 import {
+  ListStyle,
+  TextRun,
+  TextBlockStyle,
+  ImageStyle,
   ListStyleType,
   BlockColor,
   BlockType,
@@ -23,7 +26,7 @@ import {
   ImageFillStyle,
   LayoutStyle,
   TodoState,
-} from "@meadow/shared/src/block/enum";
+} from "@meadow/shared";
 
 @Entity()
 export class BlockEntity {

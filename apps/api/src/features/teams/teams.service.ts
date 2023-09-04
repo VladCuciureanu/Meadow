@@ -1,16 +1,19 @@
-import { Repository } from "typeorm";
-import { TeamEntity } from "./team.entity";
+import { ArrayContains, Repository } from "typeorm";
+import { TeamEntity } from "./teams.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
   CreateTeamRequest,
   CreateTeamResponse,
   DeleteTeamRequest,
   GetTeamRequest,
+  GetTeamResponse,
   GetTeamsRequest,
   GetTeamsResponse,
   UpdateTeamRequest,
   UpdateTeamResponse,
+  UserDto,
 } from "@meadow/shared";
+import { TeamsMapper } from "./teams.mapper";
 
 class TeamsService {
   teamsRepository: Repository<TeamEntity>;
@@ -19,36 +22,71 @@ class TeamsService {
     this.teamsRepository = MeadowDataSource.getRepository(TeamEntity);
   }
 
-  async getTeams(dto: GetTeamsRequest): GetTeamsResponse {
-    const skipCount = Math.max(0, limit * (page - 1));
-    return this.teamsRepository.find({ take: limit, skip: skipCount });
+  async getTeams(
+    dto: GetTeamsRequest,
+    currentUser: UserDto
+  ): Promise<GetTeamsResponse> {
+    const skipCount = dto.limit * dto.page;
+
+    const entities = await this.teamsRepository.find({
+      where: {
+        members: ArrayContains([{ id: currentUser.id }]),
+      },
+      take: dto.limit,
+      skip: skipCount,
+    });
+
+    return entities.map((entity) => TeamsMapper.toDto(entity));
   }
 
-  async getTeamById(dto: GetTeamRequest): GetTeamsResponse {
-    return this.teamsRepository.findOne({
-      where: { id: teamId },
+  async getTeamById(dto: GetTeamRequest): Promise<GetTeamResponse> {
+    const entity = await this.teamsRepository.findOne({
+      where: { id: dto.id },
       relations: ["members"],
     });
+
+    return TeamsMapper.toDto(entity!);
   }
 
-  async createTeam(dto: CreateTeamRequest): CreateTeamResponse {
-    const team = this.teamsRepository.create({
-      name: dto.name,
-      imgUrl: dto.imgUrl,
-      members: [{ id: dto.creatorId }],
-    });
-    return this.teamsRepository.save(team);
-  }
-
-  async updateTeam(dto: UpdateTeamRequest): UpdateTeamResponse {
-    return this.teamsRepository.update(
-      { id: dto.id },
-      { name: dto.name, imgUrl: dto.imgUrl }
+  async createTeam(
+    dto: CreateTeamRequest,
+    currentUser: UserDto
+  ): Promise<CreateTeamResponse> {
+    const entity = await this.teamsRepository.save(
+      this.teamsRepository.create({
+        name: dto.name,
+        imgUrl: dto.imgUrl,
+        members: [{ id: currentUser.id }],
+      })
     );
+
+    return TeamsMapper.toDto(entity);
+  }
+
+  async updateTeam(dto: UpdateTeamRequest): Promise<UpdateTeamResponse> {
+    let updatedFields: Record<string, any> = {};
+
+    if (dto.name) {
+      updatedFields.name = dto.name;
+    }
+    if (dto.imgUrl) {
+      updatedFields.imgUrl = dto.imgUrl;
+    }
+
+    const updateResponse = await this.teamsRepository.update(
+      {
+        id: dto.id,
+      },
+      updatedFields
+    );
+
+    const updatedEntity = updateResponse.generatedMaps.at(0) as TeamEntity;
+
+    return TeamsMapper.toDto(updatedEntity);
   }
 
   async deleteTeam(dto: DeleteTeamRequest) {
-    return this.teamsRepository.delete({ id: dto.id });
+    await this.teamsRepository.delete({ id: dto.id });
   }
 }
 

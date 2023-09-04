@@ -1,50 +1,72 @@
 import express from "express";
 import teamsService from "./teams.service";
 import {
-  CreateTeamDto,
-  CreateTeamRequest,
-  DeleteTeamDto,
-  DeleteTeamRequest,
-  PatchTeamDto,
-  PatchTeamRequest,
-  UpdateTeamDto,
-  UpdateTeamRequest,
+  CreateTeamRequestSchema,
+  DeleteUserRequestSchema,
+  GetTeamRequestSchema,
+  GetTeamsRequestSchema,
+  UpdateTeamRequestSchema,
 } from "@meadow/shared";
 import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
 class TeamsController {
   async getMany(req: express.Request, res: express.Response) {
-    const response = await teamsService.getTeams(100, 0);
-    res.status(200).send(response);
+    const schema = GetTeamsRequestSchema.parse(req);
+    const currentUser = (req as AuthenticatedRequest).user;
+
+    const response = await teamsService.getTeams(
+      {
+        limit: schema.body.limit,
+        page: schema.body.page,
+      },
+      currentUser
+    );
+
+    return res.status(200).send(response);
   }
 
   async getById(req: express.Request, res: express.Response) {
-    const response = await teamsService.getTeamById(req.params.teamId);
-    res.status(200).send(response);
+    const schema = GetTeamRequestSchema.parse(req);
+
+    const response = await teamsService.getTeamById({ id: schema.params.id });
+
+    return res.status(200).send(response);
   }
 
   async create(req: express.Request, res: express.Response) {
-    const user = (req as any as AuthenticatedRequest).user;
-    const dto = new CreateTeamDto(req as CreateTeamRequest, user);
-    const response = await teamsService.createTeam(dto);
-    res.status(201).send(response);
+    const schema = CreateTeamRequestSchema.parse(req);
+    const currentUser = (req as AuthenticatedRequest).user;
+
+    const response = await teamsService.createTeam(
+      {
+        name: schema.body.name,
+        imgUrl: schema.body.imgUrl,
+      },
+      currentUser
+    );
+
+    return res.status(201).send(response);
   }
 
   async patch(req: express.Request, res: express.Response) {
-    const dto = new PatchTeamDto(req as any as PatchTeamRequest);
-    const response = await teamsService.updateTeam(dto);
-    res.status(204).send(response);
-  }
+    const schema = UpdateTeamRequestSchema.parse(req);
 
-  async put(req: express.Request, res: express.Response) {
-    const dto = new UpdateTeamDto(req as any as UpdateTeamRequest);
-    const response = await teamsService.put(dto);
-    res.status(204).send(response);
+    const response = await teamsService.updateTeam({
+      id: schema.params.id,
+      name: schema.body.name,
+      imgUrl: schema.body.imgUrl,
+    });
+
+    return res.status(200).send(response);
   }
 
   async delete(req: express.Request, res: express.Response) {
-    const dto = new DeleteTeamDto(req as any as DeleteTeamRequest);
-    const response = await teamsService.deleteTeam(dto);
-    res.status(204).send(response);
+    const schema = DeleteUserRequestSchema.parse(req);
+
+    await teamsService.deleteTeam({
+      id: schema.params.id,
+    });
+
+    return res.status(204);
   }
 }
 

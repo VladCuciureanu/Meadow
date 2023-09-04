@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { TeamEntity } from "../teams/team.entity";
-import { DocumentEntity } from "../documents/document.entity";
+import { TeamEntity } from "../teams/teams.entity";
+import { DocumentEntity } from "../documents/documents.entity";
 
 @Entity()
 export class UserEntity {

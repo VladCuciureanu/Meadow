@@ -1,7 +1,8 @@
 import { PartialUserDto, UserDto } from "@meadow/shared";
-import { UserEntity } from "./user.entity";
+import { UserEntity } from "./users.entity";
+import { TeamsMapper } from "../teams/teams.mapper";
 
-export class UserMapper {
+export class UsersMapper {
   static toDto(entity: UserEntity): UserDto {
     return {
       id: entity.id,
@@ -9,7 +10,7 @@ export class UserMapper {
       firstName: entity.firstName,
       lastName: entity.lastName,
       imgUrl: entity.imgUrl,
-      teams: entity.teams,
+      teams: entity.teams.map((team) => TeamsMapper.toPartialDto(team)),
       createdAt: entity.createdAt,
     };
   }

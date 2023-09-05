@@ -100,7 +100,7 @@ class FoldersService {
       }
     }
     if (dto.parentFolderId) {
-      updatedFields.parentFolder = { id: dto.parentFolderId }; // TODO: Validate parent folder is in space
+      updatedFields.parentFolder = { id: dto.parentFolderId };
     }
     if (dto.spaceId) {
       updatedFields.space = { id: dto.spaceId };

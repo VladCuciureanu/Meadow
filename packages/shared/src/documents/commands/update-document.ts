@@ -3,7 +3,12 @@ import { DocumentDto, HasDocumentIdSchema } from "..";
 import { HasIdSchema } from "../../common/has-id";
 import { MutableDocumentFields } from ".";
 
-const BodySchema = MutableDocumentFields.deepPartial().strict();
+const BodySchema = MutableDocumentFields.omit({
+  authorId: true,
+  rootBlockId: true,
+})
+  .deepPartial()
+  .strict();
 
 export const UpdateDocumentRequestSchema = z
   .object({

@@ -4,6 +4,7 @@ import { MutableDocumentFields } from ".";
 
 const BodySchema = MutableDocumentFields.omit({
   isEmpty: true,
+  authorId: true,
   rootBlockId: true,
 }).strict();
 

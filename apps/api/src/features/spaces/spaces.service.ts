@@ -55,7 +55,7 @@ class SpacesService {
       this.spacesRepository.create({
         name: dto.name,
         imgUrl: dto.imgUrl,
-        team: { id: dto.teamId }, //TODO Team membership validation
+        team: { id: dto.teamId },
       })
     );
 
@@ -73,7 +73,7 @@ class SpacesService {
     }
     if (dto.teamId) {
       updatedFields.team = {
-        id: dto.teamId, //TODO Team membership validation
+        id: dto.teamId,
       };
     }
 

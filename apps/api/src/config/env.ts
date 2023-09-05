@@ -32,7 +32,7 @@ let env;
 try {
   env = EnvironmentVariablesSchema.parse(process.env);
 } catch (err) {
-  throw new MeadowError(500, `Config validation error: ${err}`);
+  throw new MeadowError(500, `Environment config validation error: ${err}`);
 }
 
 const config = {

@@ -42,7 +42,7 @@ class UsersService {
       where: { id: dto.id },
     })!;
 
-    if (entity!.id === currentUser?.id) {
+    if (!currentUser || entity!.id === currentUser.id) {
       return UsersMapper.toDto(entity!);
     }
 

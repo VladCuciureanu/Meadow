@@ -9,7 +9,6 @@ import config, { Environments } from "./env";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import createHttpError from "http-errors";
 import routes from "./routes";
 import swaggerRoutes from "./swagger";
 import passport from "passport";

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { BlockEntity } from "../features/blocks/blocks.entity";
+import { BlockEntity, TextRunEntity } from "../features/blocks/blocks.entity";
 import { UserEntity } from "../features/users/users.entity";
 import { TeamEntity } from "../features/teams/teams.entity";
 import { SpaceEntity } from "../features/spaces/spaces.entity";
@@ -29,6 +29,7 @@ export const MeadowDataSource = new DataSource({
     FolderEntity,
     DocumentEntity,
     BlockEntity,
+    TextRunEntity,
   ],
   subscribers: [],
   migrations: [],

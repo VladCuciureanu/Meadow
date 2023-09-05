@@ -7,11 +7,11 @@ import {
   GetTeamsRequestSchema,
   UpdateTeamRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 class TeamsController {
   async getMany(req: express.Request, res: express.Response) {
     const schema = GetTeamsRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await teamsService.getTeams(
       {
@@ -36,7 +36,7 @@ class TeamsController {
 
   async create(req: express.Request, res: express.Response) {
     const schema = CreateTeamRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await teamsService.createTeam(
       {

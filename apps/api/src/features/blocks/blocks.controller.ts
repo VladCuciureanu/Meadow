@@ -7,11 +7,11 @@ import {
   GetBlocksRequestSchema,
   UpdateBlockRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 class BlocksController {
   async getMany(req: express.Request, res: express.Response) {
     const schema = GetBlocksRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await blocksService.getBlocks(
       {

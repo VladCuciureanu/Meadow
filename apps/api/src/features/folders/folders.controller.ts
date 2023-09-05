@@ -7,11 +7,11 @@ import {
   GetFoldersRequestSchema,
   UpdateFolderRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 class FoldersController {
   async getMany(req: express.Request, res: express.Response) {
     const schema = GetFoldersRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await foldersService.getFolders(
       {

@@ -7,7 +7,7 @@ import {
   GetUsersRequestSchema,
   UpdateUserRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 
 class UsersController {
   async getMany(req: express.Request, res: express.Response) {
@@ -23,7 +23,7 @@ class UsersController {
 
   async getById(req: express.Request, res: express.Response) {
     const schema = GetUserRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await usersService.getUserById(
       { id: schema.params.userId },

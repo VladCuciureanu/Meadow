@@ -7,11 +7,11 @@ import {
   GetDocumentsRequestSchema,
   UpdateDocumentRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 class DocumentsController {
   async getMany(req: express.Request, res: express.Response) {
     const schema = GetDocumentsRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await documentsService.getDocuments(
       {

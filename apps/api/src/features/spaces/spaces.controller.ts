@@ -7,11 +7,11 @@ import {
   GetSpacesRequestSchema,
   UpdateSpaceRequestSchema,
 } from "@meadow/shared";
-import { AuthenticatedRequest } from "../auth/interfaces/authenticated-request";
+import { extractUser } from "../auth/utils/extract-user";
 class SpacesController {
   async getMany(req: express.Request, res: express.Response) {
     const schema = GetSpacesRequestSchema.parse(req);
-    const currentUser = (req as AuthenticatedRequest).user;
+    const currentUser = extractUser(req);
 
     const response = await spacesService.getSpaces(
       {

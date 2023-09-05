@@ -1,7 +1,7 @@
 import express from "express";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
 import { HasFolderIdSchema } from "@meadow/shared";
 import foldersService from "../folders.service";
+import { extractUser } from "../../auth/utils/extract-user";
 
 export async function validateFolderAuthority(
   req: express.Request,
@@ -9,7 +9,7 @@ export async function validateFolderAuthority(
   next: express.NextFunction
 ) {
   const schema = HasFolderIdSchema.parse(req);
-  const currentUser = (req as AuthenticatedRequest).user;
+  const currentUser = extractUser(req);
 
   const userHasAuthority = await foldersService.isUserAuthorized(
     schema.params.folderId,

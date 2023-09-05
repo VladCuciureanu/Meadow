@@ -1,6 +1,6 @@
 import { HasUserIdSchema } from "@meadow/shared";
 import express from "express";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
+import { extractUser } from "../../auth/utils/extract-user";
 
 export function validateCurrentUser(
   req: express.Request,
@@ -8,7 +8,7 @@ export function validateCurrentUser(
   next: express.NextFunction
 ) {
   const schema = HasUserIdSchema.parse(req);
-  const currentUser = (req as AuthenticatedRequest).user;
+  const currentUser = extractUser(req);
 
   if (currentUser.id === schema.params.userId) {
     next();

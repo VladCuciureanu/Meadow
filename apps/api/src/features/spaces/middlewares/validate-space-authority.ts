@@ -1,7 +1,7 @@
 import express from "express";
 import spacesService from "../spaces.service";
 import { HasSpaceIdSchema } from "@meadow/shared";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
+import { extractUser } from "../../auth/utils/extract-user";
 
 export async function validateSpaceAuthority(
   req: express.Request,
@@ -9,7 +9,7 @@ export async function validateSpaceAuthority(
   next: express.NextFunction
 ) {
   const schema = HasSpaceIdSchema.parse(req);
-  const currentUser = (req as AuthenticatedRequest).user;
+  const currentUser = extractUser(req);
 
   const userHasAuthority = await spacesService.isUserAuthorized(
     schema.params.spaceId,

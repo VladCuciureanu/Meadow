@@ -1,7 +1,7 @@
 import express from "express";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
 import blocksService from "../blocks.service";
 import { HasBlockIdSchema } from "@meadow/shared";
+import { extractUser } from "../../auth/utils/extract-user";
 
 export async function validateBlockAuthority(
   req: express.Request,
@@ -9,7 +9,7 @@ export async function validateBlockAuthority(
   next: express.NextFunction
 ) {
   const schema = HasBlockIdSchema.parse(req);
-  const currentUser = (req as AuthenticatedRequest).user;
+  const currentUser = extractUser(req);
 
   const userHasAuthority = await blocksService.isUserAuthorized(
     schema.params.blockId,

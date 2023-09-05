@@ -1,23 +1,22 @@
 import express from "express";
-import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
-import teamsService from "../../teams/teams.service";
 import spacesService from "../spaces.service";
+import { HasSpaceIdSchema } from "@meadow/shared";
+import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
 
-// TODO: Cache
 export async function validateSpaceAuthority(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
-  const space = await spacesService.getSpaceById({ id: req.params.spaceId });
-  const team = await teamsService.getTeamById({ id: space!.team.id });
+  const schema = HasSpaceIdSchema.parse(req);
+  const currentUser = (req as AuthenticatedRequest).user;
 
-  const memberIsPartOfTeam =
-    team?.members.find(
-      (member) => member.id === (req as any as AuthenticatedRequest).user.id
-    ) !== undefined;
+  const userHasAuthority = await spacesService.isUserAuthorized(
+    schema.params.spaceId,
+    currentUser
+  );
 
-  if (memberIsPartOfTeam) {
+  if (userHasAuthority) {
     next();
   } else {
     res.sendStatus(403);

@@ -58,8 +58,8 @@ export type BlockDto = {
   parentBlock?: PartialBlockDto;
   subblocks: PartialBlockDto[];
   lineStyle: LineStyle;
-  code?: string;
-  language?: CodeLanguage;
+  code: string;
+  language: CodeLanguage;
   url?: string;
   previewUrl?: string;
   filename?: string;
@@ -78,34 +78,25 @@ export type BlockDto = {
   modifiedBy: PartialUserDto;
 };
 
-export type PartialBlockDto = Pick<
-  BlockDto,
-  | "id"
-  | "type"
-  | "indentationLevel"
-  | "listStyle"
-  | "hasBlockDecoration"
-  | "hasFocusDecoration"
-  | "color"
-  // | "content"
-  | "style"
->;
+export type PartialBlockDto = Pick<BlockDto, "id">; // TODO: Add more props when you know what is needed
 
 export type TextRunDto = {
   id: string;
+  block: PartialBlockDto;
   text: string;
   isBold?: boolean;
   isItalic?: boolean;
-  isStrikethrough?: boolean;
+  isStrikeThrough?: boolean;
   isCode?: boolean;
   highlightColor?: TextHighlightColor;
-  linkType?: TextRunLinkType;
-  linkSpaceId?: string;
-  linkBlockId?: string;
-  linkDate?: Date;
-  linkUrl?: string;
-  linkFormula?: string;
-  block: PartialBlockDto;
+  link: {
+    type?: TextRunLinkType;
+    spaceId?: string;
+    blockId?: string;
+    date?: Date;
+    url?: string;
+    formula?: string;
+  };
 };
 
 export const HasBlockIdSchema = z.object({

@@ -1,31 +1,22 @@
 import express from "express";
 import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
-import spacesService from "../../spaces/spaces.service";
-import teamsService from "../../teams/teams.service";
 import documentsService from "../documents.service";
-import foldersService from "../../folders/folders.service";
+import { HasDocumentIdSchema } from "@meadow/shared";
 
-// TODO: Cache
 export async function validateDocumentAuthority(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
-  const document = await documentsService.getDocumentById({
-    id: req.params.documentId,
-  });
-  const folder = await foldersService.getFolderById({
-    id: document!.folder.id,
-  });
-  const space = await spacesService.getSpaceById({ id: folder!.space.id });
-  const team = await teamsService.getTeamById({ id: space!.team.id });
+  const schema = HasDocumentIdSchema.parse(req);
+  const currentUser = (req as AuthenticatedRequest).user;
 
-  const memberIsPartOfTeam =
-    team?.members.find(
-      (member) => member.id === (req as AuthenticatedRequest).user.id
-    ) !== undefined;
+  const userHasAuthority = await documentsService.isUserAuthorized(
+    schema.params.documentId,
+    currentUser
+  );
 
-  if (memberIsPartOfTeam) {
+  if (userHasAuthority) {
     next();
   } else {
     res.sendStatus(403);

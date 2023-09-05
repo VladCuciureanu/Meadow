@@ -2,9 +2,11 @@ import { Router } from "express";
 
 import blocksController from "./blocks.controller";
 import {
-  CreateBlockSchema,
-  PatchBlockSchema,
-  UpdateBlockSchema,
+  CreateBlockRequestSchema,
+  DeleteBlockRequestSchema,
+  GetBlockRequestSchema,
+  GetBlocksRequestSchema,
+  UpdateBlockRequestSchema,
 } from "@meadow/shared";
 import { validate } from "../common/middlewares/validate";
 import { validateBlockAuthority } from "./middlewares/validate-block-authority";
@@ -15,14 +17,13 @@ const BlockRoutes = Router();
 
 BlockRoutes.route(`/`)
   .all(authenticate)
-  .get(blocksController.getMany)
-  .post(validate(CreateBlockSchema), blocksController.create);
+  .get(validate(GetBlocksRequestSchema), blocksController.getMany)
+  .post(validate(CreateBlockRequestSchema), blocksController.create);
 
 BlockRoutes.route(`/:blockId`)
   .all(authenticate, validateBlockExists, validateBlockAuthority)
-  .get(blocksController.getById)
-  .put(validate(UpdateBlockSchema), blocksController.put)
-  .patch(validate(PatchBlockSchema), blocksController.patch)
-  .delete(blocksController.delete);
+  .get(validate(GetBlockRequestSchema), blocksController.getById)
+  .patch(validate(UpdateBlockRequestSchema), blocksController.patch)
+  .delete(validate(DeleteBlockRequestSchema), blocksController.delete);
 
 export default BlockRoutes;

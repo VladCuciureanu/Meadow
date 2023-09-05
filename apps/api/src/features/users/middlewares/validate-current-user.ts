@@ -1,12 +1,16 @@
-import { UserDto } from "@meadow/shared";
+import { HasUserIdSchema } from "@meadow/shared";
 import express from "express";
+import { AuthenticatedRequest } from "../../auth/interfaces/authenticated-request";
 
 export function validateCurrentUser(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
-  if ((req.user as UserDto).id === req.params.userId) {
+  const schema = HasUserIdSchema.parse(req);
+  const currentUser = (req as AuthenticatedRequest).user;
+
+  if (currentUser.id === schema.params.userId) {
     next();
   } else {
     res

@@ -14,6 +14,8 @@ import {
   UserDto,
 } from "@meadow/shared";
 import { DocumentsMapper } from "./documents.mapper";
+import spacesService from "../spaces/spaces.service";
+import foldersService from "../folders/folders.service";
 
 class DocumentsService {
   documentsRepository: Repository<DocumentEntity>;
@@ -90,7 +92,6 @@ class DocumentsService {
     if (dto.folderId) {
       updatedFields.folder = { id: dto.folderId };
     }
-    // TODO: Add more props
 
     const updateResponse = await this.documentsRepository.update(
       {
@@ -106,6 +107,25 @@ class DocumentsService {
 
   async deleteDocument(dto: DeleteDocumentRequest) {
     await this.documentsRepository.delete({ id: dto.id });
+  }
+
+  async isUserAuthorized(documentId: string, user: UserDto) {
+    const document = await this.documentsRepository.findOne({
+      where: { id: documentId },
+      relations: ["space", "folder"],
+    });
+
+    if (!document) {
+      return false;
+    }
+
+    if (document?.space) {
+      return spacesService.isUserAuthorized(document.space.id, user);
+    }
+
+    if (document?.folder) {
+      return foldersService.isUserAuthorized(document.folder.id, user);
+    }
   }
 }
 

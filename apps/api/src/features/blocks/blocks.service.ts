@@ -2,12 +2,19 @@ import { Repository } from "typeorm";
 import { BlockEntity } from "./blocks.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
-  CreateBlockDto,
-  DeleteBlockDto,
-  PatchBlockDto,
-  UpdateBlockDto,
-  User,
+  CreateBlockRequest,
+  CreateBlockResponse,
+  DeleteBlockRequest,
+  GetBlockRequest,
+  GetBlockResponse,
+  GetBlocksResponse,
+  GetSpacesRequest,
+  UpdateBlockRequest,
+  UpdateBlockResponse,
+  UserDto,
 } from "@meadow/shared";
+import { BlocksMapper } from "./blocks.mapper";
+import documentsService from "../documents/documents.service";
 
 class BlocksService {
   blocksRepository: Repository<BlockEntity>;
@@ -16,79 +23,74 @@ class BlocksService {
     this.blocksRepository = MeadowDataSource.getRepository(BlockEntity);
   }
 
-  async getMany(limit: number, page: number, user: User) {
-    const skipCount = Math.max(0, limit * (page - 1));
-    return this.blocksRepository.find({
-      take: limit,
+  async getBlocks(
+    dto: GetSpacesRequest,
+    currentUser: UserDto
+  ): Promise<GetBlocksResponse> {
+    const skipCount = dto.limit * (dto.page - 1);
+
+    const entities = await this.blocksRepository.find({
+      take: dto.limit,
       skip: skipCount,
       where: {
-        space: {
-          team: {
-            members: {
-              id: user.id,
-            },
-          },
-        },
+        // TODO
       },
+      relations: ["todo"],
     });
+
+    return entities.map((entity) => BlocksMapper.toDto(entity));
   }
 
-  async getById(blockId: string) {
-    return this.blocksRepository.findOne({
-      where: {
-        id: blockId,
+  async getBlockById(dto: GetBlockRequest): Promise<GetBlockResponse> {
+    const entity = await this.blocksRepository.findOne({
+      where: { id: dto.id },
+    });
+
+    return BlocksMapper.toDto(entity!);
+  }
+
+  async createBlock(dto: CreateBlockRequest): Promise<CreateBlockResponse> {
+    const entity = await this.blocksRepository.save(
+      this.blocksRepository.create({
+        // TODO
+      })
+    );
+
+    return BlocksMapper.toDto(entity);
+  }
+
+  async updateBlock(dto: UpdateBlockRequest): Promise<UpdateBlockResponse> {
+    let updatedFields: Record<string, any> = {};
+
+    // TODO
+
+    const updateResponse = await this.blocksRepository.update(
+      {
+        id: dto.id,
       },
-    });
-  }
-
-  async create(dto: CreateBlockDto) {
-    const block = this.blocksRepository.create({
-      type: dto.type,
-      listStyleType: dto.listStyle?.type,
-      color: dto.color,
-      document: { id: dto.documentId },
-      space: { id: dto.spaceId },
-      hasBlockDecoration: dto.hasBlockDecoration,
-      hasFocusDecoration: dto.hasFocusDecoration,
-      indentationLevel: dto.indentationLevel,
-    });
-    return this.blocksRepository.save(block);
-  }
-
-  async patch(dto: PatchBlockDto) {
-    return this.blocksRepository.update(
-      { id: dto.id },
-      {
-        type: dto.type,
-        listStyleType: dto.listStyle?.type,
-        color: dto.color,
-        document: { id: dto.documentId },
-        space: { id: dto.spaceId },
-        hasBlockDecoration: dto.hasBlockDecoration,
-        hasFocusDecoration: dto.hasFocusDecoration,
-        indentationLevel: dto.indentationLevel,
-      }
+      updatedFields
     );
+
+    const updatedEntity = updateResponse.generatedMaps.at(0) as BlockEntity;
+
+    return BlocksMapper.toDto(updatedEntity);
   }
 
-  async put(dto: UpdateBlockDto) {
-    return this.blocksRepository.update(
-      { id: dto.id },
-      {
-        type: dto.type,
-        listStyleType: dto.listStyle?.type,
-        color: dto.color,
-        document: { id: dto.documentId },
-        space: { id: dto.spaceId },
-        hasBlockDecoration: dto.hasBlockDecoration,
-        hasFocusDecoration: dto.hasFocusDecoration,
-        indentationLevel: dto.indentationLevel,
-      }
-    );
+  async deleteBlock(dto: DeleteBlockRequest) {
+    await this.blocksRepository.delete({ id: dto.id });
   }
 
-  async delete(dto: DeleteBlockDto) {
-    return this.blocksRepository.delete({ id: dto.id });
+  async isUserAuthorized(blockId: string, user: UserDto) {
+    const block = await this.blocksRepository.findOne({
+      where: { id: blockId },
+      relations: ["document"],
+    });
+
+    if (!block || !block.document) {
+      return false;
+    }
+
+    return documentsService.isUserAuthorized(block.document.id, user);
   }
 }
 

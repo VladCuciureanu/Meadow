@@ -88,6 +88,13 @@ class TeamsService {
   async deleteTeam(dto: DeleteTeamRequest) {
     await this.teamsRepository.delete({ id: dto.id });
   }
+
+  async isUserInTeam(teamId: string, user: UserDto) {
+    // TODO: Rename method later on - maybe refactor to return role
+    const team = await this.getTeamById({ id: teamId });
+
+    return team?.members.find((member) => member.id === user.id) !== undefined;
+  }
 }
 
 export default new TeamsService();

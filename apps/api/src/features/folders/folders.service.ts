@@ -1,4 +1,4 @@
-import { ArrayContainedBy, ArrayContains, Repository } from "typeorm";
+import { ArrayContains, Repository } from "typeorm";
 import { FolderEntity } from "./folders.entity";
 import { MeadowDataSource } from "../../config/typeorm";
 import {
@@ -14,6 +14,7 @@ import {
   UserDto,
 } from "@meadow/shared";
 import { FoldersMapper } from "./folders.mapper";
+import spacesService from "../spaces/spaces.service";
 
 class FoldersService {
   foldersRepository: Repository<FolderEntity>;
@@ -61,7 +62,9 @@ class FoldersService {
       this.foldersRepository.create({
         name: dto.name,
         description: dto.description,
-        icon: dto.icon,
+        iconTintColor: dto.icon.tintColor,
+        iconType: dto.icon.type,
+        iconValue: dto.icon.value,
         itemOrder: [],
         parentFolder: {
           id: dto.parentFolderId,
@@ -97,7 +100,7 @@ class FoldersService {
       }
     }
     if (dto.parentFolderId) {
-      updatedFields.parentFolder = { id: dto.parentFolderId }; // TODO: validate parent folder is in space
+      updatedFields.parentFolder = { id: dto.parentFolderId }; // TODO: Validate parent folder is in space
     }
     if (dto.spaceId) {
       updatedFields.space = { id: dto.spaceId };
@@ -117,6 +120,19 @@ class FoldersService {
 
   async deleteFolder(dto: DeleteFolderRequest) {
     await this.foldersRepository.delete({ id: dto.id });
+  }
+
+  async isUserAuthorized(folderId: string, user: UserDto) {
+    const folder = await this.foldersRepository.findOne({
+      where: { id: folderId },
+      relations: ["space"],
+    });
+
+    if (folder) {
+      return spacesService.isUserAuthorized(folder?.space.id, user);
+    }
+
+    return false;
   }
 }
 

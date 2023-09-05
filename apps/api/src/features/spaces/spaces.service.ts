@@ -14,6 +14,7 @@ import {
   UserDto,
 } from "@meadow/shared";
 import { SpacesMapper } from "./spaces.mapper";
+import teamsService from "../teams/teams.service";
 
 class SpacesService {
   spacesRepository: Repository<SpaceEntity>;
@@ -90,6 +91,19 @@ class SpacesService {
 
   async deleteSpace(dto: DeleteSpaceRequest) {
     await this.spacesRepository.delete({ id: dto.id });
+  }
+
+  async isUserAuthorized(spaceId: string, user: UserDto) {
+    const space = await this.spacesRepository.findOne({
+      where: { id: spaceId },
+      relations: ["team"],
+    });
+
+    if (space) {
+      return teamsService.isUserInTeam(space?.team.id, user);
+    }
+
+    return false;
   }
 }
 
